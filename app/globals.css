@@ -1,0 +1,272 @@
+@import "tailwindcss";
+
+/* class 기반 다크모드 — <html class="dark">일 때 dark: variant 활성화 (constitution Principle II) */
+@custom-variant dark (&:where(.dark, .dark *));
+
+:root {
+  /* Light 팔레트 (core/home-light.html, core/article-detail-light.html에서 추출) */
+  --color-background: #f7f9fb;
+  --color-error: #ba1a1a;
+  --color-error-container: #ffdad6;
+  --color-inverse-on-surface: #f0f1f3;
+  --color-inverse-primary: #57de9f;
+  --color-inverse-surface: #2e3133;
+  --color-on-background: #191c1e;
+  --color-on-error: #ffffff;
+  --color-on-error-container: #410002;
+  --color-on-primary: #ffffff;
+  --color-on-primary-container: #002114;
+  --color-on-primary-fixed: #002114;
+  --color-on-primary-fixed-variant: #005234;
+  --color-on-secondary: #ffffff;
+  --color-on-secondary-container: #082019;
+  --color-on-secondary-fixed: #082019;
+  --color-on-secondary-fixed-variant: #00513b;
+  --color-on-surface: #191c1e;
+  --color-on-surface-variant: #42474e;
+  --color-on-tertiary: #ffffff;
+  --color-on-tertiary-container: #001d32;
+  --color-on-tertiary-fixed: #001d32;
+  --color-on-tertiary-fixed-variant: #004a78;
+  --color-outline: #71787e;
+  --color-outline-variant: #c2c7ce;
+  --color-primary: #006d47;
+  --color-primary-container: #76fbbe;
+  --color-primary-fixed: #76fbbe;
+  --color-primary-fixed-dim: #57de9f;
+  --color-secondary: #4b635b;
+  --color-secondary-container: #cce8e0;
+  --color-secondary-fixed: #cce8e0;
+  --color-secondary-fixed-dim: #b0ccc3;
+  --color-surface: #f7f9fb;
+  --color-surface-bright: #f7f9fb;
+  --color-surface-container: #ebedf0;
+  --color-surface-container-high: #e7e9ec;
+  --color-surface-container-highest: #e1e2e5;
+  --color-surface-container-low: #f2f4f6;
+  --color-surface-container-lowest: #ffffff;
+  --color-surface-dim: #d8dadc;
+  --color-surface-tint: #006d47;
+  --color-surface-variant: #dee3eb;
+  --color-tertiary: #43627d;
+  --color-tertiary-container: #cfe5ff;
+  --color-tertiary-fixed: #cfe5ff;
+  --color-tertiary-fixed-dim: #abcbe4;
+
+  /* grid 배경 패턴(FR-011) — light: 검정 미세 선 */
+  --grid-line-color: rgba(0, 0, 0, 0.04);
+}
+
+.dark {
+  /* Dark 팔레트 (core/home-dark.html, core/article-detail-dark.html에서 추출) */
+  --color-background: #0b1326;
+  --color-error: #ffb4ab;
+  --color-error-container: #93000a;
+  --color-inverse-on-surface: #283044;
+  --color-inverse-primary: #006d40;
+  --color-inverse-surface: #dae2fd;
+  --color-on-background: #dae2fd;
+  --color-on-error: #690005;
+  --color-on-error-container: #ffdad6;
+  --color-on-primary: #00391f;
+  --color-on-primary-container: #007142;
+  --color-on-primary-fixed: #002110;
+  --color-on-primary-fixed-variant: #00522f;
+  --color-on-secondary: #00354a;
+  --color-on-secondary-container: #00374d;
+  --color-on-secondary-fixed: #001e2c;
+  --color-on-secondary-fixed-variant: #004c69;
+  --color-on-surface: #dae2fd;
+  --color-on-surface-variant: #b9cbbc;
+  --color-on-tertiary: #263143;
+  --color-on-tertiary-container: #586377;
+  --color-on-tertiary-fixed: #111c2d;
+  --color-on-tertiary-fixed-variant: #3c475a;
+  --color-outline: #849587;
+  --color-outline-variant: #3b4b3f;
+  --color-primary: #f3fff3;
+  --color-primary-container: #00ff9c;
+  --color-primary-fixed: #56ffa7;
+  --color-primary-fixed-dim: #00e38a;
+  --color-secondary: #7bd0ff;
+  --color-secondary-container: #00a6e0;
+  --color-secondary-fixed: #c4e7ff;
+  --color-secondary-fixed-dim: #7bd0ff;
+  --color-surface: #0b1326;
+  --color-surface-bright: #31394d;
+  --color-surface-container: #171f33;
+  --color-surface-container-high: #222a3d;
+  --color-surface-container-highest: #2d3449;
+  --color-surface-container-low: #131b2e;
+  --color-surface-container-lowest: #060e20;
+  --color-surface-dim: #0b1326;
+  --color-surface-tint: #00e38a;
+  --color-surface-variant: #2d3449;
+  --color-tertiary: #fdfbff;
+  --color-tertiary-container: #d5e0f8;
+  --color-tertiary-fixed: #d8e3fb;
+  --color-tertiary-fixed-dim: #bcc7de;
+
+  /* grid 배경 패턴(FR-011) — dark: 흰색 미세 선 */
+  --grid-line-color: rgba(255, 255, 255, 0.04);
+}
+
+@theme inline {
+  /* 색상 토큰 — bg-*, text-*, border-* 유틸리티로 노출 */
+  --color-background: var(--color-background);
+  --color-error: var(--color-error);
+  --color-error-container: var(--color-error-container);
+  --color-inverse-on-surface: var(--color-inverse-on-surface);
+  --color-inverse-primary: var(--color-inverse-primary);
+  --color-inverse-surface: var(--color-inverse-surface);
+  --color-on-background: var(--color-on-background);
+  --color-on-error: var(--color-on-error);
+  --color-on-error-container: var(--color-on-error-container);
+  --color-on-primary: var(--color-on-primary);
+  --color-on-primary-container: var(--color-on-primary-container);
+  --color-on-primary-fixed: var(--color-on-primary-fixed);
+  --color-on-primary-fixed-variant: var(--color-on-primary-fixed-variant);
+  --color-on-secondary: var(--color-on-secondary);
+  --color-on-secondary-container: var(--color-on-secondary-container);
+  --color-on-secondary-fixed: var(--color-on-secondary-fixed);
+  --color-on-secondary-fixed-variant: var(--color-on-secondary-fixed-variant);
+  --color-on-surface: var(--color-on-surface);
+  --color-on-surface-variant: var(--color-on-surface-variant);
+  --color-on-tertiary: var(--color-on-tertiary);
+  --color-on-tertiary-container: var(--color-on-tertiary-container);
+  --color-on-tertiary-fixed: var(--color-on-tertiary-fixed);
+  --color-on-tertiary-fixed-variant: var(--color-on-tertiary-fixed-variant);
+  --color-outline: var(--color-outline);
+  --color-outline-variant: var(--color-outline-variant);
+  --color-primary: var(--color-primary);
+  --color-primary-container: var(--color-primary-container);
+  --color-primary-fixed: var(--color-primary-fixed);
+  --color-primary-fixed-dim: var(--color-primary-fixed-dim);
+  --color-secondary: var(--color-secondary);
+  --color-secondary-container: var(--color-secondary-container);
+  --color-secondary-fixed: var(--color-secondary-fixed);
+  --color-secondary-fixed-dim: var(--color-secondary-fixed-dim);
+  --color-surface: var(--color-surface);
+  --color-surface-bright: var(--color-surface-bright);
+  --color-surface-container: var(--color-surface-container);
+  --color-surface-container-high: var(--color-surface-container-high);
+  --color-surface-container-highest: var(--color-surface-container-highest);
+  --color-surface-container-low: var(--color-surface-container-low);
+  --color-surface-container-lowest: var(--color-surface-container-lowest);
+  --color-surface-dim: var(--color-surface-dim);
+  --color-surface-tint: var(--color-surface-tint);
+  --color-surface-variant: var(--color-surface-variant);
+  --color-tertiary: var(--color-tertiary);
+  --color-tertiary-container: var(--color-tertiary-container);
+  --color-tertiary-fixed: var(--color-tertiary-fixed);
+  --color-tertiary-fixed-dim: var(--color-tertiary-fixed-dim);
+
+  /* 폰트 패밀리(FR-010) — Inter / JetBrains Mono 두 개만 */
+  --font-body-md: var(--font-inter), sans-serif;
+  --font-headline-xl: var(--font-inter), sans-serif;
+  --font-headline-lg: var(--font-inter), sans-serif;
+  --font-headline-lg-mobile: var(--font-inter), sans-serif;
+  --font-label-caps: var(--font-jetbrains-mono), monospace;
+  --font-code-sm: var(--font-jetbrains-mono), monospace;
+
+  /* 폰트 크기 토큰 (core/*.html의 tailwind.config fontSize 그대로) */
+  --text-body-md: 16px;
+  --text-body-md--line-height: 24px;
+  --text-body-md--font-weight: 400;
+
+  --text-label-caps: 12px;
+  --text-label-caps--line-height: 16px;
+  --text-label-caps--letter-spacing: 0.05em;
+  --text-label-caps--font-weight: 400;
+
+  --text-headline-lg-mobile: 24px;
+  --text-headline-lg-mobile--line-height: 32px;
+  --text-headline-lg-mobile--font-weight: 600;
+
+  --text-headline-lg: 32px;
+  --text-headline-lg--line-height: 40px;
+  --text-headline-lg--letter-spacing: -0.01em;
+  --text-headline-lg--font-weight: 600;
+
+  --text-code-sm: 14px;
+  --text-code-sm--line-height: 20px;
+  --text-code-sm--font-weight: 400;
+
+  --text-headline-xl: 48px;
+  --text-headline-xl--line-height: 56px;
+  --text-headline-xl--letter-spacing: -0.02em;
+  --text-headline-xl--font-weight: 700;
+
+  /* 간격 토큰 (dark/light 동일, 그대로 사용) */
+  --spacing-base: 8px;
+  --spacing-stack-sm: 4px;
+  --spacing-stack-md: 12px;
+  --spacing-stack-lg: 24px;
+  --spacing-gutter: 24px;
+  --spacing-section-gap: 80px;
+
+  /* 모서리 반경 — dark/light 간 미세 불일치(spec Assumptions)를 통일 */
+  --radius-DEFAULT: 4px;
+  --radius-lg: 4px;
+  --radius-xl: 8px;
+}
+
+/* overscroll-behavior-y: none — 맨 위/아래에서 더 스크롤(러버밴드 바운스)할 때 body 기본
+   배경(--color-background)이 드러나 Footer 색(bg-surface-container-lowest)과 어긋나
+   보이는 것을 막는다. 바운스 자체를 없애 색 불일치가 드러날 여지를 원천 차단한다
+   (../revi1337 프로젝트의 동일 이슈/해결책 참고). */
+html {
+  scroll-behavior: smooth;
+  overscroll-behavior-y: none;
+}
+
+body {
+  background-color: var(--color-background);
+  color: var(--color-on-background);
+  /* 32px 그리드 배경 패턴(FR-011) */
+  background-image:
+    linear-gradient(to right, var(--grid-line-color) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--grid-line-color) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+
+/* 아티클 상세 화면 전용 텍스트 선택 색상(spec Edge Cases) */
+.article-selection ::selection {
+  background-color: var(--color-primary-fixed-dim);
+  color: var(--color-on-primary-fixed);
+}
+
+/* 아티클 본문(dangerouslySetInnerHTML로 주입되는 raw HTML)의 타이포그래피 —
+   Tailwind preflight가 heading/list 기본 스타일을 리셋하므로 여기서 직접 복원한다. */
+.article-body h2 {
+  margin-top: 3rem;
+  font-family: var(--font-headline-lg);
+  font-size: var(--text-headline-lg);
+  line-height: var(--text-headline-lg--line-height);
+  letter-spacing: var(--text-headline-lg--letter-spacing);
+  font-weight: var(--text-headline-lg--font-weight);
+  color: var(--color-on-surface);
+}
+.article-body h2:first-child {
+  margin-top: 0;
+}
+.article-body h3 {
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--color-on-surface);
+}
+.article-body p {
+  margin-top: 1rem;
+  color: var(--color-on-surface-variant);
+}
+.article-body ul {
+  margin-top: 0.5rem;
+  margin-left: 1.5rem;
+  list-style-type: disc;
+  color: var(--color-on-surface-variant);
+}
+.article-body li {
+  margin-top: 0.5rem;
+}

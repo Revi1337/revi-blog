@@ -1,0 +1,79 @@
+import Image from "next/image"
+import { CalendarDays, History, Timer } from "lucide-react"
+import * as motion from "motion/react-client"
+
+import type { Article } from "@/lib/data/types"
+import { DEFAULT_THUMBNAIL } from "@/lib/data/types"
+
+function formatDate(iso: string) {
+  return new Date(iso).toLocaleDateString("en-US", {
+    month: "short",
+    day: "2-digit",
+    year: "numeric",
+  })
+}
+
+export function ArticleHeader({ article }: { article: Article }) {
+  const updatedAt = article.updatedAt ?? article.publishedAt
+
+  return (
+    <header className="space-y-8">
+      <div className="flex flex-wrap items-center gap-3">
+        <span className="rounded bg-surface-container px-3 py-1 font-label-caps text-[10px] uppercase tracking-widest text-secondary-fixed-dim">
+          {article.category}
+        </span>
+      </div>
+
+      <motion.h1
+        initial={{ opacity: 0, y: 8 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.7 }}
+        className="font-headline-xl text-headline-xl leading-[1.1] text-on-surface"
+      >
+        {article.title}
+      </motion.h1>
+
+      <div className="space-y-3 border-y border-outline-variant/10 py-6 font-code-sm text-sm text-on-surface">
+        <div className="flex flex-wrap items-center gap-4">
+          <div className="flex items-center gap-1.5">
+            <CalendarDays className="size-4 text-primary-container" />
+            <span>{formatDate(article.publishedAt)}</span>
+          </div>
+          <span className="text-outline-variant/40">|</span>
+          <div className="flex items-center gap-1.5">
+            <History className="size-4 text-primary-container" />
+            <span>{formatDate(updatedAt)}</span>
+          </div>
+          <span className="text-outline-variant/40">|</span>
+          <div className="flex items-center gap-1.5">
+            <Timer className="size-4 text-primary-container" />
+            <span>{article.readingTimeMinutes} min read</span>
+          </div>
+        </div>
+        {article.tags.length > 0 && (
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="mr-1 font-label-caps text-[10px] opacity-50">Tags:</span>
+            {article.tags.map((tag) => (
+              <span
+                key={tag}
+                className="rounded border border-secondary/20 bg-surface-container px-2.5 py-0.5 font-code-sm text-[11px] text-secondary-fixed-dim"
+              >
+                {tag}
+              </span>
+            ))}
+          </div>
+        )}
+      </div>
+
+      <div className="group relative aspect-[21/9] w-full overflow-hidden rounded border border-outline-variant/30">
+        <Image
+          src={article.thumbnail ?? DEFAULT_THUMBNAIL}
+          alt=""
+          fill
+          className="scale-105 object-cover grayscale-[40%] transition-all duration-1000 group-hover:scale-100 group-hover:grayscale-0"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-surface-dim/80 via-transparent to-transparent" />
+      </div>
+    </header>
+  )
+}
