@@ -1,0 +1,289 @@
+<!DOCTYPE html><html class="dark" lang="en"><head><meta charset="utf-8"><meta content="width=device-width, initial-scale=1.0" name="viewport"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;family=JetBrains+Mono:wght@400;600&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=block" rel="stylesheet"><script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script><script id="tailwind-config">try{
+        try {
+            tailwind.config = {
+                darkMode: "class",
+                theme: {
+                    extend: {
+                        "colors": {
+                            "surface-container-low": "#131b2e",
+                            "error-container": "#93000a",
+                            "error": "#ffb4ab",
+                            "surface-container": "#171f33",
+                            "outline": "#849587",
+                            "surface-dim": "#0b1326",
+                            "inverse-surface": "#dae2fd",
+                            "on-primary": "#00391f",
+                            "secondary-fixed": "#c4e7ff",
+                            "primary-fixed": "#56ffa7",
+                            "on-error-container": "#ffdad6",
+                            "on-secondary-fixed-variant": "#004c69",
+                            "inverse-on-surface": "#283044",
+                            "on-tertiary-fixed": "#111c2d",
+                            "tertiary-container": "#d5e0f8",
+                            "primary-fixed-dim": "#00e38a",
+                            "tertiary-fixed": "#d8e3fb",
+                            "on-secondary": "#00354a",
+                            "inverse-primary": "#006d40",
+                            "on-tertiary-container": "#586377",
+                            "on-primary-fixed": "#002110",
+                            "on-tertiary-fixed-variant": "#3c475a",
+                            "on-primary-fixed-variant": "#00522f",
+                            "on-primary-container": "#007142",
+                            "on-background": "#dae2fd",
+                            "on-tertiary": "#263143",
+                            "secondary": "#7bd0ff",
+                            "surface-container-highest": "#2d3449",
+                            "tertiary": "#fdfbff",
+                            "on-surface": "#dae2fd",
+                            "surface-variant": "#2d3449",
+                            "on-error": "#690005",
+                            "surface": "#0b1326",
+                            "primary": "#f3fff3",
+                            "surface-tint": "#00e38a",
+                            "surface-container-high": "#222a3d",
+                            "secondary-container": "#00a6e0",
+                            "primary-container": "#00ff9c",
+                            "outline-variant": "#3b4b3f",
+                            "tertiary-fixed-dim": "#bcc7de",
+                            "on-secondary-container": "#00374d",
+                            "on-surface-variant": "#b9cbbc",
+                            "surface-container-lowest": "#060e20",
+                            "surface-bright": "#31394d",
+                            "on-secondary-fixed": "#001e2c",
+                            "background": "#0b1326",
+                            "secondary-fixed-dim": "#7bd0ff"
+                        },
+                        "borderRadius": {
+                            "DEFAULT": "0.125rem",
+                            "lg": "0.25rem",
+                            "xl": "0.5rem",
+                            "full": "0.75rem",
+                            "round-four": "0.25rem"
+                        },
+                        "spacing": {
+                            "base": "8px",
+                            "stack-sm": "4px",
+                            "container-max": "1200px",
+                            "section-gap": "80px",
+                            "gutter": "24px",
+                            "stack-md": "12px",
+                            "stack-lg": "24px"
+                        },
+                        "fontFamily": {
+                            "label-caps": ["JetBrains Mono", "JetBrains Mono Fallback", "monospace"],
+                            "headline-xl": ["Inter", "Inter Fallback", "sans-serif"],
+                            "headline-lg-mobile": ["Inter", "Inter Fallback", "sans-serif"],
+                            "headline-lg": ["Inter", "Inter Fallback", "sans-serif"],
+                            "code-sm": ["JetBrains Mono", "JetBrains Mono Fallback", "monospace"],
+                            "body-md": ["Inter", "Inter Fallback", "sans-serif"]
+                        },
+                        "fontSize": {
+                            "label-caps": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "400"}],
+                            "headline-xl": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                            "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                            "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                            "code-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                            "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}]
+                        }
+                    },
+                },
+            }
+        } catch (_e) {}
+    }catch(_e){}</script><style>
+@font-face { font-family: "Inter Fallback"; src: local(Arial); ascent-override: 90.44%; descent-override: 22.52%; line-gap-override: 0.0%; size-adjust: 107.12%; }
+@font-face { font-family: "JetBrains Mono Fallback"; src: local(Arial); ascent-override: 75.79%; descent-override: 22.29%; line-gap-override: 0.0%; size-adjust: 134.59%; }
+body {
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+</style></head><body class="antialiased bg-surface text-on-surface font-body-md selection:bg-primary-container/30">
+<!-- TopNavBar -->
+<header class="fixed top-0 w-full z-50 bg-background/70 backdrop-blur-md border-b border-outline-variant transition-all duration-200 ease-in-out">
+<nav class="max-w-container-max mx-auto px-gutter flex justify-between items-center py-4 relative">
+<div class="flex items-center">
+<a class="font-headline-lg text-2xl font-extrabold text-primary-container tracking-tighter" href="/">Revi</a>
+</div>
+<div class="hidden md:flex items-center gap-2 mx-auto">
+<a href="home-dark.html" class="text-on-surface-variant hover:text-primary-container hover:bg-surface-container-highest/50 font-code-sm text-code-sm px-2 py-1 rounded transition-colors">Home</a>
+<a href="https://me.revi1337.com" class="text-on-surface-variant hover:text-primary-container hover:bg-surface-container-highest/50 font-code-sm text-code-sm px-2 py-1 rounded transition-colors">About</a>
+<a href="#" class="text-primary-container bg-surface-container-highest/50 font-code-sm text-code-sm px-2 py-1 rounded transition-colors">Feeds</a>
+<a href="#" class="text-on-surface-variant hover:text-primary-container hover:bg-surface-container-highest/50 font-code-sm text-code-sm px-2 py-1 rounded transition-colors">Bookmark</a>
+</div>
+<div class="flex items-center gap-6">
+<button class="bg-primary-container text-on-primary-container px-6 py-2 font-label-caps text-label-caps rounded-round-four hover:brightness-110 transition-all shadow-lg shadow-primary-container/10 active:scale-95">LOGIN</button>
+</div>
+</nav>
+</header>
+<main class="pt-40 pb-section-gap max-w-container-max mx-auto px-gutter grid grid-cols-1 lg:grid-cols-12 gap-16">
+<!-- Left Column: Content -->
+<article class="lg:col-span-8 space-y-12">
+<!-- Title-->
+<header class="space-y-8">
+<div class="flex flex-wrap items-center gap-3">
+<span class="px-3 py-1 bg-surface-container border border-outline-variant/30 rounded-round-four font-label-caps text-[10px] text-secondary-fixed-dim uppercase tracking-widest">SYSTEM_ARCHITECTURE</span>
+<span class="px-3 py-1 bg-surface-container border border-outline-variant/30 rounded-round-four font-label-caps text-[10px] text-primary-container uppercase tracking-widest">BACKEND</span>
+</div>
+<h1 class="font-headline-xl text-headline-xl text-on-surface leading-[1.1] animate-in fade-in duration-700">
+                Architecting High-Concurrency Distributed Systems: Lessons from the Edge
+            </h1>
+<div class="flex flex-wrap items-center gap-4 py-6 border-y border-outline-variant/10 font-code-sm text-sm text-on-surface">
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-primary-container text-base" data-icon="calendar_month">calendar_month</span>
+<span>Oct 12, 2024</span>
+</div>
+<span class="text-outline-variant/40">|</span>
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-primary-container text-base" data-icon="history">history</span>
+<span>Nov 05, 2024</span>
+</div>
+<span class="text-outline-variant/40">|</span>
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-primary-container text-base" data-icon="timer">timer</span>
+<span>12 min read</span>
+</div>
+<span class="text-outline-variant/40">|</span>
+<div class="flex flex-wrap items-center gap-2">
+<span class="text-[10px] font-label-caps opacity-50 mr-1">Tags:</span>
+<span class="bg-surface-container px-2.5 py-0.5 rounded-round-four text-[11px] font-code-sm text-secondary-fixed-dim border border-secondary/20">GO_1.21</span>
+<span class="bg-surface-container px-2.5 py-0.5 rounded-round-four text-[11px] font-code-sm text-secondary-fixed-dim border border-secondary/20">REDIS</span>
+<span class="bg-surface-container px-2.5 py-0.5 rounded-round-four text-[11px] font-code-sm text-secondary-fixed-dim border border-secondary/20">K8S</span>
+<span class="bg-surface-container px-2.5 py-0.5 rounded-round-four text-[11px] font-code-sm text-secondary-fixed-dim border border-secondary/20">GRPC</span>
+<span class="bg-surface-container px-2.5 py-0.5 rounded-round-four text-[11px] font-code-sm text-secondary-fixed-dim border border-secondary/20">PROMETHEUS</span>
+</div>
+</div>
+</header>
+<!-- Featured Image -->
+<div class="relative w-full aspect-[21/9] rounded-round-four overflow-hidden border border-outline-variant/30 group">
+<img class="w-full h-full object-cover grayscale-[40%] group-hover:grayscale-0 transition-all duration-1000 scale-105 group-hover:scale-100" data-alt="A futuristic, high-tech server room" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAG9bNsWCgzKur0D_aDDQtqk06smBtxAmDMPukiOLORVxTQ7lDPyVbtGvkTjV3KgGBZnOPXYUw0fWV_dRcEQK_v78wOaAKWr9UaTPRYMjtSpwYU3vDDkLfhky3M6uagJLzh60qYfn0N2LdxnuS2Inz30L-E_xkqRlLCGgjbHDVlNt39k4sZZqyeIR2MQgId-NRkluW394ltiXEGguMeXRMBk1BLrDna0oFGjv_guyHq7Ru_v6OiGUAp">
+<div class="absolute inset-0 bg-gradient-to-t from-surface-dim/80 via-transparent to-transparent"></div>
+<div class="absolute bottom-6 left-6 flex items-center gap-2">
+<div class="w-2 h-2 rounded-full bg-primary-container animate-pulse"></div>
+<span class="font-label-caps text-[11px] text-primary-container drop-shadow-md">LIVE_DEPLOYS_ACTIVE</span>
+</div>
+</div>
+<!-- Markdown Content Canvas -->
+<div class="space-y-6">
+<h2 class="font-headline-lg text-headline-lg text-on-surface">01. The Problem of Scale</h2>
+<p class="text-on-surface-variant">When dealing with systems that exceed 100k requests per second, the standard monolithic approach collapses. Bottlenecks shift from raw CPU cycles to I/O wait times and network latency. In this post, we explore how to decompose critical paths into non-blocking, event-driven units.</p>
+<div class="my-8 p-5 bg-surface-container-lowest rounded-round-four border border-outline-variant/30 relative overflow-hidden group">
+<div class="absolute top-0 left-0 w-1 h-full bg-primary-container/50"></div>
+<div class="flex items-center justify-between mb-3">
+<div class="flex items-center gap-1.5">
+<div class="w-2 h-2 rounded-full bg-error/80"></div>
+<div class="w-2 h-2 rounded-full bg-secondary/80"></div>
+<div class="w-2 h-2 rounded-full bg-primary-container/80"></div>
+</div>
+<span class="font-code-sm text-xs text-on-surface-variant/50">stream_processor.go</span>
+</div>
+<pre class="overflow-x-auto pt-2"><code class="font-code-sm text-primary-fixed-dim leading-relaxed">// Example: Non-blocking Worker Implementation
+func processStream(events &lt;-chan Event) {
+    for e := range events {
+        go func(val Event) {
+            result := compute(val)
+            metrics.Push(result)
+        }(e)
+    }
+}</code></pre>
+</div>
+<h2 class="font-headline-lg text-headline-lg text-on-surface">02. Consistency vs. Availability</h2>
+<p class="text-on-surface-variant">The CAP theorem isn't just a theoretical constraint; it's a daily trade-off. We implemented a hybrid consistency model where high-traffic metadata utilizes eventual consistency via CRDTs, while transactional data remains strictly consistent through Raft consensus.</p>
+<h3 class="font-semibold text-xl text-on-surface mt-8 mb-4">Hierarchical Sharding</h3>
+<p class="text-on-surface-variant">To reduce cross-regional latency, we implemented a three-tier sharding strategy that balances data proximity with global synchronization overhead:</p>
+<ul class="list-disc ml-6 space-y-2 text-on-surface-variant">
+<li class="">Global Registry for routing and discovery across continents.</li>
+<li class="">Regional Clusters for localized, high-throughput write operations.</li>
+<li class="">Edge Nodes for aggressive read-caching and local request validation.</li>
+</ul>
+<h2 class="font-headline-lg text-headline-lg text-on-surface mt-12">03. Performance Metrics</h2>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6 my-12">
+<div class="p-8 bg-surface-container-low rounded-round-four border border-outline-variant/10 hover:border-primary-container/20 transition-all group">
+<div class="font-label-caps text-[10px] text-on-surface-variant mb-3 tracking-[0.2em] group-hover:text-primary-container transition-colors">P99_LATENCY</div>
+<div class="font-headline-lg text-4xl text-primary-container mb-1">120ms</div>
+<div class="font-code-sm text-[11px] text-on-surface-variant">Optimized from 450ms</div>
+</div>
+<div class="p-8 bg-surface-container-low rounded-round-four border border-outline-variant/10 hover:border-secondary/20 transition-all group">
+<div class="font-label-caps text-[10px] text-on-surface-variant mb-3 tracking-[0.2em] group-hover:text-secondary transition-colors">THROUGHPUT</div>
+<div class="font-headline-lg text-4xl text-secondary mb-1">2.4M</div>
+<div class="font-code-sm text-[11px] text-on-surface-variant">Requests per minute</div>
+</div>
+<div class="p-8 bg-surface-container-low rounded-round-four border border-outline-variant/10 hover:border-error/20 transition-all group">
+<div class="font-label-caps text-[10px] text-on-surface-variant mb-3 tracking-[0.2em] group-hover:text-error transition-colors">ERROR_RATE</div>
+<div class="font-headline-lg text-4xl text-error mb-1">0.004%</div>
+<div class="font-code-sm text-[11px] text-on-surface-variant">Cluster-wide average</div>
+</div>
+</div>
+</div>
+<!-- Post Navigation -->
+<div class="mt-12 pt-6 border-t border-outline-variant/20 grid grid-cols-1 md:grid-cols-2 gap-4">
+<a class="group relative p-5 bg-surface-container-low rounded-round-four border border-outline-variant/20 hover:border-primary-container/40 transition-all overflow-hidden" href="#">
+<div class="absolute top-0 left-0 h-full w-1 bg-primary-container opacity-0 group-hover:opacity-100 transition-opacity"></div>
+<div class="flex items-center gap-2 font-label-caps text-[11px] text-on-surface-variant mb-2 uppercase tracking-widest">
+<span class="material-symbols-outlined text-base" data-icon="arrow_back">arrow_back</span>
+                    Previous entry
+                </div>
+<div class="font-headline-lg text-base text-on-surface group-hover:text-primary-container transition-colors leading-snug">Microservices: Why most devs get sharding wrong.</div>
+</a>
+<a class="group relative p-5 bg-surface-container-low rounded-round-four border border-outline-variant/20 hover:border-primary-container/40 transition-all text-right overflow-hidden" href="#">
+<div class="absolute top-0 right-0 h-full w-1 bg-primary-container opacity-0 group-hover:opacity-100 transition-opacity"></div>
+<div class="flex items-center justify-end gap-2 font-label-caps text-[11px] text-on-surface-variant mb-2 uppercase tracking-widest">
+                    Next entry
+                    <span class="material-symbols-outlined text-base" data-icon="arrow_forward">arrow_forward</span>
+</div>
+<div class="font-headline-lg text-base text-on-surface group-hover:text-primary-container transition-colors leading-snug">Implementing Rust-based Kernel Extensions for TCP.</div>
+</a>
+</div>
+</article>
+<!-- Right Column: Sidebar -->
+<aside class="lg:col-span-4 space-y-10">
+<div class="sticky top-40 space-y-10">
+<!-- Table of Contents -->
+<div class="bg-surface-container-lowest border border-outline-variant/20 rounded-round-four p-5">
+<div class="flex items-center gap-2 mb-4 text-primary-container">
+<span class="material-symbols-outlined text-base" data-icon="list_alt">list_alt</span>
+<h4 class="font-label-caps text-xs tracking-widest">Table Of Contents</h4>
+</div>
+<nav class="space-y-1 custom-scrollbar overflow-y-auto max-h-[500px] pr-2">
+<a class="flex items-center gap-2 py-1.5 px-2.5 rounded-round-four bg-primary-container/10 font-code-sm text-xs text-primary-container transition-all" href="#">
+<span class="opacity-30">01</span> The Problem of Scale
+                    </a>
+<a class="flex items-center gap-2 py-1.5 px-2.5 rounded-round-four hover:bg-white/5 font-code-sm text-xs text-on-surface-variant hover:text-primary-container transition-all" href="#">
+<span class="opacity-30">02</span> Consistency vs. Availability
+                    </a>
+<div class="ml-6 space-y-1 border-l border-outline-variant/30 pl-3 py-1">
+<a class="block py-1 font-code-sm text-[11px] text-on-surface-variant/70 hover:text-primary-container transition-colors underline decoration-transparent hover:decoration-primary-container/50 underline-offset-4" href="#">Hierarchical Sharding</a>
+<a class="block py-1 font-code-sm text-[11px] text-on-surface-variant/70 hover:text-primary-container transition-colors underline decoration-transparent hover:decoration-primary-container/50 underline-offset-4" href="#">Raft Implementation</a>
+</div>
+<a class="flex items-center gap-2 py-1.5 px-2.5 rounded-round-four hover:bg-white/5 font-code-sm text-xs text-on-surface-variant hover:text-primary-container transition-all" href="#">
+<span class="opacity-30">03</span> Performance Metrics
+                    </a>
+<a class="flex items-center gap-2 py-1.5 px-2.5 rounded-round-four hover:bg-white/5 font-code-sm text-xs text-on-surface-variant hover:text-primary-container transition-all" href="#">
+<span class="opacity-30">04</span> Final Conclusion
+                    </a>
+</nav>
+</div>
+<!-- Technical Specs -->
+</div>
+</aside>
+</main>
+<!-- Footer -->
+<footer class="w-full border-t border-outline-variant bg-surface-container-lowest py-stack-lg print:hidden">
+<div class="max-w-container-max mx-auto px-gutter flex flex-col md:flex-row justify-between items-center gap-stack-lg">
+<div class="font-code-sm text-code-sm text-on-surface-variant">
+                Revi Blog
+            </div>
+<div class="font-code-sm text-code-sm text-on-surface-variant">
+                © <span id="copyright-year">2024</span> Revi. All rights reserved.
+            </div>
+<div class="flex gap-4">
+<a class="text-on-surface-variant hover:text-primary-fixed-dim transition-colors font-code-sm text-code-sm" href="https://me.revi1337.com" target="_blank" rel="noopener noreferrer">About</a>
+<a class="text-on-surface-variant hover:text-primary-fixed-dim transition-colors font-code-sm text-code-sm" href="#" target="_blank" rel="noopener noreferrer">GitHub</a>
+<a class="text-on-surface-variant hover:text-primary-fixed-dim transition-colors font-code-sm text-code-sm" href="#" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+</div>
+</div>
+</footer>
+<script>
+    document.getElementById('copyright-year').textContent = new Date().getFullYear();
+</script>
+</body></html>

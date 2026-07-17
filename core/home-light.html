@@ -1,0 +1,316 @@
+<!DOCTYPE html><html class="light" lang="en"><head><meta charset="utf-8"><meta content="width=device-width, initial-scale=1.0" name="viewport"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;family=JetBrains+Mono:wght@400;600&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=block" rel="stylesheet"><script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script><script id="tailwind-config">try{
+      try {
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                "surface-container-low": "#f2f4f6",
+                "error-container": "#ffdad6",
+                "error": "#ba1a1a",
+                "surface-container": "#ebedf0",
+                "outline": "#71787e",
+                "surface-dim": "#d8dadc",
+                "inverse-surface": "#2e3133",
+                "on-primary": "#ffffff",
+                "secondary-fixed": "#cce8e0",
+                "primary-fixed": "#76fbbe",
+                "on-error-container": "#410002",
+                "on-secondary-fixed-variant": "#00513b",
+                "inverse-on-surface": "#f0f1f3",
+                "on-tertiary-fixed": "#001d32",
+                "tertiary-container": "#cfe5ff",
+                "primary-fixed-dim": "#57de9f",
+                "tertiary-fixed": "#cfe5ff",
+                "on-secondary": "#ffffff",
+                "inverse-primary": "#57de9f",
+                "on-tertiary-container": "#001d32",
+                "on-primary-fixed": "#002114",
+                "on-tertiary-fixed-variant": "#004a78",
+                "on-primary-fixed-variant": "#005234",
+                "on-primary-container": "#002114",
+                "on-background": "#191c1e",
+                "on-tertiary": "#ffffff",
+                "secondary": "#4b635b",
+                "surface-container-highest": "#e1e2e5",
+                "tertiary": "#43627d",
+                "on-surface": "#191c1e",
+                "surface-variant": "#dee3eb",
+                "on-error": "#ffffff",
+                "surface": "#f7f9fb",
+                "primary": "#006d47",
+                "surface-tint": "#006d47",
+                "surface-container-high": "#e7e9ec",
+                "secondary-container": "#cce8e0",
+                "primary-container": "#76fbbe",
+                "outline-variant": "#c2c7ce",
+                "tertiary-fixed-dim": "#abcbe4",
+                "on-secondary-container": "#082019",
+                "on-surface-variant": "#42474e",
+                "surface-container-lowest": "#ffffff",
+                "surface-bright": "#f7f9fb",
+                "on-secondary-fixed": "#082019",
+                "background": "#f7f9fb",
+                "secondary-fixed-dim": "#b0ccc3"
+              },
+              "borderRadius": {
+                "DEFAULT": "4px",
+                "lg": "4px",
+                "xl": "8px",
+                "full": "12px"
+              },
+              "spacing": {
+                "base": "8px",
+                "stack-sm": "4px",
+                "container-max": "1200px",
+                "section-gap": "80px",
+                "gutter": "24px",
+                "stack-md": "12px",
+                "stack-lg": "24px"
+              },
+              "fontFamily": {
+                "label-caps": ["JetBrains Mono", "JetBrains Mono Fallback", "monospace"],
+                "headline-xl": ["Inter", "Inter Fallback", "sans-serif"],
+                "headline-lg-mobile": ["Inter", "Inter Fallback", "sans-serif"],
+                "headline-lg": ["Inter", "Inter Fallback", "sans-serif"],
+                "code-sm": ["JetBrains Mono", "JetBrains Mono Fallback", "monospace"],
+                "body-md": ["Inter", "Inter Fallback", "sans-serif"]
+              },
+              "fontSize": {
+                "label-caps": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "400" }],
+                "headline-xl": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                "headline-lg-mobile": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                "code-sm": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }]
+              }
+            },
+          },
+        }
+      } catch (_e) {}
+    }catch(_e){}</script><style>
+@font-face { font-family: "Inter Fallback"; src: local(Arial); ascent-override: 90.44%; descent-override: 22.52%; line-gap-override: 0.0%; size-adjust: 107.12%; }
+@font-face { font-family: "JetBrains Mono Fallback"; src: local(Arial); ascent-override: 75.79%; descent-override: 22.29%; line-gap-override: 0.0%; size-adjust: 134.59%; }
+body {
+  background-image:
+    linear-gradient(rgba(0, 0, 0, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 0, 0, 0.04) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+</style></head><body class="antialiased bg-background text-on-background font-body-md min-h-screen">
+<!-- Top Navigation -->
+<nav class="fixed top-0 w-full z-50 bg-background/70 backdrop-blur-md border-b border-outline-variant transition-all duration-200 ease-in-out">
+<div class="max-w-container-max mx-auto px-gutter flex justify-between items-center py-4">
+<div class="font-headline-lg text-2xl font-extrabold text-primary tracking-tighter">Revi</div>
+<div class="hidden md:flex items-center gap-2 mx-auto">
+<a class="text-primary bg-surface-container-highest/50 font-code-sm text-code-sm px-2 py-1 rounded transition-colors" href="home-light.html">Home</a>
+<a class="text-on-surface-variant hover:text-primary hover:bg-surface-container-highest/50 font-code-sm text-code-sm px-2 py-1 rounded transition-colors" href="https://me.revi1337.com">About</a>
+<a class="text-on-surface-variant hover:text-primary hover:bg-surface-container-highest/50 font-code-sm text-code-sm px-2 py-1 rounded transition-colors" href="#">Feeds</a>
+<a class="text-on-surface-variant hover:text-primary hover:bg-surface-container-highest/50 font-code-sm text-code-sm px-2 py-1 rounded transition-colors" href="#">Bookmark</a>
+</div>
+<div class="flex items-center gap-stack-md">
+<button class="bg-primary text-on-primary px-6 py-2 font-label-caps text-label-caps rounded hover:brightness-110 active:scale-95 transition-all">LOGIN</button>
+</div>
+</div>
+</nav>
+<!-- Hero Carousel Section -->
+<header class="pt-24 pb-12 max-w-container-max mx-auto px-gutter">
+<div class="relative w-full h-[480px] overflow-hidden rounded-xl border border-outline-variant bg-surface-container-low group">
+<div class="carousel-track flex h-full transition-transform duration-500 ease-out" id="carouselTrack" style="transform: translateX(-100%);">
+<!-- Slide 1 -->
+<div class="min-w-full h-full relative">
+<div class="w-full h-full bg-cover bg-center" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuC0gpWYHbw0jPIhiYjzybnGS42_5PzEfTHfaWMQJmygdrnHM4TZafa6VJfCHVPzkp6deZq0m8RD_5WNj3lqNwJv_Ty72rpkeZD3wXVZt-_Z8pU6UEO-NPRNNLJQBFTnTCIpZOa1F5u9SF8JxGgyaoqz0NEkEaBFehjPzW882yhHplhWKBZZKbUtI9m1ZFjxDHbSjKbJ8vFR8bD4RoNEguCTRGHQ576AEsfTkXDtKIsJYKFo6cLhOUV3')"></div>
+<div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex flex-col justify-end p-stack-lg">
+<h2 class="font-headline-xl text-headline-xl text-white max-w-2xl">Architecting Low-Latency Microservices with Rust</h2>
+</div>
+</div>
+<!-- Slide 2 -->
+<div class="min-w-full h-full relative">
+<div class="w-full h-full bg-cover bg-center" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDdRapr79O35FFEZUDKTkTL6XRAPOGgNh16hY6Q2PSblZNgXds1cFj3YY8nte9bQsbkeFHjKroJ2AdrRIX1yxooR4zpN4rzplAsUHjqSMtgepV4zCbylld1Wat8myHJgukCEhKUDOS60I7ZTKJy4k2TCb0hxUcWuABkSu5sHtQ7mEKKW6EeEno95cPExG23jbxJ49wQr752L5VaV09Ryt9a2oNT9iFjq7x4bdDxS7H4o34htwhCvqe4')"></div>
+<div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex flex-col justify-end p-stack-lg">
+<h2 class="font-headline-xl text-headline-xl text-white max-w-2xl">Visualizing Raft Consensus in High-Traffic Environments</h2>
+</div>
+</div>
+<!-- Slide 3 -->
+<div class="min-w-full h-full relative">
+<div class="w-full h-full bg-cover bg-center" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDicZ8Vhe25p3za4WFGumSmbqLZBtdkJTmAjcfo0eNCJ46zd8y9QnhUYUdoeAzhEWrubdUPxrvle8nOBlEVyzHK7m_usiYNExA9waAzjYq6imqN9N5N-xR52l0mIlJIxKnTZImCaIyezw8lzwvcrVc6YfThXDVyTg7KkeZf-wkeKzM1yJMwGYPd2xVTYWdWAK_TrNg1K1uaYoKA14re2YFqS3JE_qcSA43MLb2DMl1BgF9jURuks9XV')"></div>
+<div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex flex-col justify-end p-stack-lg">
+<h2 class="font-headline-xl text-headline-xl text-white max-w-2xl">Zero-Downtime Migrations: The Hard Parts</h2>
+</div>
+</div>
+</div>
+<!-- Carousel Controls -->
+<button class="absolute left-4 top-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center bg-white/50 backdrop-blur-md rounded border border-black/10 text-on-background opacity-0 hover:opacity-100 hover:bg-primary hover:text-on-primary transition-all" onclick="moveCarousel(-1)">
+<span class="material-symbols-outlined">chevron_left</span>
+</button>
+<button class="absolute right-4 top-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center bg-white/50 backdrop-blur-md rounded border border-black/10 text-on-background opacity-0 hover:opacity-100 hover:bg-primary hover:text-on-primary transition-all" onclick="moveCarousel(1)">
+<span class="material-symbols-outlined">chevron_right</span>
+</button>
+<!-- Indicators -->
+<div class="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-2">
+<div class="carousel-dot w-8 h-0.5 rounded-full bg-on-surface-variant/30 transition-all"></div>
+<div class="carousel-dot w-8 h-0.5 rounded-full bg-primary transition-all"></div>
+<div class="carousel-dot w-8 h-0.5 rounded-full bg-on-surface-variant/30 transition-all"></div>
+</div>
+</div>
+</header>
+<!-- Main Content: Blog Grid -->
+<main class="pb-section-gap max-w-container-max mx-auto px-gutter">
+<div class="flex justify-between items-end mb-stack-lg border-l-4 border-primary pl-4">
+<div>
+<h3 class="font-headline-lg text-headline-lg text-on-surface">Entry Stream</h3>
+</div>
+<div class="flex gap-4">
+<span class="font-code-sm text-code-sm text-primary font-bold">Rows: 12</span>
+<span class="font-code-sm text-code-sm text-on-surface-variant">Filter: All</span>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-stack-lg">
+<!-- Card 1 -->
+<article class="group bg-surface-container-lowest rounded-xl border border-outline-variant overflow-hidden transition-all duration-300 hover:shadow-lg hover:border-primary/50">
+<div class="relative h-56 overflow-hidden">
+<div class="w-full h-full bg-cover bg-center group-hover:scale-105 transition-transform duration-500" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuA4grybCOZJ8iDvAq1Io97iQ0fvkNsLKzLL7JVplr_eNnd7Q1xjPKM3l5k7QZ56xcUNn4-lrkH3f5DP_fTkNl1hD_2AiNNcH-UOPuJMHCaXfyoTjgIQTIQ2tjRuDC2e5gdswFaG8kbpaHlobZeovPROItTv5oezjZ_DqNFIQH2nw9GdgzSu_c3Nk1FWESB-kipXQhCOsGt7eAR9IVqN8cBMlMhq-xB65e9z5dRAhcfOim4rp-axyS0s')"></div>
+</div>
+<div class="p-stack-md flex flex-col justify-between h-32">
+<h4 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface group-hover:text-primary transition-colors line-clamp-2">Optimizing PostgreSQL Indexing for High-Write Loads</h4>
+<div class="flex justify-between items-center mt-auto">
+<span class="font-code-sm text-code-sm text-on-surface-variant">2024.03.15</span>
+<span class="material-symbols-outlined text-sm text-primary group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</div>
+</div>
+</article>
+<!-- Card 2 -->
+<article class="group bg-surface-container-lowest rounded-xl border border-outline-variant overflow-hidden transition-all duration-300 hover:shadow-lg hover:border-primary/50">
+<div class="relative h-56 overflow-hidden">
+<div class="w-full h-full bg-cover bg-center group-hover:scale-105 transition-transform duration-500" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDgal58utRDKZNZZmiDvPsqFEhrtQL7qCufmUOSQu3oiLS6j4-BEGf8Fxiqs1JsZUtKR10PE4sywNYRiSh0NJsaLB4fHt7cZ9DEfYN5IYFW1UUlIP600Dn5HxArc7C8LUzLQKoGS3IdzwNtN-3K19V5d4Y2d5gFqhhs6rZ4-xJG_ZBuSfaPnx35Mex8tJiX0i3ENdeU4fhq6B8gIoPJPRbReq2zW-CkPTC4Lm8MzVM25i5b0tZ4StwX')"></div>
+</div>
+<div class="p-stack-md flex flex-col justify-between h-32">
+<h4 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface group-hover:text-primary transition-colors line-clamp-2">Kafka Streams vs Spark: Choosing the Right Engine</h4>
+<div class="flex justify-between items-center mt-auto">
+<span class="font-code-sm text-code-sm text-on-surface-variant">2024.02.28</span>
+<span class="material-symbols-outlined text-sm text-primary group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</div>
+</div>
+</article>
+<!-- Card 3 -->
+<article class="group bg-surface-container-lowest rounded-xl border border-outline-variant overflow-hidden transition-all duration-300 hover:shadow-lg hover:border-primary/50">
+<div class="relative h-56 overflow-hidden">
+<div class="w-full h-full bg-cover bg-center group-hover:scale-105 transition-transform duration-500" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDBxpHVjULHPGba_D3Zm44udzzMisBU1tgygH8VL8vapQleHh4PxCmGntAIgEyEdPpdqVw8E54gR75P_LUkLnLgjB5m8hFpFtqQYUtedth2fiCWGZCvzO50qBw5bZLexnHHw35UtpclOcT6sCAazUVv0FfIUpWCi8X3KCxF1zSqlBsgUAAyzMrSF-uuu8VwDrDKpWMGpjzO3Sd_7KzjYdNm9ghmujt08UZrk8PHRpGp3DwUYRAzvFkI')"></div>
+</div>
+<div class="p-stack-md flex flex-col justify-between h-32">
+<h4 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface group-hover:text-primary transition-colors line-clamp-2">Implementing OAuth2 from Scratch: A Security Audit</h4>
+<div class="flex justify-between items-center mt-auto">
+<span class="font-code-sm text-code-sm text-on-surface-variant">2024.02.10</span>
+<span class="material-symbols-outlined text-sm text-primary group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</div>
+</div>
+</article>
+<!-- Card 4 -->
+<article class="group bg-surface-container-lowest rounded-xl border border-outline-variant overflow-hidden transition-all duration-300 hover:shadow-lg hover:border-primary/50">
+<div class="relative h-56 overflow-hidden">
+<div class="w-full h-full bg-cover bg-center group-hover:scale-105 transition-transform duration-500" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAjdMQGCHI7wKL7Hfu-d5gvlQBhxxQDDMEl7-c3omY3pzro9kQu540GeLJUdK7XWj_g029opz6MJwSok7hkAtk5egnNZFasb0CuzLNvLDCyoliKbF95G3JGYhLTMR0b9HNt0xjYteRRpgGCorYHQdURNNZY7th5pp1PfRr_W7kd3TG6LnTEdYodpTnr-_r-onD-80ZhAIsflTGG6xFewkaNBYxNhNPlq1JuC8Saw3yhEh1KfAUqXy4q')"></div>
+</div>
+<div class="p-stack-md flex flex-col justify-between h-32">
+<h4 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface group-hover:text-primary transition-colors line-clamp-2">Serverless Functions: When to Break the Monolith</h4>
+<div class="flex justify-between items-center mt-auto">
+<span class="font-code-sm text-code-sm text-on-surface-variant">2024.01.22</span>
+<span class="material-symbols-outlined text-sm text-primary group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</div>
+</div>
+</article>
+<!-- Card 5 -->
+<article class="group bg-surface-container-lowest rounded-xl border border-outline-variant overflow-hidden transition-all duration-300 hover:shadow-lg hover:border-primary/50">
+<div class="relative h-56 overflow-hidden">
+<div class="w-full h-full bg-cover bg-center group-hover:scale-105 transition-transform duration-500" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBHwjL1n44WLtNQuVhKTR1CiBX7Gd7T7TzH1EAju9eQ-m-VWjIH_ZJFIVJSSgCeEl_M8gp-w5nmknu5CNi1LGX8KqAeHIZe6mOP-FCt8mCLnvC0qhr_ibkva83kF4cg2XgKqTq9QJ3tvRFq830kWPnb7M2CblgjG6k4cH84viZZi_uYqdJWrJMiq8mZEl2nKWCdZ6qgyi4dTwRRYhlpWwDTePYIx6HgvrAvC6uf7cTYTr4gzw9VTGkD')"></div>
+</div>
+<div class="p-stack-md flex flex-col justify-between h-32">
+<h4 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface group-hover:text-primary transition-colors line-clamp-2">Garbage Collection Tuning for JVM Applications</h4>
+<div class="flex justify-between items-center mt-auto">
+<span class="font-code-sm text-code-sm text-on-surface-variant">2024.01.05</span>
+<span class="material-symbols-outlined text-sm text-primary group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</div>
+</div>
+</article>
+<!-- Card 6 -->
+<article class="group bg-surface-container-lowest rounded-xl border border-outline-variant overflow-hidden transition-all duration-300 hover:shadow-lg hover:border-primary/50">
+<div class="relative h-56 overflow-hidden">
+<div class="w-full h-full bg-cover bg-center group-hover:scale-105 transition-transform duration-500" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDw_ETEfDvSZ2m-VdtuU5xgnJeVr6m4GuoRnvK54KDHy8lmBuEFGLgx0iiTFSEeeV5XKHV6THVmhSxhF6nfYWeO9YNjqclYCYdistJ_Y7j1TyjvlcaAw39Ai0gFYHr6A3n9CeG4MrzAArmotnRlSSD4YoJKSur1OShlvY9ye8m-5wnnyNQUu9JOyFBbNs0AEUZklb4G50vREwPhrAkmrx1yRNkvOwiQiQYGLDGTHPL08cO2KLRuer4b')"></div>
+</div>
+<div class="p-stack-md flex flex-col justify-between h-32">
+<h4 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface group-hover:text-primary transition-colors line-clamp-2">The Future of gRPC in Browser-Based Applications</h4>
+<div class="flex justify-between items-center mt-auto">
+<span class="font-code-sm text-code-sm text-on-surface-variant">2023.12.18</span>
+<span class="material-symbols-outlined text-sm text-primary group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</div>
+</div>
+</article>
+</div>
+<!-- Pagination -->
+<div class="mt-section-gap flex justify-center items-center gap-4">
+<button class="w-8 h-8 flex items-center justify-center rounded border border-outline-variant text-on-surface-variant hover:border-primary hover:text-primary transition-all active:scale-90">
+<span class="material-symbols-outlined">chevron_left</span>
+</button>
+<div class="flex gap-2 font-code-sm text-code-sm">
+<button class="w-8 h-8 flex items-center justify-center rounded bg-primary text-on-primary font-bold">1</button>
+<button class="w-8 h-8 flex items-center justify-center rounded border border-outline-variant text-on-surface-variant hover:border-primary transition-all">2</button>
+<button class="w-8 h-8 flex items-center justify-center rounded border border-outline-variant text-on-surface-variant hover:border-primary transition-all">3</button>
+<span class="w-8 h-8 flex items-center justify-center text-on-surface-variant">...</span>
+<button class="w-8 h-8 flex items-center justify-center rounded border border-outline-variant text-on-surface-variant hover:border-primary transition-all">12</button>
+</div>
+<button class="w-8 h-8 flex items-center justify-center rounded border border-outline-variant text-on-surface-variant hover:border-primary hover:text-primary transition-all active:scale-90">
+<span class="material-symbols-outlined">chevron_right</span>
+</button>
+</div>
+</main>
+<!-- Footer -->
+<footer class="w-full border-t border-outline-variant bg-surface-container-lowest py-stack-lg print:hidden">
+<div class="max-w-container-max mx-auto px-gutter flex flex-col md:flex-row justify-between items-center gap-stack-lg">
+<div class="font-code-sm text-code-sm text-on-surface-variant">
+            Revi Blog
+        </div>
+<div class="font-code-sm text-code-sm text-on-surface-variant">
+            © <span id="copyright-year">2024</span> Revi. All rights reserved.
+        </div>
+<div class="flex gap-4">
+<a class="text-on-surface-variant hover:text-primary transition-colors font-code-sm text-code-sm" href="https://me.revi1337.com" target="_blank" rel="noopener noreferrer">About</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors font-code-sm text-code-sm" href="#" target="_blank" rel="noopener noreferrer">GitHub</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors font-code-sm text-code-sm" href="#" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+</div>
+</div>
+</footer>
+<script>
+    // Carousel Logic
+    let currentSlide = 0;
+    const slides = 3;
+    const track = document.getElementById('carouselTrack');
+    const dots = document.querySelectorAll('.carousel-dot');
+
+    function moveCarousel(direction) {
+        currentSlide = (currentSlide + direction + slides) % slides;
+        updateCarousel();
+    }
+
+    function updateCarousel() {
+        track.style.transform = `translateX(-${currentSlide * 100}%)`;
+        dots.forEach((dot, index) => {
+            if (index === currentSlide) {
+                dot.classList.remove('bg-on-surface-variant/30');
+                dot.classList.add('bg-primary');
+            } else {
+                dot.classList.add('bg-on-surface-variant/30');
+                dot.classList.remove('bg-primary');
+            }
+        });
+    }
+
+    // Auto-play
+    setInterval(() => {
+        moveCarousel(1);
+    }, 8000);
+
+    // Initial state
+    updateCarousel();
+
+    document.getElementById('copyright-year').textContent = new Date().getFullYear();
+</script>
+</body></html>
