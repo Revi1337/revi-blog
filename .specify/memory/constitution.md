@@ -1,24 +1,19 @@
 <!--
 Sync Impact Report
-- Version change: TEMPLATE (unratified) → 1.0.0
-- Modified principles: none (first ratification, no prior named principles)
+- Version change: 1.0.1 → 1.1.0
+- Modified principles: none
 - Added principles:
-  - I. Feature-Level Verification (NON-NEGOTIABLE)
-  - II. Visual Consistency Across Dark/Light
-- Added sections: Technology Constraints, Development Workflow, Governance
-- Removed sections: unfilled template placeholders ([PRINCIPLE_3_NAME] through [PRINCIPLE_5_NAME] were
-  intentionally not used — see deferred items below)
+  - III. Mandatory vercel-react-best-practices Compliance (NON-NEGOTIABLE)
+- Added sections: none (Technology Constraints trimmed to point at Principle III instead of duplicating it)
+- Removed sections: none
 - Templates checked for consistency:
-  - .specify/templates/plan-template.md ✅ (Constitution Check section reads this file dynamically at
-    plan-generation time; no hardcoded principle text to update)
-  - .specify/templates/spec-template.md ✅ (no constitution-specific references to update)
+  - .specify/templates/plan-template.md ✅ (Constitution Check reads this file dynamically; no
+    hardcoded principle text to update)
   - .specify/templates/tasks-template.md ✅ (no constitution-specific references to update; note for
-    future /speckit-tasks runs: Principle I requires a verification task even though this template
-    marks test tasks as optional by default)
-  - AGENTS.md ✅ (already points to this file under "Development methodology"; no change needed)
-- Deferred items: TODO(RATIFICATION_DATE) not applicable — ratified below as the date of first fill.
-  Only two principles are defined; this project is small enough that a fixed count of five was not
-  forced. Additional principles can be added later via /speckit-constitution as real needs surface.
+    future /speckit-tasks runs on React/Next.js features: a task for the vercel-react-best-practices
+    audit should be generated explicitly, the same way Principle I's verification task is)
+  - AGENTS.md ✅ (already instructs invoking the vercel-react-best-practices skill; no change needed)
+- Deferred items: none
 -->
 
 # revi-blog Constitution
@@ -28,9 +23,10 @@ Sync Impact Report
 ### I. Feature-Level Verification (NON-NEGOTIABLE)
 Every feature MUST be verified by actually running it, not by code review or type-checking alone.
 The default check is an `npm` build followed by driving the running app in a real browser via
-`playwright-cli` — this is the priority path and MUST be attempted first. Switch to `playwright-mcp`
-only when vision (inspecting rendered pixels, not just DOM/console state) is required to confirm the
-change. Any error surfaced by either check MUST be fixed before the feature is considered done.
+`playwright-cli` — this is the priority path and MUST be attempted first. Switch to the `playwright`
+MCP server's screenshot tools only when vision (inspecting rendered pixels, not just DOM/console state)
+is required to confirm the change. Any error surfaced by either check MUST be fixed before the feature
+is considered done.
 
 Rationale: this project is worked on by more than one agent (Claude Code and Antigravity) handing
 features off to each other mid-pipeline. A feature that "looks correct" in a diff but was never
@@ -46,10 +42,23 @@ font family may be introduced.
 Rationale: the dark/light pair is the product itself, not a cosmetic variant. Shipping one theme
 updated and the other stale is equivalent to shipping a half-broken product.
 
+### III. Mandatory vercel-react-best-practices Compliance (NON-NEGOTIABLE)
+Before writing, reviewing, or refactoring any React/Next.js code, the rule files under
+`.agents/skills/vercel-react-best-practices/rules/` MUST actually be opened and consulted — general
+React/Next.js knowledge is not a substitute. Before a React/Next.js feature is considered done, its
+code MUST be explicitly audited against the applicable rules in that skill, and any violation found
+MUST be fixed, not merely noted.
+
+Rationale: this project already shipped a full feature's worth of components once without opening the
+skill first, relying on general knowledge instead — a real violation (missing `LazyMotion`/`domAnimation`
+bundle-size handling) was only caught by a later, separate audit pass. Naming the skill in `AGENTS.md`
+alone did not make it happen; this principle exists so `speckit-plan`/`speckit-analyze` treat skipping
+the audit as a gate failure, not a style preference.
+
 ## Technology Constraints
-This project is moving from static `core/*.html` mockups to a Next.js/React implementation. When
-writing, reviewing, or refactoring React/Next.js code, the `vercel-react-best-practices` skill's rules
-apply. Prefer the framework's own primitives over custom implementations that route around them.
+This project is moving from static `core/*.html` mockups to a Next.js/React implementation. Prefer the
+framework's own primitives over custom implementations that route around them. See Principle III for
+the mandatory vercel-react-best-practices audit this implies.
 
 ## Development Workflow
 Development follows spec-kit (Spec-Driven Development): `speckit-specify` → `speckit-plan` →
@@ -70,4 +79,4 @@ guidance, PATCH for wording/clarification only — and (2) re-check `.specify/te
 compliance with these principles before proceeding past Phase 0; violations must be justified in the
 plan's Complexity Tracking section or the plan must be revised.
 
-**Version**: 1.0.0 | **Ratified**: 2026-07-17 | **Last Amended**: 2026-07-17
+**Version**: 1.1.0 | **Ratified**: 2026-07-17 | **Last Amended**: 2026-07-18

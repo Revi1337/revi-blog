@@ -19,4 +19,4 @@ This project uses Next.js. Before writing, reviewing, or refactoring any React/N
 Before creating any git commit in this repo, invoke the `commit` skill and follow its convention. This is mandatory, not optional — do not skip it even for small commits.
 
 ## Testing
-By default, verify changes with an npm build and by driving the app in a real browser via `playwright-cli`. When vision (looking at rendered pixels, not just DOM/console output) is needed, use `playwright-mcp` instead. If either check turns up an error, fix it before considering the change done.
+By default, verify changes with an npm build and by driving the app in a real browser via `playwright-cli`. When vision (looking at rendered pixels, not just DOM/console output) is needed, use the `playwright` MCP server's screenshot tools instead. If either check turns up an error, fix it before considering the change done.
