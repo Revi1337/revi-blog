@@ -223,6 +223,17 @@
 html {
   scroll-behavior: smooth;
   overscroll-behavior-y: none;
+  /* 스크롤바 자체를 항상 숨긴다 — 스크롤(휠/키보드/터치)은 그대로 동작하되 스크롤바 UI만 안 보이게
+     해서, 검색 모달이 열리며 body 스크롤을 잠글 때 스크롤바가 사라졌다 나타나며 생기는 뷰포트 너비
+     변화(Layout Shift) 자체를 원천 차단한다. scrollbar-gutter: stable은 "자리를 예약"하는 방식이라
+     예약된 여백이 계속 보이는 게 오히려 어색해, feed.revi1337.com과 동일하게 완전히 숨기는 방식을
+     택했다. */
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* 레거시 Edge/IE */
+}
+
+html::-webkit-scrollbar {
+  display: none; /* Chrome/Safari/최신 Edge */
 }
 
 body {
