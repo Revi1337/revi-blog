@@ -7,9 +7,10 @@ import type { VFile } from "vfile"
 import type { TocItem } from "@/lib/data/types"
 
 /**
- * H2/H3 heading을 순회하며 github-slugger로 id를 부여하는 동시에 TocItem[]을 수집한다.
- * heading id 부여와 TOC 수집을 한 패스에서 처리해 앵커 id가 항상 일치하도록 보장한다
- * (research.md TOC 추출 결정).
+ * 모든 heading(h1~h6)을 순회하며 github-slugger로 id를 부여하고, h2/h3만 TocItem[]으로 수집한다.
+ * heading id 부여와 TOC 수집을 한 패스·단일 slugger 인스턴스로 처리해 앵커 id가 항상 일치하도록
+ * 보장한다(research.md TOC 추출 결정). h1/h4~h6은 딥링크용 id만 가지고 TOC 목록에는 노출되지
+ * 않는다(spec.md FR-016~FR-018).
  */
 export function remarkToc() {
   return (tree: Root, file: VFile) => {
@@ -18,15 +19,15 @@ export function remarkToc() {
     let order = 0
 
     visit(tree, "heading", (node: Heading) => {
-      if (node.depth !== 2 && node.depth !== 3) return
-
       const label = toString(node)
       const id = slugger.slug(label)
-      order += 1
 
       node.data = node.data ?? {}
       node.data.hProperties = { ...node.data.hProperties, id }
 
+      if (node.depth !== 2 && node.depth !== 3) return
+
+      order += 1
       items.push({ id, label, order })
     })
 

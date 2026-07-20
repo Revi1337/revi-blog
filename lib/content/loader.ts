@@ -3,6 +3,7 @@ import path from "node:path"
 
 import { parseFrontmatter } from "@/lib/content/frontmatter"
 import { renderMarkdown } from "@/lib/content/pipeline"
+import { stripComments } from "@/lib/content/strip-comments"
 import { computeReadingTimeMinutes } from "@/lib/content/reading-time"
 import { attachPrevNext } from "@/lib/content/prev-next"
 import { DEFAULT_THUMBNAIL } from "@/lib/data/types"
@@ -17,7 +18,7 @@ interface LoadedArticle extends Article {
 async function loadArticleFile(filePath: string): Promise<LoadedArticle> {
   const raw = fs.readFileSync(filePath, "utf-8")
   const { frontmatter, rawBody } = parseFrontmatter(filePath, raw)
-  const { bodyHtml, toc } = await renderMarkdown(rawBody)
+  const { bodyHtml, toc } = await renderMarkdown(stripComments(rawBody))
 
   const slug = frontmatter.slug ?? path.basename(filePath, ".md")
   const readingTimeMinutes = frontmatter.readingTimeMinutes ?? computeReadingTimeMinutes(rawBody)
