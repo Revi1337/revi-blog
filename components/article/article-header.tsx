@@ -19,7 +19,7 @@ export function ArticleHeader({ article }: { article: Article }) {
   return (
     <header className="space-y-8">
       <div className="flex flex-wrap items-center gap-3">
-        <span className="rounded bg-surface-container px-3 py-1 font-label-caps text-[10px] uppercase tracking-widest text-secondary-fixed-dim">
+        <span className="rounded border border-outline-variant bg-surface-container px-3 py-1 font-label-caps text-[10px] uppercase tracking-widest text-primary dark:border-outline-variant/30 dark:text-primary-container">
           {article.category}
         </span>
       </div>
@@ -33,30 +33,32 @@ export function ArticleHeader({ article }: { article: Article }) {
         {article.title}
       </motion.h1>
 
-      <div className="space-y-3 border-y border-outline-variant/10 py-6 font-code-sm text-sm text-on-surface">
+      <div className="space-y-3 border-y border-outline-variant py-6 font-code-sm text-sm text-on-surface dark:border-outline-variant/10">
         <div className="flex flex-wrap items-center gap-4">
           <div className="flex items-center gap-1.5">
-            <CalendarDays className="size-4 text-primary-container" />
+            <CalendarDays className="size-4 text-primary dark:text-primary-container" />
             <span>{formatDate(article.publishedAt)}</span>
           </div>
-          <span className="text-outline-variant/40">|</span>
+          <span className="text-outline-variant dark:text-outline-variant/40">|</span>
           <div className="flex items-center gap-1.5">
-            <History className="size-4 text-primary-container" />
+            <History className="size-4 text-primary dark:text-primary-container" />
             <span>{formatDate(updatedAt)}</span>
           </div>
-          <span className="text-outline-variant/40">|</span>
+          <span className="text-outline-variant dark:text-outline-variant/40">|</span>
           <div className="flex items-center gap-1.5">
-            <Timer className="size-4 text-primary-container" />
+            <Timer className="size-4 text-primary dark:text-primary-container" />
             <span>{article.readingTimeMinutes} min read</span>
           </div>
         </div>
         {article.tags.length > 0 && (
           <div className="flex flex-wrap items-center gap-2">
-            <span className="mr-1 font-label-caps text-[10px] opacity-50">Tags:</span>
+            <span className="mr-1 font-label-caps text-[10px] opacity-70 dark:opacity-50">
+              Tags:
+            </span>
             {article.tags.map((tag) => (
               <span
                 key={tag}
-                className="rounded border border-secondary/20 bg-surface-container px-2.5 py-0.5 font-code-sm text-[11px] text-secondary-fixed-dim"
+                className="rounded border border-outline-variant bg-surface-container px-2.5 py-0.5 font-code-sm text-[11px] text-on-surface-variant dark:border-secondary/20 dark:text-secondary-fixed-dim"
               >
                 {tag}
               </span>

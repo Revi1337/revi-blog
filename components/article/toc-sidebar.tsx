@@ -33,7 +33,7 @@ export function TocSidebar({ items }: { items: TocItem[] }) {
   return (
     <div className="sticky top-40 space-y-10">
       <div className="rounded border border-outline-variant/20 bg-surface-container-lowest p-5">
-        <div className="mb-4 flex items-center gap-2 text-primary-container">
+        <div className="mb-4 flex items-center gap-2 text-primary dark:text-primary-container">
           <ListTree className="size-4" />
           <h4 className="font-label-caps text-xs tracking-widest">Table Of Contents</h4>
         </div>
@@ -45,19 +45,24 @@ export function TocSidebar({ items }: { items: TocItem[] }) {
                 key={item.id}
                 href={`#${item.id}`}
                 className={cn(
-                  "relative flex items-center gap-2 rounded px-2.5 py-1.5 font-code-sm text-xs text-on-surface-variant transition-colors duration-200 hover:text-primary-container",
-                  isActive && "bg-primary-container/10"
+                  "relative flex items-center gap-2 rounded px-2.5 py-1.5 font-code-sm text-xs text-on-surface-variant transition-colors duration-200 hover:text-primary dark:hover:text-primary-container",
+                  isActive && "bg-primary/10 dark:bg-primary-container/10"
                 )}
               >
                 <span
                   className={cn(
                     "relative opacity-30",
-                    isActive && "text-primary-container opacity-100"
+                    isActive && "text-primary opacity-100 dark:text-primary-container"
                   )}
                 >
                   {String(item.order).padStart(2, "0")}
                 </span>
-                <span className={cn("relative", isActive && "text-primary-container")}>
+                <span
+                  className={cn(
+                    "relative",
+                    isActive && "text-primary dark:text-primary-container"
+                  )}
+                >
                   {item.label}
                 </span>
               </a>

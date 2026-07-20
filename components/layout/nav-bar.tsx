@@ -14,7 +14,7 @@ export function NavBar() {
       <div className="mx-auto flex max-w-[1200px] items-center justify-between px-gutter py-4">
         <Link
           href="/"
-          className="font-headline-lg text-2xl font-extrabold tracking-tighter text-primary-container"
+          className="font-headline-lg text-2xl font-extrabold tracking-tighter text-primary dark:text-primary-container"
         >
           Revi
         </Link>
@@ -28,8 +28,8 @@ export function NavBar() {
                 className={cn(
                   "rounded px-2 py-1 font-code-sm text-code-sm transition-colors",
                   isActive
-                    ? "bg-surface-container-highest/50 text-primary-fixed"
-                    : "text-on-surface-variant hover:bg-surface-container-highest/50 hover:text-primary-fixed"
+                    ? "bg-surface-container-highest/50 text-primary dark:text-primary-fixed"
+                    : "text-on-surface-variant hover:bg-surface-container-highest/50 hover:text-primary dark:hover:text-primary-fixed"
                 )}
               >
                 {link.label}
@@ -40,7 +40,7 @@ export function NavBar() {
         <div className="flex items-center gap-stack-md">
           <button
             type="button"
-            className="rounded-lg bg-primary-container px-6 py-2 font-label-caps text-label-caps text-on-primary-container transition-all hover:brightness-110 active:scale-95"
+            className="rounded-lg bg-primary px-6 py-2 font-label-caps text-label-caps text-on-primary transition-all hover:brightness-110 active:scale-95 dark:bg-primary-container dark:text-on-primary-container"
           >
             LOGIN
           </button>

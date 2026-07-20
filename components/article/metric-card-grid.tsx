@@ -1,7 +1,7 @@
 import type { MetricCard } from "@/lib/data/types"
 
 const ACCENT_CLASSES = [
-  "hover:border-primary-container/20 group-hover:text-primary-container",
+  "hover:border-primary/50 dark:hover:border-primary-container/20 group-hover:text-primary dark:group-hover:text-primary-container",
   "hover:border-secondary/20 group-hover:text-secondary",
   "hover:border-error/20 group-hover:text-error",
 ]

@@ -88,7 +88,7 @@ export function HeroCarousel() {
         type="button"
         aria-label="이전 슬라이드"
         onClick={() => api?.scrollPrev()}
-        className="absolute left-4 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded border border-outline-variant/30 bg-surface-bright/50 text-white opacity-0 backdrop-blur-md transition-all hover:bg-primary-fixed hover:text-black hover:opacity-100"
+        className="absolute left-4 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded border border-outline-variant/30 bg-surface-bright/50 text-white opacity-0 backdrop-blur-md transition-all hover:bg-primary hover:text-on-primary hover:opacity-100 dark:hover:bg-primary-fixed dark:hover:text-black"
       >
         <ChevronLeft className="size-5" />
       </button>
@@ -96,7 +96,7 @@ export function HeroCarousel() {
         type="button"
         aria-label="다음 슬라이드"
         onClick={() => api?.scrollNext()}
-        className="absolute right-4 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded border border-outline-variant/30 bg-surface-bright/50 text-white opacity-0 backdrop-blur-md transition-all hover:bg-primary-fixed hover:text-black hover:opacity-100"
+        className="absolute right-4 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded border border-outline-variant/30 bg-surface-bright/50 text-white opacity-0 backdrop-blur-md transition-all hover:bg-primary hover:text-on-primary hover:opacity-100 dark:hover:bg-primary-fixed dark:hover:text-black"
       >
         <ChevronRight className="size-5" />
       </button>
@@ -110,7 +110,9 @@ export function HeroCarousel() {
             onClick={() => api?.scrollTo(index)}
             className={cn(
               "h-0.5 w-8 rounded-full transition-colors",
-              index === selectedIndex ? "bg-primary-fixed" : "bg-on-surface-variant/30"
+              index === selectedIndex
+                ? "bg-primary dark:bg-primary-fixed"
+                : "bg-on-surface-variant/30"
             )}
           />
         ))}

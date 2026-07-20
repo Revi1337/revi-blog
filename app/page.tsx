@@ -11,7 +11,7 @@ export default function HomePage() {
       </header>
 
       <div className="mx-auto max-w-[1200px] px-gutter pb-section-gap">
-        <div className="mb-stack-lg flex items-end justify-between border-l-4 border-primary-fixed pl-4">
+        <div className="mb-stack-lg flex items-end justify-between border-l-4 border-primary pl-4 dark:border-primary-fixed">
           <h3 className="font-headline-lg text-headline-lg text-on-surface">
             Entry Stream
           </h3>

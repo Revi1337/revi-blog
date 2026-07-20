@@ -28,7 +28,7 @@ export function BlogCard({ slug, title, thumbnail, publishedAt }: BlogCardData) 
           <h4
             className={[
               "line-clamp-2 font-headline-lg-mobile text-headline-lg-mobile text-on-surface transition-colors",
-              "group-hover:text-primary-fixed",
+              "group-hover:text-primary dark:group-hover:text-primary-fixed",
               "dark:[text-shadow:0_0_0_transparent] dark:group-hover:[text-shadow:0_0_8px_rgba(86,255,167,0.4)]",
             ].join(" ")}
           >
@@ -38,7 +38,7 @@ export function BlogCard({ slug, title, thumbnail, publishedAt }: BlogCardData) 
             <span className="font-code-sm text-code-sm text-on-surface-variant">
               {formatCardDate(publishedAt)}
             </span>
-            <ArrowRight className="size-4 text-primary-fixed-dim transition-transform group-hover:translate-x-1" />
+            <ArrowRight className="size-4 text-primary transition-transform group-hover:translate-x-1 dark:text-primary-fixed-dim" />
           </div>
         </div>
       </article>

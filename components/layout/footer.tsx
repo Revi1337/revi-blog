@@ -10,7 +10,7 @@ export function Footer() {
         </div>
         <div className="flex gap-4">
           <a
-            className="font-code-sm text-code-sm text-on-surface-variant transition-colors hover:text-primary-fixed-dim"
+            className="font-code-sm text-code-sm text-on-surface-variant transition-colors hover:text-primary dark:hover:text-primary-fixed-dim"
             href="https://me.revi1337.com"
             target="_blank"
             rel="noopener noreferrer"
@@ -18,7 +18,7 @@ export function Footer() {
             About
           </a>
           <a
-            className="font-code-sm text-code-sm text-on-surface-variant transition-colors hover:text-primary-fixed-dim"
+            className="font-code-sm text-code-sm text-on-surface-variant transition-colors hover:text-primary dark:hover:text-primary-fixed-dim"
             href="#"
             target="_blank"
             rel="noopener noreferrer"
@@ -26,7 +26,7 @@ export function Footer() {
             GitHub
           </a>
           <a
-            className="font-code-sm text-code-sm text-on-surface-variant transition-colors hover:text-primary-fixed-dim"
+            className="font-code-sm text-code-sm text-on-surface-variant transition-colors hover:text-primary dark:hover:text-primary-fixed-dim"
             href="#"
             target="_blank"
             rel="noopener noreferrer"

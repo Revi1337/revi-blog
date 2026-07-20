@@ -17,14 +17,14 @@ export function ArticleNav({
       {prev ? (
         <Link
           href={`/article/${prev.slug}`}
-          className="group relative overflow-hidden rounded border border-outline-variant/20 bg-surface-container-low p-5 transition-all hover:border-primary-container/40"
+          className="group relative overflow-hidden rounded border border-outline-variant/20 bg-surface-container-low p-5 transition-all hover:border-primary/50 dark:hover:border-primary-container/40"
         >
-          <div className="absolute left-0 top-0 h-full w-1 bg-primary-container opacity-0 transition-opacity group-hover:opacity-100" />
+          <div className="absolute left-0 top-0 h-full w-1 bg-primary opacity-0 transition-opacity group-hover:opacity-100 dark:bg-primary-container" />
           <div className="mb-2 flex items-center gap-2 font-label-caps text-[11px] uppercase tracking-widest text-on-surface-variant">
             <ArrowLeft className="size-4" />
             Previous entry
           </div>
-          <div className="font-headline-lg text-base leading-snug text-on-surface transition-colors group-hover:text-primary-container">
+          <div className="font-headline-lg text-base leading-snug text-on-surface transition-colors group-hover:text-primary dark:group-hover:text-primary-container">
             {prev.title}
           </div>
         </Link>
@@ -34,14 +34,14 @@ export function ArticleNav({
       {next && (
         <Link
           href={`/article/${next.slug}`}
-          className="group relative overflow-hidden rounded border border-outline-variant/20 bg-surface-container-low p-5 text-right transition-all hover:border-primary-container/40"
+          className="group relative overflow-hidden rounded border border-outline-variant/20 bg-surface-container-low p-5 text-right transition-all hover:border-primary/50 dark:hover:border-primary-container/40"
         >
-          <div className="absolute right-0 top-0 h-full w-1 bg-primary-container opacity-0 transition-opacity group-hover:opacity-100" />
+          <div className="absolute right-0 top-0 h-full w-1 bg-primary opacity-0 transition-opacity group-hover:opacity-100 dark:bg-primary-container" />
           <div className="mb-2 flex items-center justify-end gap-2 font-label-caps text-[11px] uppercase tracking-widest text-on-surface-variant">
             Next entry
             <ArrowRight className="size-4" />
           </div>
-          <div className="font-headline-lg text-base leading-snug text-on-surface transition-colors group-hover:text-primary-container">
+          <div className="font-headline-lg text-base leading-snug text-on-surface transition-colors group-hover:text-primary dark:group-hover:text-primary-container">
             {next.title}
           </div>
         </Link>
