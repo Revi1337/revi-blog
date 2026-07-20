@@ -280,44 +280,126 @@ body {
 }
 
 /* rehype-pretty-code(Shiki) dual-theme 코드 블록 —
-   기존 CodeBlock 컴포넌트의 카드 디자인(테두리, 좌측 accent bar, 파일명 라벨)을
-   빌드 타임에 미리 렌더링된 HTML 위에 CSS로 재현한다 (constitution Principle II). */
+   macOS 창 스타일(타이틀바 + 트래픽라이트 3점 + 콘텐츠 컨테이너)을
+   빌드 타임에 미리 렌더링된 HTML 위에 CSS로 재현한다 (constitution Principle II).
+   점 3개는 파일명 유무와 무관하게 항상 노출되고, 파일명은 타이틀바 우측에만 조건부로 표시된다. */
 .article-body [data-rehype-pretty-code-figure] {
   position: relative;
   margin: 2rem 0;
   overflow: hidden;
-  border-radius: 0.25rem;
+  border-radius: 0.5rem;
   border: 1px solid color-mix(in srgb, var(--color-outline-variant) 30%, transparent);
   background-color: var(--color-surface-container-lowest);
-  padding: 1.25rem;
+  padding-top: 2rem;
 }
 .article-body [data-rehype-pretty-code-figure]::before {
   content: "";
   position: absolute;
-  left: 0;
   top: 0;
-  height: 100%;
-  width: 0.25rem;
-  background-color: color-mix(in srgb, var(--color-primary) 50%, transparent);
+  left: 0;
+  right: 0;
+  height: 2rem;
+  background-color: var(--color-surface-container);
+  border-bottom: 1px solid color-mix(in srgb, var(--color-outline-variant) 30%, transparent);
 }
-.dark .article-body [data-rehype-pretty-code-figure]::before {
-  background-color: color-mix(in srgb, var(--color-primary-fixed) 50%, transparent);
+.article-body [data-rehype-pretty-code-figure]::after {
+  content: "";
+  position: absolute;
+  top: 0.65rem;
+  left: 1rem;
+  width: 0.7rem;
+  height: 0.7rem;
+  border-radius: 50%;
+  background-color: #ff5f57;
+  box-shadow:
+    1.1rem 0 0 #febc2e,
+    2.2rem 0 0 #28c840;
+  z-index: 1;
 }
 .article-body [data-rehype-pretty-code-title] {
-  margin-bottom: 0.75rem;
+  position: absolute;
+  top: 0;
+  left: 3.5rem;
+  right: 2.5rem;
+  height: 2rem;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  overflow: hidden;
+  margin: 0;
   font-family: var(--font-code-sm);
   font-size: 0.75rem;
-  color: color-mix(in srgb, var(--color-on-surface-variant) 50%, transparent);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  color: color-mix(in srgb, var(--color-on-surface-variant) 65%, transparent);
+}
+/* 코드 복사 버튼 — 마크업은 rehype-code-copy-button 플러그인이 빌드 타임에 삽입하고,
+   클릭 처리는 CodeCopyHandler(클라이언트 컴포넌트)가 이벤트 위임으로 담당한다. */
+.article-body [data-rehype-pretty-code-figure] .code-copy-button {
+  position: absolute;
+  top: 0;
+  right: 0.375rem;
+  height: 2rem;
+  width: 1.75rem;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: transparent;
+  padding: 0;
+  color: color-mix(in srgb, var(--color-on-surface-variant) 60%, transparent);
+  cursor: pointer;
+}
+.article-body [data-rehype-pretty-code-figure] .code-copy-button:hover {
+  color: var(--color-on-surface);
+}
+.article-body [data-rehype-pretty-code-figure] .code-copy-button svg {
+  width: 0.85rem;
+  height: 0.85rem;
+}
+.article-body [data-rehype-pretty-code-figure] .code-copy-check-icon {
+  display: none;
+  color: var(--color-primary);
+}
+.dark .article-body [data-rehype-pretty-code-figure] .code-copy-check-icon {
+  color: var(--color-primary-fixed);
+}
+.article-body [data-rehype-pretty-code-figure] .code-copy-button.is-copied .code-copy-icon {
+  display: none;
+}
+.article-body [data-rehype-pretty-code-figure] .code-copy-button.is-copied .code-copy-check-icon {
+  display: block;
 }
 .article-body [data-rehype-pretty-code-figure] pre {
   overflow-x: auto;
   background-color: transparent !important;
   font-family: var(--font-code-sm);
-  line-height: 1.625;
+  font-size: var(--text-code-sm);
+  line-height: var(--text-code-sm--line-height);
+  padding: 1rem 1.25rem 1rem 0.25rem;
+}
+/* 라인 넘버 — CSS counter로 생성한 ::before 콘텐츠라 실제 텍스트 노드가 아니며,
+   대부분의 브라우저에서 기본적으로 선택되지 않는다. user-select: none으로 드래그 선택도 명시적으로 차단한다. */
+.article-body [data-rehype-pretty-code-figure] code {
+  counter-reset: line;
 }
 .article-body [data-rehype-pretty-code-figure] [data-line] {
-  padding: 0 0.5rem;
+  counter-increment: line;
+  display: flex;
+  padding-right: 0.5rem;
   border-left: 2px solid transparent;
+}
+.article-body [data-rehype-pretty-code-figure] [data-line]::before {
+  content: counter(line);
+  flex: 0 0 auto;
+  width: 1.25rem;
+  margin-right: 0.75rem;
+  text-align: right;
+  color: color-mix(in srgb, var(--color-on-surface-variant) 40%, transparent);
+  user-select: none;
+  -webkit-user-select: none;
 }
 .article-body [data-rehype-pretty-code-figure] [data-highlighted-line] {
   border-left-color: var(--color-primary);
@@ -333,6 +415,18 @@ body {
 }
 .dark .article-body [data-rehype-pretty-code-figure] code span {
   color: var(--shiki-dark);
+}
+/* 인라인 코드(단일 백틱) — 코드펜스(pre > code)가 아닌 code만 대상으로 하는 pill 스타일.
+   본문 어디에 놓이든(문단/리스트/헤딩) 상속 폰트 크기에 비례하도록 em 단위를 쓴다. */
+.article-body :not(pre) > code {
+  font-family: var(--font-code-sm);
+  font-size: 0.85em;
+  padding: 0.15em 0.4em;
+  border-radius: 0.25rem;
+  border: 1px solid color-mix(in srgb, var(--color-outline-variant) 30%, transparent);
+  background-color: var(--color-surface-container-high);
+  color: var(--color-on-surface);
+  white-space: break-spaces;
 }
 
 /* 콜아웃(> [!TYPE]) + raw <details>/<summary>(옵시디언 원고 접이식 섹션) 공용 스타일
@@ -391,13 +485,13 @@ body {
   gap: 0.5rem;
   padding: 0.75rem 1rem;
   font-family: var(--font-code-sm);
-  font-size: 0.8125rem;
+  font-size: 0.875rem;
   font-weight: 600;
   color: var(--callout-accent, var(--color-on-surface));
 }
 .article-body .callout-icon {
-  width: 1rem;
-  height: 1rem;
+  width: 1.125rem;
+  height: 1.125rem;
   flex-shrink: 0;
 }
 .article-body .callout-body {

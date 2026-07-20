@@ -11,6 +11,7 @@ import { remarkMetrics } from "@/lib/content/plugins/remark-metrics"
 import { remarkToc } from "@/lib/content/plugins/remark-toc"
 import { remarkCallout } from "@/lib/content/plugins/remark-callout"
 import { remarkHighlight } from "@/lib/content/plugins/remark-highlight"
+import { rehypeCodeCopyButton } from "@/lib/content/plugins/rehype-code-copy-button"
 import type { TocItem } from "@/lib/data/types"
 
 export interface RenderResult {
@@ -31,6 +32,7 @@ const processor = unified()
     theme: { dark: "github-dark-default", light: "github-light-default" },
     keepBackground: false,
   })
+  .use(rehypeCodeCopyButton)
   .use(rehypeKatex, { throwOnError: false, errorColor: "var(--color-error)" })
   .use(rehypeStringify, { allowDangerousHtml: true })
 
