@@ -245,6 +245,7 @@ body {
    Tailwind preflight가 heading/list 기본 스타일을 리셋하므로 여기서 직접 복원한다. */
 .article-body h2 {
   margin-top: 3rem;
+  scroll-margin-top: 80px;
   font-family: var(--font-headline-lg);
   font-size: var(--text-headline-lg);
   line-height: var(--text-headline-lg--line-height);
@@ -258,6 +259,7 @@ body {
 .article-body h3 {
   margin-top: 2rem;
   margin-bottom: 1rem;
+  scroll-margin-top: 80px;
   font-size: 1.25rem;
   font-weight: 600;
   color: var(--color-on-surface);
