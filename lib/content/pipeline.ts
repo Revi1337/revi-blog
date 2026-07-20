@@ -11,12 +11,14 @@ import { remarkMetrics } from "@/lib/content/plugins/remark-metrics"
 import { remarkToc } from "@/lib/content/plugins/remark-toc"
 import { remarkCallout } from "@/lib/content/plugins/remark-callout"
 import { remarkHighlight } from "@/lib/content/plugins/remark-highlight"
+import { remarkPlainText } from "@/lib/content/plugins/remark-plain-text"
 import { rehypeCodeCopyButton } from "@/lib/content/plugins/rehype-code-copy-button"
 import type { TocItem } from "@/lib/data/types"
 
 export interface RenderResult {
   bodyHtml: string
   toc: TocItem[]
+  plainBody: string
 }
 
 const processor = unified()
@@ -27,6 +29,7 @@ const processor = unified()
   .use(remarkHighlight)
   .use(remarkMetrics)
   .use(remarkToc)
+  .use(remarkPlainText)
   .use(remarkRehype, { allowDangerousHtml: true })
   .use(rehypePrettyCode, {
     theme: { dark: "github-dark-default", light: "github-light-default" },
@@ -41,5 +44,6 @@ export async function renderMarkdown(rawBody: string): Promise<RenderResult> {
   return {
     bodyHtml: String(file),
     toc: (file.data.toc as TocItem[] | undefined) ?? [],
+    plainBody: (file.data.plainText as string | undefined) ?? "",
   }
 }

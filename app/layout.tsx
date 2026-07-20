@@ -8,6 +8,7 @@ import { THEME_COOKIE_KEY } from "@/components/theme/theme-constants"
 import { NavBar } from "@/components/layout/nav-bar"
 import { Footer } from "@/components/layout/footer"
 import { MotionProvider } from "@/components/motion-provider"
+import { searchIndex } from "@/lib/data/search"
 
 import "./globals.css"
 
@@ -52,7 +53,7 @@ export default async function RootLayout({
       >
         <ThemeProvider initialIsDark={initialIsDark}>
           <MotionProvider>
-            <NavBar />
+            <NavBar searchIndex={searchIndex} />
             <main className="pt-24">{children}</main>
             <Footer />
           </MotionProvider>

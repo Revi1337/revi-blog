@@ -43,10 +43,36 @@ export interface Article {
   /** 없으면 기본 썸네일 이미지로 폴백 (BlogCardData와 동일 필드명) */
   thumbnail?: string
   bodyHtml: string
+  /** 검색 전용 — 마크다운 서식 기호를 제거한 순수 본문 텍스트 */
+  plainBody: string
   toc: TocItem[]
   metrics: MetricCard[]
   prev?: ArticleNavRef
   next?: ArticleNavRef
+  /** 없으면 true — 홈 카드 그리드/캐러셀/검색 노출 여부 */
+  showOnHomepage: boolean
 }
 
 export const DEFAULT_THUMBNAIL = "/images/default-thumbnail.svg"
+
+/** 검색 대상 — showOnHomepage가 true인 아티클에서만 파생된다 (lib/content/search-index.ts) */
+export interface SearchIndexEntry {
+  slug: string
+  title: string
+  plainBody: string
+  tags: string[]
+}
+
+export type SearchMode = "text" | "tag"
+
+export interface SearchQuery {
+  raw: string
+  mode: SearchMode
+  term: string
+}
+
+export interface SearchResult {
+  entry: SearchIndexEntry
+  /** mode가 "text"일 때만 랭킹에 쓰인다 — "tag" 모드에서는 null */
+  matchedIn: "title" | "body" | null
+}

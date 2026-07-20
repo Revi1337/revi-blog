@@ -1,14 +1,35 @@
 "use client"
 
+import { useCallback, useState } from "react"
+import dynamic from "next/dynamic"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 
 import { navLinks } from "@/lib/data/nav"
 import { cn } from "@/lib/utils"
 import { ThemeToggle } from "@/components/theme/theme-toggle"
+import { SearchTrigger } from "@/components/search/search-trigger"
+import { useSearchShortcut } from "@/components/search/use-search-shortcut"
+import type { SearchIndexEntry } from "@/lib/data/types"
 
-export function NavBar() {
+const SearchModal = dynamic(
+  () => import("@/components/search/search-modal").then((m) => m.SearchModal),
+  { ssr: false }
+)
+
+interface NavBarProps {
+  searchIndex: SearchIndexEntry[]
+}
+
+export function NavBar({ searchIndex }: NavBarProps) {
   const pathname = usePathname()
+  const [searchOpen, setSearchOpen] = useState(false)
+  const [hasOpenedSearch, setHasOpenedSearch] = useState(false)
+  const openSearch = useCallback(() => {
+    setHasOpenedSearch(true)
+    setSearchOpen(true)
+  }, [])
+  useSearchShortcut(openSearch)
 
   return (
     <nav className="fixed top-0 z-50 w-full border-b border-outline-variant bg-background/70 backdrop-blur-md transition-all duration-200 ease-in-out">
@@ -38,21 +59,29 @@ export function NavBar() {
             )
           })}
         </div>
-        <div className="flex items-center gap-stack-md">
+        <div className="flex min-w-0 items-center gap-stack-md">
+          <SearchTrigger onOpen={openSearch} />
           <button
             type="button"
-            className="rounded-lg bg-primary px-6 py-2 font-label-caps text-label-caps text-on-primary transition-all hover:brightness-110 active:scale-95 dark:bg-primary-container dark:text-on-primary-container"
+            className="hidden shrink-0 rounded-lg bg-primary px-6 py-2 font-label-caps text-label-caps text-on-primary transition-all hover:brightness-110 active:scale-95 dark:bg-primary-container dark:text-on-primary-container sm:block"
           >
             LOGIN
           </button>
-          <div className="flex items-center gap-2">
-            <span className="text-outline-variant select-none text-code-sm">
+          <div className="flex shrink-0 items-center gap-2">
+            <span className="hidden text-outline-variant select-none text-code-sm sm:inline">
               |
             </span>
             <ThemeToggle />
           </div>
         </div>
       </div>
+      {hasOpenedSearch ? (
+        <SearchModal
+          open={searchOpen}
+          onOpenChange={setSearchOpen}
+          searchIndex={searchIndex}
+        />
+      ) : null}
     </nav>
   )
 }

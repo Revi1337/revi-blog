@@ -11,14 +11,10 @@ import type { Article } from "@/lib/data/types"
 
 const CONTENT_DIR = path.join(process.cwd(), "content", "articles")
 
-interface LoadedArticle extends Article {
-  showOnHomepage: boolean
-}
-
-async function loadArticleFile(filePath: string): Promise<LoadedArticle> {
+async function loadArticleFile(filePath: string): Promise<Article> {
   const raw = fs.readFileSync(filePath, "utf-8")
   const { frontmatter, rawBody } = parseFrontmatter(filePath, raw)
-  const { bodyHtml, toc } = await renderMarkdown(stripComments(rawBody))
+  const { bodyHtml, toc, plainBody } = await renderMarkdown(stripComments(rawBody))
 
   const slug = frontmatter.slug ?? path.basename(filePath, ".md")
   const readingTimeMinutes = frontmatter.readingTimeMinutes ?? computeReadingTimeMinutes(rawBody)
@@ -33,6 +29,7 @@ async function loadArticleFile(filePath: string): Promise<LoadedArticle> {
     tags: frontmatter.tags,
     thumbnail: frontmatter.thumbnail ?? DEFAULT_THUMBNAIL,
     bodyHtml,
+    plainBody,
     toc,
     // metrics 카드는 remark-metrics가 bodyHtml 안에 직접 렌더링하므로 별도 구조화 데이터로는 노출하지 않는다
     metrics: [],
