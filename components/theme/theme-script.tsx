@@ -1,4 +1,4 @@
-const THEME_STORAGE_KEY = "revi-blog-theme"
+export const THEME_STORAGE_KEY = "revi-blog-theme"
 
 // 하이드레이션 전에 동기적으로 실행되어 dark/light 클래스를 적용한다 (FOUC 방지).
 // 클릭형 토글 UI는 002(theme-toggle) 범위 — 이 스크립트는 그 토글이 나중에

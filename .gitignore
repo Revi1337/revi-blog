@@ -27,3 +27,6 @@ next-env.d.ts
 
 # vercel
 .vercel
+
+# playwright-cli
+.playwright-cli/

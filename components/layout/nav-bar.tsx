@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation"
 
 import { navLinks } from "@/lib/data/nav"
 import { cn } from "@/lib/utils"
+import { ThemeToggle } from "@/components/theme/theme-toggle"
 
 export function NavBar() {
   const pathname = usePathname()
@@ -44,6 +45,12 @@ export function NavBar() {
           >
             LOGIN
           </button>
+          <div className="flex items-center gap-2">
+            <span className="text-outline-variant select-none text-code-sm">
+              |
+            </span>
+            <ThemeToggle />
+          </div>
         </div>
       </div>
     </nav>

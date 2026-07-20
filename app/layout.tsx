@@ -2,6 +2,7 @@ import type { Metadata } from "next"
 import { Inter, JetBrains_Mono } from "next/font/google"
 
 import { ThemeScript } from "@/components/theme/theme-script"
+import { ThemeProvider } from "@/components/theme/theme-context"
 import { NavBar } from "@/components/layout/nav-bar"
 import { Footer } from "@/components/layout/footer"
 import { MotionProvider } from "@/components/motion-provider"
@@ -38,11 +39,13 @@ export default function RootLayout({
       <body
         className={`${inter.variable} ${jetbrainsMono.variable} min-h-screen font-body-md antialiased`}
       >
-        <MotionProvider>
-          <NavBar />
-          <main className="pt-24">{children}</main>
-          <Footer />
-        </MotionProvider>
+        <ThemeProvider>
+          <MotionProvider>
+            <NavBar />
+            <main className="pt-24">{children}</main>
+            <Footer />
+          </MotionProvider>
+        </ThemeProvider>
       </body>
     </html>
   )
