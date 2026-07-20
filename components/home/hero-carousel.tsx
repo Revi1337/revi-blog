@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import Link from "next/link"
 import Autoplay from "embla-carousel-autoplay"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 import { m } from "motion/react"
@@ -13,30 +14,13 @@ import {
 } from "@/components/ui/carousel"
 import { cn } from "@/lib/utils"
 
-interface Slide {
+export interface HeroSlide {
+  slug: string
   title: string
   imageUrl: string
 }
 
-const slides: Slide[] = [
-  {
-    title: "Architecting Low-Latency Microservices with Rust",
-    imageUrl:
-      "https://lh3.googleusercontent.com/aida-public/AB6AXuC0gpWYHbw0jPIhiYjzybnGS42_5PzEfTHfaWMQJmygdrnHM4TZafa6VJfCHVPzkp6deZq0m8RD_5WNj3lqNwJv_Ty72rpkeZD3wXVZt-_Z8pU6UEO-NPRNNLJQBFTnTCIpZOa1F5u9SF8JxGgyaoqz0NEkEaBFehjPzW882yhHplhWKBZZKbUtI9m1ZFjxDHbSjKbJ8vFR8bD4RoNEguCTRGHQ576AEsfTkXDtKIsJYKFo6cLhOUV3",
-  },
-  {
-    title: "Visualizing Raft Consensus in High-Traffic Environments",
-    imageUrl:
-      "https://lh3.googleusercontent.com/aida-public/AB6AXuDdRapr79O35FFEZUDKTkTL6XRAPOGgNh16hY6Q2PSblZNgXds1cFj3YY8nte9bQsbkeFHjKroJ2AdrRIX1yxooR4zpN4rzplAsUHjqSMtgepV4zCbylld1Wat8myHJgukCEhKUDOS60I7ZTKJy4k2TCb0hxUcWuABkSu5sHtQ7mEKKW6EeEno95cPExG23jbxJ49wQr752L5VaV09Ryt9a2oNT9iFjq7x4bdDxS7H4o34htwhCvqe4",
-  },
-  {
-    title: "Zero-Downtime Migrations: The Hard Parts",
-    imageUrl:
-      "https://lh3.googleusercontent.com/aida-public/AB6AXuDicZ8Vhe25p3za4WFGumSmbqLZBtdkJTmAjcfo0eNCJ46zd8y9QnhUYUdoeAzhEWrubdUPxrvle8nOBlEVyzHK7m_usiYNExA9waAzjYq6imqN9N5N-xR52l0mIlJIxKnTZImCaIyezw8lzwvcrVc6YfThXDVyTg7KkeZf-wkeKzM1yJMwGYPd2xVTYWdWAK_TrNg1K1uaYoKA14re2YFqS3JE_qcSA43MLb2DMl1BgF9jURuks9XV",
-  },
-]
-
-export function HeroCarousel() {
+export function HeroCarousel({ slides }: { slides: HeroSlide[] }) {
   const [api, setApi] = React.useState<CarouselApi>()
   const [selectedIndex, setSelectedIndex] = React.useState(0)
   const [autoplay] = React.useState(() =>
@@ -64,22 +48,24 @@ export function HeroCarousel() {
     >
       <CarouselContent className="h-full">
         {slides.map((slide, index) => (
-          <CarouselItem key={slide.title} className="relative h-full">
-            <div
-              className="h-full w-full bg-cover bg-center"
-              style={{ backgroundImage: `url('${slide.imageUrl}')` }}
-            />
-            <div className="absolute inset-0 flex flex-col justify-end bg-gradient-to-t from-black/80 via-black/20 to-transparent p-stack-lg">
-              <m.h2
-                key={index === selectedIndex ? slide.title : undefined}
-                initial={{ opacity: 0, y: 12 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5 }}
-                className="max-w-2xl font-headline-xl text-headline-xl text-white"
-              >
-                {slide.title}
-              </m.h2>
-            </div>
+          <CarouselItem key={slide.slug} className="relative h-full">
+            <Link href={`/article/${slide.slug}`} className="block h-full w-full">
+              <div
+                className="h-full w-full bg-cover bg-center"
+                style={{ backgroundImage: `url('${slide.imageUrl}')` }}
+              />
+              <div className="absolute inset-0 flex flex-col justify-end bg-gradient-to-t from-black/80 via-black/20 to-transparent p-stack-lg">
+                <m.h2
+                  key={index === selectedIndex ? slide.title : undefined}
+                  initial={{ opacity: 0, y: 12 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5 }}
+                  className="max-w-2xl font-headline-xl text-headline-xl text-white"
+                >
+                  {slide.title}
+                </m.h2>
+              </div>
+            </Link>
           </CarouselItem>
         ))}
       </CarouselContent>
@@ -104,7 +90,7 @@ export function HeroCarousel() {
       <div className="absolute bottom-2 left-1/2 flex -translate-x-1/2 gap-2">
         {slides.map((slide, index) => (
           <button
-            key={slide.title}
+            key={slide.slug}
             type="button"
             aria-label={`슬라이드 ${index + 1}로 이동`}
             onClick={() => api?.scrollTo(index)}
