@@ -19,19 +19,11 @@ export function Footer() {
           </a>
           <a
             className="font-code-sm text-code-sm text-on-surface-variant transition-colors hover:text-primary dark:hover:text-primary-fixed-dim"
-            href="#"
+            href="https://github.com/Revi1337"
             target="_blank"
             rel="noopener noreferrer"
           >
             GitHub
-          </a>
-          <a
-            className="font-code-sm text-code-sm text-on-surface-variant transition-colors hover:text-primary dark:hover:text-primary-fixed-dim"
-            href="#"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            LinkedIn
           </a>
         </div>
       </div>
