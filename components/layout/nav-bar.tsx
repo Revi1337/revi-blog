@@ -15,7 +15,7 @@ export function NavBar() {
       <div className="mx-auto flex max-w-[1200px] items-center justify-between px-gutter py-4">
         <Link
           href="/"
-          className="font-headline-lg text-2xl font-extrabold tracking-tighter text-primary dark:text-primary-container"
+          className="font-label-caps text-base font-semibold tracking-widest text-primary dark:text-primary-container"
         >
           Revi
         </Link>
