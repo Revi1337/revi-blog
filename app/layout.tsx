@@ -1,9 +1,10 @@
 import type { Metadata } from "next"
 import { Inter, JetBrains_Mono } from "next/font/google"
 import localFont from "next/font/local"
+import { cookies } from "next/headers"
 
-import { ThemeScript } from "@/components/theme/theme-script"
 import { ThemeProvider } from "@/components/theme/theme-context"
+import { THEME_COOKIE_KEY } from "@/components/theme/theme-constants"
 import { NavBar } from "@/components/layout/nav-bar"
 import { Footer } from "@/components/layout/footer"
 import { MotionProvider } from "@/components/motion-provider"
@@ -36,20 +37,20 @@ export const metadata: Metadata = {
   description: "Revi's engineering blog",
 }
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode
 }>) {
+  const cookieStore = await cookies()
+  const initialIsDark = cookieStore.get(THEME_COOKIE_KEY)?.value !== "light"
+
   return (
-    <html lang="en" suppressHydrationWarning>
-      <head>
-        <ThemeScript />
-      </head>
+    <html lang="en" className={initialIsDark ? "dark" : undefined}>
       <body
         className={`${inter.variable} ${jetbrainsMono.variable} ${pretendard.variable} min-h-screen font-body-md antialiased`}
       >
-        <ThemeProvider>
+        <ThemeProvider initialIsDark={initialIsDark}>
           <MotionProvider>
             <NavBar />
             <main className="pt-24">{children}</main>
