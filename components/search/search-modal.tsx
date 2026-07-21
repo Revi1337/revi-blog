@@ -5,7 +5,8 @@ import { useRouter } from "next/navigation"
 import { Command } from "cmdk"
 import { Search } from "lucide-react"
 
-import { parseSearchQuery, runSearch } from "@/components/search/search-query"
+import { createSearchEngine } from "@/components/search/flexsearch-engine"
+import { parseSearchQuery } from "@/components/search/search-query"
 import { SearchResults } from "@/components/search/search-results"
 import type { SearchIndexEntry } from "@/lib/data/types"
 
@@ -30,10 +31,8 @@ export function SearchModal({ open, onOpenChange, searchIndex }: SearchModalProp
   // case), 힌트 노출 여부는 raw 입력이 완전히 비어있는지로만 판단한다 — parsedQuery.term이 아니다.
   const isEmpty = deferredQuery.trim() === ""
 
-  const results = useMemo(
-    () => runSearch(searchIndex, parsedQuery),
-    [searchIndex, parsedQuery]
-  )
+  const engine = useMemo(() => createSearchEngine(searchIndex), [searchIndex])
+  const results = useMemo(() => engine.search(parsedQuery), [engine, parsedQuery])
 
   function handleSelect(slug: string) {
     onOpenChange(false)

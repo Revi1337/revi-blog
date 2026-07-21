@@ -1,5 +1,6 @@
 # spec-kit
 .specify/integrations/.cache/
+.specify/extensions/.cache/
 
 # dependencies
 node_modules/

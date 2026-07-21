@@ -2,7 +2,7 @@ export interface QuickSearchPreset {
   id: string
   /** 버튼 표시 이름이자, 활성화 시 'Entry Stream' 헤더 필터 라벨에도 그대로 노출된다 */
   label: string
-  /** 1~3개. matchesAllTags 기준 AND 매칭 대상 */
+  /** 1~3개. TagIndex.matchAll 기준 AND 매칭 대상 */
   tags: string[]
 }
 

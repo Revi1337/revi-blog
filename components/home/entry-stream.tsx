@@ -3,7 +3,7 @@
 import { useMemo, useState } from "react"
 
 import type { BlogCardData } from "@/lib/data/types"
-import { matchesAllTags } from "@/lib/data/tag-match"
+import { createTagIndex } from "@/lib/data/tag-match"
 import { quickSearchPresets } from "@/lib/data/quick-search-presets"
 import { QuickSearchButtons } from "@/components/home/quick-search-buttons"
 import { BlogCardGrid } from "@/components/home/blog-card-grid"
@@ -20,10 +20,13 @@ export function EntryStream({ cards }: { cards: BlogCardData[] }) {
 
   const activePreset = quickSearchPresets.find((preset) => preset.id === activePresetId) ?? null
 
+  const tagIndex = useMemo(() => createTagIndex(cards), [cards])
+
   const filteredCards = useMemo(() => {
     if (!activePreset) return cards
-    return cards.filter((card) => matchesAllTags(card.tags, activePreset.tags))
-  }, [cards, activePreset])
+    const matchIds = tagIndex.matchAll(activePreset.tags)
+    return cards.filter((_, i) => matchIds.has(i))
+  }, [cards, activePreset, tagIndex])
 
   const totalPages = Math.max(1, Math.ceil(filteredCards.length / CARDS_PER_PAGE))
 
