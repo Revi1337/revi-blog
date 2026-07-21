@@ -1,18 +1,19 @@
 <!--
 Sync Impact Report
-- Version change: 1.0.1 → 1.1.0
-- Modified principles: none
-- Added principles:
-  - III. Mandatory vercel-react-best-practices Compliance (NON-NEGOTIABLE)
-- Added sections: none (Technology Constraints trimmed to point at Principle III instead of duplicating it)
+- Version change: 1.1.0 → 1.1.1
+- Modified principles:
+  - I. Feature-Level Verification (NON-NEGOTIABLE) — browser verification tool priority reordered to
+    claude-in-chrome MCP first, falling back to the playwright-cli skill, with the playwright MCP
+    screenshot tools reserved for when pixel-level vision is required
+- Added principles: none
+- Added sections: none
 - Removed sections: none
 - Templates checked for consistency:
   - .specify/templates/plan-template.md ✅ (Constitution Check reads this file dynamically; no
     hardcoded principle text to update)
-  - .specify/templates/tasks-template.md ✅ (no constitution-specific references to update; note for
-    future /speckit-tasks runs on React/Next.js features: a task for the vercel-react-best-practices
-    audit should be generated explicitly, the same way Principle I's verification task is)
-  - AGENTS.md ✅ (already instructs invoking the vercel-react-best-practices skill; no change needed)
+  - .specify/templates/tasks-template.md ✅ (no constitution-specific references to update)
+  - AGENTS.md ✅ (Testing section already updated to the same claude-in-chrome → playwright-cli →
+    playwright MCP order in this same change)
 - Deferred items: none
 -->
 
@@ -22,11 +23,11 @@ Sync Impact Report
 
 ### I. Feature-Level Verification (NON-NEGOTIABLE)
 Every feature MUST be verified by actually running it, not by code review or type-checking alone.
-The default check is an `npm` build followed by driving the running app in a real browser via
-`playwright-cli` — this is the priority path and MUST be attempted first. Switch to the `playwright`
-MCP server's screenshot tools only when vision (inspecting rendered pixels, not just DOM/console state)
-is required to confirm the change. Any error surfaced by either check MUST be fixed before the feature
-is considered done.
+The default check is an `npm` build followed by driving the running app in a real browser, in this
+priority order: prefer the `claude-in-chrome` MCP tools first; if they are not available, fall back
+to the `playwright-cli` skill. Switch to the `playwright` MCP server's screenshot tools only when
+vision (inspecting rendered pixels, not just DOM/console state) is required to confirm the change.
+Any error surfaced by any of these checks MUST be fixed before the feature is considered done.
 
 Rationale: this project is worked on by more than one agent (Claude Code and Antigravity) handing
 features off to each other mid-pipeline. A feature that "looks correct" in a diff but was never
@@ -79,4 +80,4 @@ guidance, PATCH for wording/clarification only — and (2) re-check `.specify/te
 compliance with these principles before proceeding past Phase 0; violations must be justified in the
 plan's Complexity Tracking section or the plan must be revised.
 
-**Version**: 1.1.0 | **Ratified**: 2026-07-17 | **Last Amended**: 2026-07-18
+**Version**: 1.1.1 | **Ratified**: 2026-07-17 | **Last Amended**: 2026-07-21
