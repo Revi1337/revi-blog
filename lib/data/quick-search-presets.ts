@@ -11,7 +11,9 @@ export interface QuickSearchPreset {
  * 초기값은 spec.md Assumptions가 제안한 3개 예시를 그대로 사용한다.
  */
 export const quickSearchPresets: QuickSearchPreset[] = [
-  { id: "grpc", label: "GRPC", tags: ["GRPC"] },
-  { id: "kafka-spark", label: "KAFKA + SPARK", tags: ["KAFKA", "SPARK"] },
-  { id: "oauth2-security", label: "OAUTH2 + SECURITY", tags: ["OAUTH2", "SECURITY"] },
+  { id: "algorithm-concept", label: "Algorithm", tags: ["algorithm", "concept"] },
+  { id: "grpc", label: "gRPC", tags: ["gRPC"] },
+  { id: "kafka", label: "Kafka", tags: ["kafka", "spark"] },
+  { id: "spark", label: "Spark", tags: ["spark"] },
+  { id: "oauth2-security", label: "OAuth2", tags: ["oauth2", "security"] },
 ]
