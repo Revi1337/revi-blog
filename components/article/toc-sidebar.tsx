@@ -7,6 +7,8 @@ import { AnimatePresence, m } from "motion/react"
 import type { TocItem } from "@/lib/data/types"
 import { cn } from "@/lib/utils"
 
+const HEADER_OFFSET = 96
+
 export function TocSidebar({ items }: { items: TocItem[] }) {
   const [activeId, setActiveId] = React.useState<string | undefined>(items[0]?.id)
 
@@ -17,16 +19,42 @@ export function TocSidebar({ items }: { items: TocItem[] }) {
 
     if (headings.length === 0) return
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const visible = entries.find((entry) => entry.isIntersecting)
-        if (visible) setActiveId(visible.target.id)
-      },
-      { rootMargin: "-96px 0px -70% 0px" }
-    )
+    let cancelled = false
+    let ticking = false
 
-    headings.forEach((heading) => observer.observe(heading))
-    return () => observer.disconnect()
+    const updateActiveHeading = () => {
+      // 접힌 콜아웃(<details> 미오픈) 안의 헤딩은 offsetParent가 null이라 제외된다.
+      const visibleHeadings = headings.filter((heading) => heading.offsetParent !== null)
+      if (visibleHeadings.length === 0) return
+
+      let currentId = visibleHeadings[0].id
+      for (const heading of visibleHeadings) {
+        if (heading.getBoundingClientRect().top <= HEADER_OFFSET) {
+          currentId = heading.id
+        } else {
+          break
+        }
+      }
+      if (!cancelled) setActiveId(currentId)
+    }
+
+    const onScroll = () => {
+      if (ticking) return
+      ticking = true
+      requestAnimationFrame(() => {
+        updateActiveHeading()
+        ticking = false
+      })
+    }
+
+    updateActiveHeading()
+    window.addEventListener("scroll", onScroll, { passive: true })
+    window.addEventListener("resize", onScroll)
+    return () => {
+      cancelled = true
+      window.removeEventListener("scroll", onScroll)
+      window.removeEventListener("resize", onScroll)
+    }
   }, [items])
 
   if (items.length === 0) return null
