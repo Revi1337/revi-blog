@@ -7,8 +7,8 @@ import { BlogCard } from "@/components/home/blog-card"
 
 export function BlogCardGrid({ cards }: { cards: BlogCardData[] }) {
   return (
-    <div className="grid grid-cols-1 gap-stack-lg md:grid-cols-2 lg:grid-cols-3">
-      <AnimatePresence>
+    <div className="relative grid grid-cols-1 gap-stack-lg md:grid-cols-2 lg:grid-cols-3">
+      <AnimatePresence mode="popLayout">
         {cards.map((card) => (
           <m.div
             key={card.slug}
