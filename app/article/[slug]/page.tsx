@@ -5,6 +5,7 @@ import { ArticleHeader } from "@/components/article/article-header"
 import { TocSidebar } from "@/components/article/toc-sidebar"
 import { ArticleNav } from "@/components/article/article-nav"
 import { CodeCopyHandler } from "@/components/article/code-copy-handler"
+import { ArticleComments } from "@/components/article/article-comments"
 
 export function generateStaticParams() {
   return articles.map((article) => ({ slug: article.slug }))
@@ -32,6 +33,7 @@ export default async function ArticleDetailPage({
           <CodeCopyHandler />
 
           <ArticleNav prev={article.prev} next={article.next} />
+          <ArticleComments />
         </article>
 
         <aside className="lg:col-span-4">
