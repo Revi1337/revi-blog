@@ -3,7 +3,7 @@
 import { useDeferredValue, useMemo, useState } from "react"
 import { useRouter } from "next/navigation"
 import { Command } from "cmdk"
-import { Search } from "lucide-react"
+import { Search, X } from "lucide-react"
 
 import { createSearchEngine } from "@/components/search/flexsearch-engine"
 import { parseSearchQuery } from "@/components/search/search-query"
@@ -91,6 +91,17 @@ export function SearchModal({ open, onOpenChange, searchIndex }: SearchModalProp
           placeholder="Search articles..."
           className="w-full bg-transparent font-body-md text-body-md text-on-surface outline-none placeholder:text-on-surface-variant"
         />
+        {/* 모바일은 fixed inset-0 전체화면이라 esc 키도, 바깥 클릭도 닫는 수단이 못 된다(터치 키보드엔
+        esc가 없고 패널이 뷰포트 전체를 덮어 "바깥"이 없음) — 데스크톱은 esc/바깥 클릭으로 이미
+        닫을 수 있으므로 sm 이상에서는 숨긴다. */}
+        <button
+          type="button"
+          onClick={() => onOpenChange(false)}
+          aria-label="Close search"
+          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md text-on-surface-variant hover:bg-surface-container-highest hover:text-on-surface sm:hidden"
+        >
+          <X className="h-4 w-4" aria-hidden="true" />
+        </button>
       </div>
 
       <Command.List className="flex-1 overflow-y-auto p-2 sm:max-h-[60vh] sm:flex-none">
