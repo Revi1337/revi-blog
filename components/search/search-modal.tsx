@@ -81,7 +81,8 @@ export function SearchModal({ open, onOpenChange, searchIndex }: SearchModalProp
       label="Search articles"
       onKeyDown={handleKeyDown}
       onKeyDownCapture={handleKeyDownCapture}
-      className="fixed inset-0 z-[60] flex flex-col overflow-hidden bg-surface-container-lowest sm:inset-auto sm:left-1/2 sm:top-24 sm:h-auto sm:w-full sm:max-w-xl sm:-translate-x-1/2 sm:rounded-xl sm:border sm:border-outline-variant sm:shadow-2xl"
+      overlayClassName="fixed inset-0 z-[59] bg-black/40"
+      className="fixed left-1/2 top-20 z-[60] flex max-h-[75vh] w-[calc(100%-2rem)] -translate-x-1/2 flex-col overflow-hidden rounded-xl border border-outline-variant bg-surface-container-lowest shadow-2xl sm:top-24 sm:w-full sm:max-w-xl"
     >
       <div className="flex shrink-0 items-center gap-3 border-b border-outline-variant px-4 py-3">
         <Search className="h-4 w-4 shrink-0 text-on-surface-variant" aria-hidden="true" />
@@ -91,9 +92,9 @@ export function SearchModal({ open, onOpenChange, searchIndex }: SearchModalProp
           placeholder="Search articles..."
           className="w-full bg-transparent font-body-md text-body-md text-on-surface outline-none placeholder:text-on-surface-variant"
         />
-        {/* 모바일은 fixed inset-0 전체화면이라 esc 키도, 바깥 클릭도 닫는 수단이 못 된다(터치 키보드엔
-        esc가 없고 패널이 뷰포트 전체를 덮어 "바깥"이 없음) — 데스크톱은 esc/바깥 클릭으로 이미
-        닫을 수 있으므로 sm 이상에서는 숨긴다. */}
+        {/* 모달이 바운딩 박스라 바깥 영역을 탭해도 닫히지만(overlayClassName의 scrim), 스크롤 잠금 중
+        스와이프 등으로 바깥을 탭하기 애매한 경우를 위해 명시적 닫기 버튼도 유지한다 — 데스크톱은
+        esc/바깥 클릭으로 이미 닫을 수 있으므로 sm 이상에서는 숨긴다. */}
         <button
           type="button"
           onClick={() => onOpenChange(false)}
@@ -104,7 +105,7 @@ export function SearchModal({ open, onOpenChange, searchIndex }: SearchModalProp
         </button>
       </div>
 
-      <Command.List className="flex-1 overflow-y-auto p-2 sm:max-h-[60vh] sm:flex-none">
+      <Command.List className="max-h-[70vh] overflow-y-auto p-2">
         {isEmpty ? (
           <div className="space-y-1 px-3 py-6 text-center font-code-sm text-code-sm text-on-surface-variant">
             <p>
