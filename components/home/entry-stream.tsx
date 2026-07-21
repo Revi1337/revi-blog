@@ -43,7 +43,17 @@ export function EntryStream({ cards }: { cards: BlogCardData[] }) {
           Entry Stream
         </h3>
         <span className="font-code-sm text-code-sm text-on-surface-variant">
-          Filter: {activePreset ? activePreset.label : "All"}
+          Filter:{" "}
+          {activePreset ? (
+            <span className="group relative inline-block cursor-default underline decoration-dotted underline-offset-4">
+              {activePreset.label}
+              <span className="pointer-events-none absolute bottom-full left-1/2 z-10 mb-1.5 -translate-x-1/2 whitespace-nowrap rounded border border-outline-variant bg-surface-container px-1.5 py-0.5 font-label-caps text-label-caps text-on-surface opacity-0 shadow-md transition-opacity duration-150 group-hover:delay-500 group-hover:opacity-100">
+                {activePreset.tags.join(" + ")}
+              </span>
+            </span>
+          ) : (
+            "All"
+          )}
         </span>
       </div>
 
