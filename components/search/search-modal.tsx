@@ -96,8 +96,14 @@ export function SearchModal({ open, onOpenChange, searchIndex }: SearchModalProp
 
       <Command.List className="flex-1 overflow-y-auto p-2 sm:max-h-[60vh] sm:flex-none">
         {isEmpty ? (
-          <div className="px-3 py-6 text-center font-code-sm text-code-sm text-on-surface-variant">
-            Type <span className="text-primary">#tag-name</span> to search articles by tag
+          <div className="space-y-1 px-3 py-6 text-center font-code-sm text-code-sm text-on-surface-variant">
+            <p>
+              Type <span className="text-primary">#tag-name</span> to search articles by tag
+            </p>
+            <p>
+              Add more tags separated by spaces (e.g. <span className="text-primary">#react node</span>) to narrow
+              results
+            </p>
           </div>
         ) : (
           <SearchResults results={results} term={parsedQuery.term} onSelect={handleSelect} />

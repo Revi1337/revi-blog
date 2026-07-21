@@ -12,7 +12,7 @@ interface SearchResultsProps {
   onSelect: (slug: string) => void
 }
 
-function HighlightedText({ text, term }: { text: string; term: string }) {
+function HighlightedText({ text, term }: { text: string; term: string | string[] }) {
   const segments = highlightSegments(text, term)
   return (
     <>
@@ -53,12 +53,15 @@ export function SearchResults({ results, term, onSelect }: SearchResultsProps) {
   return (
     <>
       {results.map(({ entry, matchedIn }) => {
+        // 태그 검색은 `#react node`처럼 공백으로 여러 토큰을 AND 매칭하므로(runTagSearch), 발췌
+        // 하이라이트도 토큰별로 나눠 넘겨야 각 토큰이 서로 다른 태그에 흩어져 있어도 모두 강조된다.
         const snippet =
           matchedIn === "body"
             ? getMatchSnippet(entry.plainBody, term)
             : matchedIn === null
               ? entry.tags.join(", ")
               : ""
+        const snippetTerm = matchedIn === null ? term.trim().split(/\s+/).filter(Boolean) : term
 
         return (
           <Command.Item
@@ -76,7 +79,7 @@ export function SearchResults({ results, term, onSelect }: SearchResultsProps) {
                 <div className="mt-0.5 flex items-start gap-1 truncate font-code-sm text-code-sm text-on-surface-variant">
                   <span aria-hidden="true">↳</span>
                   <span className="truncate">
-                    <HighlightedText text={snippet} term={term} />
+                    <HighlightedText text={snippet} term={snippetTerm} />
                   </span>
                 </div>
               ) : null}

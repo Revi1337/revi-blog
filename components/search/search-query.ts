@@ -23,15 +23,20 @@ export function runTextSearch(entries: SearchIndexEntry[], rawTerm: string): Sea
 }
 
 /**
- * 태그만 대상으로 대소문자 무시 substring 매칭한다. 랭킹 없이 entries의 원래 순서를 유지한다(FR-012).
+ * 공백으로 구분된 여러 토큰을 AND로 매칭한다 — "narrowing filter"에 가까운 태그 검색의 통상적인
+ * 사용 패턴(예: `#react node`)에 맞춰, 토큰 각각은 태그 목록 중 하나 이상과 substring으로 일치해야
+ * 하지만 모든 토큰이 (서로 다른 태그여도 상관없이) 만족돼야 결과에 포함한다. 랭킹 없이 entries의
+ * 원래 순서를 유지한다(FR-012).
  */
 export function runTagSearch(entries: SearchIndexEntry[], rawTerm: string): SearchResult[] {
-  const term = rawTerm.trim().toLowerCase()
-  if (!term) return []
+  const tokens = rawTerm.trim().toLowerCase().split(/\s+/).filter(Boolean)
+  if (tokens.length === 0) return []
 
-  return entries.flatMap((entry) =>
-    entry.tags.some((tag) => tag.toLowerCase().includes(term)) ? [{ entry, matchedIn: null }] : []
-  )
+  return entries.flatMap((entry) => {
+    const lowerTags = entry.tags.map((tag) => tag.toLowerCase())
+    const matchesAll = tokens.every((token) => lowerTags.some((tag) => tag.includes(token)))
+    return matchesAll ? [{ entry, matchedIn: null }] : []
+  })
 }
 
 /**
@@ -57,30 +62,38 @@ export interface HighlightSegment {
 }
 
 /**
- * 검색어와 일치하는 구간을 대소문자 무시로 찾아 매치/비매치 구간으로 나눈다 — 결과 리스트에서
+ * 검색어(들)와 일치하는 구간을 대소문자 무시로 찾아 매치/비매치 구간으로 나눈다 — 결과 리스트에서
  * 일치 부분을 시각적으로 강조하기 위한 순수 함수. 정규식 대신 indexOf 루프를 사용해 검색어에 포함된
- * 정규식 특수문자를 이스케이프할 필요가 없게 한다.
+ * 정규식 특수문자를 이스케이프할 필요가 없게 한다. 배열을 넘기면(다중 태그 검색의 `↳ tag1, tag2, ...`
+ * 발췌처럼 토큰이 여러 개인 경우) 각 토큰의 매치 구간을 문자 단위 마스크로 합쳐 겹치거나 인접한 구간도
+ * 하나의 <mark>로 자연스럽게 이어지게 한다.
  */
-export function highlightSegments(text: string, term: string): HighlightSegment[] {
-  const trimmedTerm = term.trim()
-  if (!trimmedTerm) return [{ text, matched: false }]
+export function highlightSegments(text: string, term: string | string[]): HighlightSegment[] {
+  const terms = (Array.isArray(term) ? term : [term]).map((t) => t.trim()).filter(Boolean)
+  if (terms.length === 0) return [{ text, matched: false }]
 
   const lowerText = text.toLowerCase()
-  const lowerTerm = trimmedTerm.toLowerCase()
+  const matchMask = new Array<boolean>(text.length).fill(false)
+
+  for (const rawTerm of terms) {
+    const lowerTerm = rawTerm.toLowerCase()
+    let cursor = 0
+    while (cursor <= lowerText.length) {
+      const matchIndex = lowerText.indexOf(lowerTerm, cursor)
+      if (matchIndex === -1) break
+      matchMask.fill(true, matchIndex, matchIndex + lowerTerm.length)
+      cursor = matchIndex + lowerTerm.length
+    }
+  }
+
   const segments: HighlightSegment[] = []
   let cursor = 0
-
   while (cursor < text.length) {
-    const matchIndex = lowerText.indexOf(lowerTerm, cursor)
-    if (matchIndex === -1) {
-      segments.push({ text: text.slice(cursor), matched: false })
-      break
-    }
-    if (matchIndex > cursor) {
-      segments.push({ text: text.slice(cursor, matchIndex), matched: false })
-    }
-    segments.push({ text: text.slice(matchIndex, matchIndex + trimmedTerm.length), matched: true })
-    cursor = matchIndex + trimmedTerm.length
+    const matched = matchMask[cursor]
+    let end = cursor
+    while (end < text.length && matchMask[end] === matched) end++
+    segments.push({ text: text.slice(cursor, end), matched })
+    cursor = end
   }
 
   return segments
