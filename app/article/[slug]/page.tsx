@@ -1,6 +1,8 @@
+import type { Metadata } from "next"
 import { notFound } from "next/navigation"
 
 import { articles, getArticleBySlug } from "@/lib/data/articles"
+import { DEFAULT_THUMBNAIL } from "@/lib/data/types"
 import { ArticleHeader } from "@/components/article/article-header"
 import { TocSidebar } from "@/components/article/toc-sidebar"
 import { ArticleNav } from "@/components/article/article-nav"
@@ -10,6 +12,27 @@ import { ArticleComments } from "@/components/article/article-comments"
 
 export function generateStaticParams() {
   return articles.map((article) => ({ slug: article.slug }))
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>
+}): Promise<Metadata> {
+  const { slug } = await params
+  const article = getArticleBySlug(slug)
+
+  if (!article) {
+    return {}
+  }
+
+  return {
+    title: article.title,
+    openGraph: {
+      title: article.title,
+      images: [article.thumbnail ?? DEFAULT_THUMBNAIL],
+    },
+  }
 }
 
 export default async function ArticleDetailPage({

@@ -34,7 +34,8 @@ const pretendard = localFont({
 })
 
 export const metadata: Metadata = {
-  title: "Revi Blog",
+  metadataBase: new URL("https://revi-blog.vercel.app"),
+  title: "Revi - Blog",
   description: "Revi's engineering blog",
 }
 
