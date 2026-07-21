@@ -490,7 +490,6 @@ body {
   overflow: hidden;
   border-radius: 0.375rem;
   border: 1px solid var(--callout-accent, var(--color-outline-variant));
-  border-left-width: 4px;
   background-color: color-mix(in srgb, var(--callout-accent, var(--color-outline-variant)) 6%, var(--color-surface-container-lowest));
 }
 .article-body .callout-header {
