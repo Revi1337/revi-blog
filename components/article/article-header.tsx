@@ -18,22 +18,32 @@ export function ArticleHeader({ article }: { article: Article }) {
 
   return (
     <header className="space-y-8">
-      <div className="flex flex-wrap items-center gap-3">
+      <motion.div
+        initial={{ opacity: 0, y: 6 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="flex flex-wrap items-center gap-3"
+      >
         <span className="rounded border border-outline-variant bg-surface-container px-3 py-1 font-label-caps text-[10px] uppercase tracking-widest text-primary dark:border-outline-variant/30 dark:text-primary-container">
           {article.category}
         </span>
-      </div>
+      </motion.div>
 
       <motion.h1
         initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.7 }}
+        transition={{ duration: 0.6, delay: 0.1 }}
         className="font-headline-xl text-headline-xl leading-[1.1] text-on-surface"
       >
         {article.title}
       </motion.h1>
 
-      <div className="space-y-3 border-y border-outline-variant py-6 font-code-sm text-sm text-on-surface dark:border-outline-variant/10">
+      <motion.div
+        initial={{ opacity: 0, y: 8 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.25 }}
+        className="space-y-3 border-y border-outline-variant py-6 font-code-sm text-sm text-on-surface dark:border-outline-variant/10"
+      >
         <div className="flex flex-wrap items-center gap-4">
           <div className="flex items-center gap-1.5">
             <CalendarDays className="size-4 text-primary dark:text-primary-container" />
@@ -65,9 +75,14 @@ export function ArticleHeader({ article }: { article: Article }) {
             ))}
           </div>
         )}
-      </div>
+      </motion.div>
 
-      <div className="group relative aspect-[21/9] w-full overflow-hidden rounded border border-outline-variant/30">
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, delay: 0.35 }}
+        className="group relative aspect-[21/9] w-full overflow-hidden rounded border border-outline-variant/30"
+      >
         <Image
           src={article.thumbnail ?? DEFAULT_THUMBNAIL}
           alt=""
@@ -75,7 +90,7 @@ export function ArticleHeader({ article }: { article: Article }) {
           className="scale-105 object-cover grayscale-[40%] transition-all duration-1000 group-hover:scale-100 group-hover:grayscale-0"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-surface-dim/80 via-transparent to-transparent" />
-      </div>
+      </motion.div>
     </header>
   )
 }

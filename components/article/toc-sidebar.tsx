@@ -2,6 +2,7 @@
 
 import * as React from "react"
 import { ListTree } from "lucide-react"
+import { AnimatePresence, m } from "motion/react"
 
 import type { TocItem } from "@/lib/data/types"
 import { cn } from "@/lib/utils"
@@ -49,6 +50,17 @@ export function TocSidebar({ items }: { items: TocItem[] }) {
                   isActive && "bg-primary/10 dark:bg-primary-container/10"
                 )}
               >
+                <AnimatePresence>
+                  {isActive && (
+                    <m.span
+                      initial={{ opacity: 0, scaleY: 0.3 }}
+                      animate={{ opacity: 1, scaleY: 1 }}
+                      exit={{ opacity: 0, scaleY: 0.3 }}
+                      transition={{ duration: 0.2 }}
+                      className="absolute left-0 top-1/2 h-3/5 w-0.5 -translate-y-1/2 rounded-full bg-primary dark:bg-primary-container"
+                    />
+                  )}
+                </AnimatePresence>
                 <span
                   className={cn(
                     "relative opacity-30",
