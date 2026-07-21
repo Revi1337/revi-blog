@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/pagination"
 
 // 번호 버튼은 최대 이만큼만 보여주고, 그 이후 페이지는 Next 화살표로만 이동한다.
-const MAX_VISIBLE_PAGE_NUMBERS = 10
+const MAX_VISIBLE_PAGE_NUMBERS = 5
 
 export function HomePagination({ totalPages }: { totalPages: number }) {
   const [page, setPage] = React.useState(1)
