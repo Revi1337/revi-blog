@@ -1,3 +1,4 @@
+import { matchesAllTags } from "@/lib/data/tag-match"
 import type { SearchIndexEntry, SearchQuery, SearchResult } from "@/lib/data/types"
 
 /**
@@ -32,11 +33,7 @@ export function runTagSearch(entries: SearchIndexEntry[], rawTerm: string): Sear
   const tokens = rawTerm.trim().toLowerCase().split(/\s+/).filter(Boolean)
   if (tokens.length === 0) return []
 
-  return entries.flatMap((entry) => {
-    const lowerTags = entry.tags.map((tag) => tag.toLowerCase())
-    const matchesAll = tokens.every((token) => lowerTags.some((tag) => tag.includes(token)))
-    return matchesAll ? [{ entry, matchedIn: null }] : []
-  })
+  return entries.flatMap((entry) => (matchesAllTags(entry.tags, tokens) ? [{ entry, matchedIn: null }] : []))
 }
 
 /**

@@ -12,6 +12,8 @@ export interface BlogCardData {
   /** 없으면 기본 썸네일 이미지로 폴백 */
   thumbnail?: string
   publishedAt: string
+  /** QuickSearch 태그 필터 매칭에 사용 (Article.tags와 동일) */
+  tags: string[]
 }
 
 export interface TocItem {

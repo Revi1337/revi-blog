@@ -7,7 +7,13 @@ export const articles: Article[] = loadedArticles
 
 export const blogCards: BlogCardData[] = blogSlugs.map((slug) => {
   const article = articles.find((a) => a.slug === slug)!
-  return { slug: article.slug, title: article.title, thumbnail: article.thumbnail, publishedAt: article.publishedAt }
+  return {
+    slug: article.slug,
+    title: article.title,
+    thumbnail: article.thumbnail,
+    publishedAt: article.publishedAt,
+    tags: article.tags,
+  }
 })
 
 export function getArticleBySlug(slug: string): Article | undefined {

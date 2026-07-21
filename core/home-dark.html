@@ -159,13 +159,19 @@ body {
 </header>
 <!-- Main Content: Blog Grid -->
 <main class="pb-section-gap max-w-container-max mx-auto px-gutter">
+<!-- QuickSearch buttons -->
+<div class="mb-stack-lg flex gap-2 overflow-x-auto pb-1 sm:flex-wrap sm:overflow-visible">
+<button type="button" aria-pressed="true" class="shrink-0 rounded border border-primary-fixed bg-primary-fixed px-3 py-1.5 font-code-sm text-code-sm whitespace-nowrap text-on-primary-fixed transition-colors">GRPC</button>
+<button type="button" aria-pressed="false" class="shrink-0 rounded border border-outline-variant bg-surface-container px-3 py-1.5 font-code-sm text-code-sm whitespace-nowrap text-on-surface-variant transition-colors hover:border-primary-fixed hover:text-primary-fixed">KAFKA + SPARK</button>
+<button type="button" aria-pressed="false" class="shrink-0 rounded border border-outline-variant bg-surface-container px-3 py-1.5 font-code-sm text-code-sm whitespace-nowrap text-on-surface-variant transition-colors hover:border-primary-fixed hover:text-primary-fixed">OAUTH2 + SECURITY</button>
+</div>
 <div class="flex justify-between items-end mb-stack-lg border-l-4 border-primary-fixed pl-4">
 <div>
 <h3 class="font-headline-lg text-headline-lg text-on-surface">Entry Stream</h3>
 </div>
 <div class="flex gap-4">
 <span class="font-code-sm text-code-sm text-secondary-fixed-dim">Rows: 12</span>
-<span class="font-code-sm text-code-sm text-on-surface-variant">Filter: All</span>
+<span class="font-code-sm text-code-sm text-on-surface-variant">Filter: GRPC</span>
 </div>
 </div>
 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-stack-lg">
