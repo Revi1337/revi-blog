@@ -14,6 +14,7 @@ import { remarkHighlight } from "@/lib/content/plugins/remark-highlight"
 import { remarkImages } from "@/lib/content/plugins/remark-images"
 import { remarkPlainText } from "@/lib/content/plugins/remark-plain-text"
 import { rehypeCodeCopyButton } from "@/lib/content/plugins/rehype-code-copy-button"
+import { rehypeHeadingAnchor } from "@/lib/content/plugins/rehype-heading-anchor"
 import type { TocItem, ArticleImage } from "@/lib/data/types"
 
 export interface RenderResult {
@@ -34,6 +35,7 @@ const processor = unified()
   .use(remarkToc)
   .use(remarkPlainText)
   .use(remarkRehype, { allowDangerousHtml: true })
+  .use(rehypeHeadingAnchor)
   .use(rehypePrettyCode, {
     theme: { dark: "github-dark-default", light: "github-light-default" },
     keepBackground: false,

@@ -255,6 +255,7 @@ body {
 /* 아티클 본문(dangerouslySetInnerHTML로 주입되는 raw HTML)의 타이포그래피 —
    Tailwind preflight가 heading/list 기본 스타일을 리셋하므로 여기서 직접 복원한다. */
 .article-body h2 {
+  position: relative;
   margin-top: 3rem;
   scroll-margin-top: 80px;
   font-family: var(--font-headline-lg);
@@ -268,12 +269,45 @@ body {
   margin-top: 0;
 }
 .article-body h3 {
+  position: relative;
   margin-top: 2rem;
   margin-bottom: 1rem;
   scroll-margin-top: 80px;
   font-size: 1.25rem;
   font-weight: 600;
   color: var(--color-on-surface);
+}
+/* heading 앵커 링크 — 마크업은 rehype-heading-anchor 플러그인이 빌드 타임에 h2/h3 끝에 삽입한다.
+   평소엔 숨겨져 있다가 heading에 hover/focus하면 살짝 오른쪽에서 밀려 들어오며 나타난다(GitHub 스타일). */
+.article-body .heading-anchor {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 0.5rem;
+  vertical-align: middle;
+  opacity: 0;
+  transform: translateX(-0.25rem);
+  transition:
+    opacity 0.18s ease-out,
+    transform 0.18s ease-out,
+    color 0.15s ease-out;
+  color: color-mix(in srgb, var(--color-on-surface-variant) 55%, transparent);
+}
+.article-body h2:hover .heading-anchor,
+.article-body h3:hover .heading-anchor,
+.article-body .heading-anchor:focus-visible {
+  opacity: 1;
+  transform: translateX(0);
+}
+.article-body .heading-anchor:hover {
+  color: var(--color-primary);
+}
+.dark .article-body .heading-anchor:hover {
+  color: var(--color-primary-fixed);
+}
+.article-body .heading-anchor-icon {
+  width: 0.8em;
+  height: 0.8em;
 }
 .article-body p {
   margin-top: 1rem;
