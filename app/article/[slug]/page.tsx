@@ -5,6 +5,7 @@ import { ArticleHeader } from "@/components/article/article-header"
 import { TocSidebar } from "@/components/article/toc-sidebar"
 import { ArticleNav } from "@/components/article/article-nav"
 import { CodeCopyHandler } from "@/components/article/code-copy-handler"
+import { ImageLightboxHandler } from "@/components/article/image-lightbox-handler"
 import { ArticleComments } from "@/components/article/article-comments"
 
 export function generateStaticParams() {
@@ -31,6 +32,7 @@ export default async function ArticleDetailPage({
 
           <div className="article-body space-y-0" dangerouslySetInnerHTML={{ __html: article.bodyHtml }} />
           <CodeCopyHandler />
+          <ImageLightboxHandler images={article.images} />
 
           <ArticleNav prev={article.prev} next={article.next} />
           <ArticleComments />

@@ -14,7 +14,7 @@ const CONTENT_DIR = path.join(process.cwd(), "content", "articles")
 async function loadArticleFile(filePath: string): Promise<Article> {
   const raw = fs.readFileSync(filePath, "utf-8")
   const { frontmatter, rawBody } = parseFrontmatter(filePath, raw)
-  const { bodyHtml, toc, plainBody } = await renderMarkdown(stripComments(rawBody))
+  const { bodyHtml, toc, plainBody, images } = await renderMarkdown(stripComments(rawBody))
 
   const slug = frontmatter.slug ?? path.basename(filePath, ".md")
   const readingTimeMinutes = frontmatter.readingTimeMinutes ?? computeReadingTimeMinutes(rawBody)
@@ -31,6 +31,7 @@ async function loadArticleFile(filePath: string): Promise<Article> {
     bodyHtml,
     plainBody,
     toc,
+    images,
     // metrics 카드는 remark-metrics가 bodyHtml 안에 직접 렌더링하므로 별도 구조화 데이터로는 노출하지 않는다
     metrics: [],
     showOnHomepage: frontmatter.showOnHomepage ?? true,

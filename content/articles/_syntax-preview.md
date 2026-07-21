@@ -4,6 +4,7 @@ category: "TEST"
 publishedAt: "2026-07-20"
 tags: ["test"]
 showOnHomepage: false
+thumbnail: "/images/lightbox-test/photo-1.jpg"
 ---
 
 ## 콜아웃
@@ -32,6 +33,14 @@ $$
 이 문장은 ==반드시 강조==되어야 하고, `==코드 안은 그대로==`여야 한다.
 
 공개 문장. %%이 메모는 절대 보이면 안 됨%% 다음 공개 문장.
+
+## 이미지 (라이트박스 검증용)
+
+![산 풍경](/images/lightbox-test/photo-1.jpg)
+
+![바닷가](/images/lightbox-test/photo-2.jpg)
+
+![숲길](/images/lightbox-test/photo-3.jpg)
 
 #### h4 레벨 소제목 (TOC에는 안 나타나야 함)
 

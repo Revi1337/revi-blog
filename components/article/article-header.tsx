@@ -1,9 +1,9 @@
-import Image from "next/image"
 import { CalendarDays, History, Timer } from "lucide-react"
 import * as motion from "motion/react-client"
 
 import type { Article } from "@/lib/data/types"
 import { DEFAULT_THUMBNAIL } from "@/lib/data/types"
+import { ArticleThumbnail } from "@/components/article/article-thumbnail"
 
 function formatDate(iso: string) {
   return new Date(iso).toLocaleDateString("en-US", {
@@ -77,20 +77,7 @@ export function ArticleHeader({ article }: { article: Article }) {
         )}
       </motion.div>
 
-      <motion.div
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, delay: 0.35 }}
-        className="group relative aspect-[21/9] w-full overflow-hidden rounded border border-outline-variant/30"
-      >
-        <Image
-          src={article.thumbnail ?? DEFAULT_THUMBNAIL}
-          alt=""
-          fill
-          className="scale-105 object-cover grayscale-[40%] transition-all duration-1000 group-hover:scale-100 group-hover:grayscale-0"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-surface-dim/80 via-transparent to-transparent" />
-      </motion.div>
+      <ArticleThumbnail src={article.thumbnail ?? DEFAULT_THUMBNAIL} />
     </header>
   )
 }

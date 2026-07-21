@@ -23,6 +23,14 @@ export interface TocItem {
   order: number
 }
 
+export interface ArticleImage {
+  src: string
+  alt: string
+  /** 본문 내 등장 순서(0부터 시작) — 배열 인덱스와 항상 일치하며, 본문 <img>의
+   * data-lightbox-index 속성과 매칭된다 (lib/content/plugins/remark-images.ts) */
+  order: number
+}
+
 export interface MetricCard {
   label: string
   value: string
@@ -48,6 +56,8 @@ export interface Article {
   /** 검색 전용 — 마크다운 서식 기호를 제거한 순수 본문 텍스트 */
   plainBody: string
   toc: TocItem[]
+  /** 본문에 등장하는 이미지 목록(등장 순서대로) — 이미지 라이트박스 갤러리 데이터(spec 009) */
+  images: ArticleImage[]
   metrics: MetricCard[]
   prev?: ArticleNavRef
   next?: ArticleNavRef

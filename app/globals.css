@@ -560,3 +560,17 @@ body {
 .dark .article-body mark {
   background-color: color-mix(in srgb, var(--color-primary-fixed) 35%, transparent);
 }
+
+/* 이미지 라이트박스(PhotoSwipe) — 본문/썸네일 이미지 클릭 시 lib/lightbox/open-image-lightbox.ts가
+   동적으로 로드해 연다. 크기 제약(FR-003)과 확대·축소 배율(FR-007)은 해당 모듈의 옵션이 담당하고,
+   여기서는 배경 블러(FR-004)만 담당한다. 커스텀 +/- 버튼은 별도 hover 스타일을 얹지 않고
+   PhotoSwipe 기본 `.pswp__button:hover`(배경 없이 opacity만 1로 올라가는 것)를 그대로 따른다 —
+   닫기·화살표 버튼과 동일한 hover 느낌을 위해서다(사용자 피드백, Constitution Principle II) */
+.article-body img {
+  cursor: zoom-in;
+}
+
+.pswp__bg {
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+}
