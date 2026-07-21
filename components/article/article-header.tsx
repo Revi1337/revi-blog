@@ -1,4 +1,5 @@
 import { CalendarDays, History, Timer } from "lucide-react"
+import Link from "next/link"
 import * as motion from "motion/react-client"
 
 import type { Article } from "@/lib/data/types"
@@ -66,12 +67,13 @@ export function ArticleHeader({ article }: { article: Article }) {
               Tags:
             </span>
             {article.tags.map((tag) => (
-              <span
+              <Link
                 key={tag}
-                className="rounded border border-outline-variant bg-surface-container px-2.5 py-0.5 font-code-sm text-[11px] text-on-surface-variant dark:border-secondary/20 dark:text-secondary-fixed-dim"
+                href={`/?tag=${encodeURIComponent(tag)}`}
+                className="rounded border border-outline-variant bg-surface-container px-2.5 py-0.5 font-code-sm text-[11px] text-on-surface-variant transition-colors hover:border-primary hover:text-primary dark:border-secondary/20 dark:text-secondary-fixed-dim dark:hover:border-primary-fixed dark:hover:text-primary-fixed"
               >
                 {tag}
-              </span>
+              </Link>
             ))}
           </div>
         )}
