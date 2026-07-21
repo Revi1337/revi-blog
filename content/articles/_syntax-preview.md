@@ -46,5 +46,7 @@ $$
 
 <details>
 <summary>접기/펼치기</summary>
+
 디자인 톤이 콜아웃 접기와 통일되어야 한다.
+
 </details>
