@@ -2,7 +2,7 @@
 title: "Syntax Preview (내부 검증용)"
 category: "TEST"
 publishedAt: "2026-07-20"
-tags: ["TEST"]
+tags: ["test"]
 showOnHomepage: false
 ---
 
