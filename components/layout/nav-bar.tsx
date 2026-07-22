@@ -44,7 +44,7 @@ export function NavBar({ searchIndex }: NavBarProps) {
           {navLinks.map((link) => {
             const isActive = link.href === "/" && pathname === "/"
             return (
-              <a
+              <Link
                 key={link.label}
                 href={link.href}
                 className={cn(
@@ -55,7 +55,7 @@ export function NavBar({ searchIndex }: NavBarProps) {
                 )}
               >
                 {link.label}
-              </a>
+              </Link>
             )
           })}
         </div>
