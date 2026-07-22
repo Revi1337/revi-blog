@@ -423,6 +423,21 @@ body {
   font-size: var(--text-code-sm);
   line-height: var(--text-code-sm--line-height);
   padding: 1rem 1.25rem 1rem 0.25rem;
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-outline-variant) transparent;
+}
+.article-body [data-rehype-pretty-code-figure] pre::-webkit-scrollbar {
+  height: 6px;
+}
+.article-body [data-rehype-pretty-code-figure] pre::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+.article-body [data-rehype-pretty-code-figure] pre::-webkit-scrollbar-thumb {
+  background-color: var(--color-outline-variant);
+  border-radius: 3px;
+}
+.article-body [data-rehype-pretty-code-figure] pre::-webkit-scrollbar-thumb:hover {
+  background-color: var(--color-outline);
 }
 /* 라인 넘버 — CSS counter로 생성한 ::before 콘텐츠라 실제 텍스트 노드가 아니며,
    대부분의 브라우저에서 기본적으로 선택되지 않는다. user-select: none으로 드래그 선택도 명시적으로 차단한다. */
