@@ -17,7 +17,7 @@ export function ThemeToggle() {
       onClick={toggleTheme}
       aria-label={isDark ? "라이트 모드로 전환" : "다크 모드로 전환"}
       suppressHydrationWarning
-      className="flex h-8 w-8 items-center justify-center rounded text-on-surface-variant transition-colors hover:bg-surface-container-highest/50 hover:text-primary"
+      className="flex h-8 w-8 items-center justify-center rounded text-on-surface-variant transition-colors hover:bg-surface-container-highest/50 hover:text-primary dark:hover:text-primary-fixed"
     >
       <svg
         viewBox="0 -960 960 960"

@@ -16,9 +16,9 @@ export function SearchTrigger({ onOpen }: SearchTriggerProps) {
       type="button"
       onClick={onOpen}
       aria-label="Open search"
-      className="flex h-8 w-8 shrink-0 items-center justify-center gap-2 rounded-lg text-left transition-colors hover:bg-surface-container-highest/50 sm:w-auto sm:min-w-0 sm:justify-start sm:border sm:border-outline-variant sm:bg-surface-container-low sm:px-3 sm:py-1.5"
+      className="flex h-8 w-8 shrink-0 items-center justify-center gap-2 rounded-lg text-on-surface-variant text-left transition-colors hover:bg-surface-container-highest/50 hover:text-primary dark:hover:text-primary-fixed sm:w-auto sm:min-w-0 sm:justify-start sm:border sm:border-outline-variant sm:bg-surface-container-low sm:px-3 sm:py-1.5"
     >
-      <Search className="h-4 w-4 shrink-0 text-on-surface-variant" aria-hidden="true" />
+      <Search className="h-4 w-4 shrink-0" aria-hidden="true" />
       <span className="hidden truncate font-code-sm text-code-sm leading-[18px] text-on-surface-variant sm:inline">
         Search articles...
       </span>
