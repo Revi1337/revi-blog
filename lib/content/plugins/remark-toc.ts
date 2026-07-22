@@ -28,7 +28,7 @@ export function remarkToc() {
       if (node.depth !== 2 && node.depth !== 3) return
 
       order += 1
-      items.push({ id, label, order })
+      items.push({ id, label, order, depth: node.depth })
     })
 
     file.data.toc = items

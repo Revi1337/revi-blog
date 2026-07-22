@@ -66,7 +66,7 @@ export function TocSidebar({ items }: { items: TocItem[] }) {
           <ListTree className="size-4" />
           <h4 className="font-label-caps text-xs tracking-widest">Table Of Contents</h4>
         </div>
-        <nav className="max-h-[500px] space-y-1 overflow-y-auto pr-2">
+        <nav className="toc-nav max-h-[500px] space-y-1 overflow-y-auto pr-2">
           {items.map((item) => {
             const isActive = item.id === activeId
             return (
@@ -75,6 +75,7 @@ export function TocSidebar({ items }: { items: TocItem[] }) {
                 href={`#${item.id}`}
                 className={cn(
                   "relative flex items-center gap-2 rounded px-2.5 py-1.5 font-code-sm text-xs text-on-surface-variant transition-colors duration-200 hover:text-primary dark:hover:text-primary-container",
+                  item.depth === 3 && "ml-4",
                   isActive && "bg-primary/10 dark:bg-primary-container/10"
                 )}
               >
