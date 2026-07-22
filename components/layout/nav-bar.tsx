@@ -8,6 +8,7 @@ import { usePathname } from "next/navigation"
 import { navLinks } from "@/lib/data/nav"
 import { cn } from "@/lib/utils"
 import { ThemeToggle } from "@/components/theme/theme-toggle"
+import { MobileNavMenu } from "@/components/layout/mobile-nav-menu"
 import { SearchTrigger } from "@/components/search/search-trigger"
 import { useSearchShortcut } from "@/components/search/use-search-shortcut"
 import type { SearchIndexEntry } from "@/lib/data/types"
@@ -60,6 +61,7 @@ export function NavBar({ searchIndex }: NavBarProps) {
           })}
         </div>
         <div className="flex min-w-0 items-center gap-stack-md">
+          <MobileNavMenu links={navLinks} />
           <SearchTrigger onOpen={openSearch} />
           {/* 서버가 없어 로그인 기능이 동작하지 않으므로 비활성화. 추후 서버 연동 시 주석 해제 */}
           {/* <button
