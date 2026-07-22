@@ -18,6 +18,8 @@ export interface HeroSlide {
   slug: string
   title: string
   imageUrl: string
+  /** 없으면 "cover"(꽉 채워 크롭) — 로고처럼 크롭하면 안 되는 이미지만 "contain"으로 전체 노출 */
+  fit?: "cover" | "contain"
 }
 
 export function HeroCarousel({ slides }: { slides: HeroSlide[] }) {
@@ -51,10 +53,13 @@ export function HeroCarousel({ slides }: { slides: HeroSlide[] }) {
           <CarouselItem key={slide.slug} className="relative h-full">
             <Link href={`/article/${slide.slug}`} className="block h-full w-full">
               <div
-                className="h-full w-full bg-cover bg-center"
+                className={cn(
+                  "absolute inset-0 bg-center bg-no-repeat",
+                  slide.fit === "contain" ? "bg-contain" : "bg-cover"
+                )}
                 style={{ backgroundImage: `url('${slide.imageUrl}')` }}
               />
-              <div className="absolute inset-0 flex flex-col justify-end bg-gradient-to-t from-black/80 via-black/20 to-transparent p-stack-lg">
+              <div className="absolute inset-0 flex flex-col justify-end bg-gradient-to-t from-black/40 via-black/10 to-transparent p-stack-lg">
                 <m.h2
                   key={index === selectedIndex ? slide.title : undefined}
                   initial={{ opacity: 0, y: 12 }}

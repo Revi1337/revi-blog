@@ -8,6 +8,8 @@ export interface ArticleFrontmatter {
   updatedAt?: string
   tags: string[]
   thumbnail?: string
+  /** 없으면 "cover"(꽉 채워 크롭) — 로고처럼 크롭하면 안 되는 썸네일만 "contain"으로 전체 노출 */
+  thumbnailFit?: "cover" | "contain"
   readingTimeMinutes?: number
   /** 없으면 true — 홈 카드 그리드/캐러셀 노출 여부 */
   showOnHomepage?: boolean

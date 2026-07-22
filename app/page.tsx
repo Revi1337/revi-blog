@@ -9,6 +9,7 @@ const heroSlides = blogCards.slice(0, 3).map((card) => ({
   slug: card.slug,
   title: card.title,
   imageUrl: card.thumbnail ?? DEFAULT_THUMBNAIL,
+  fit: card.thumbnailFit ?? "cover",
 }))
 
 export default function HomePage() {

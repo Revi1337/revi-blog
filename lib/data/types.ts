@@ -5,12 +5,16 @@ export interface NavLink {
   href: string
 }
 
+/** 없으면 "cover"(꽉 채워 크롭) — 로고처럼 크롭하면 안 되는 썸네일만 "contain"으로 전체 노출 */
+export type ThumbnailFit = "cover" | "contain"
+
 export interface BlogCardData {
   /** Article.slug와 동일한 값 — 별도 id를 두지 않고 slug를 식별자로 재사용 */
   slug: string
   title: string
   /** 없으면 기본 썸네일 이미지로 폴백 */
   thumbnail?: string
+  thumbnailFit?: ThumbnailFit
   publishedAt: string
   /** QuickSearch 태그 필터 매칭에 사용 (Article.tags와 동일) */
   tags: string[]
@@ -54,6 +58,7 @@ export interface Article {
   tags: string[]
   /** 없으면 기본 썸네일 이미지로 폴백 (BlogCardData와 동일 필드명) */
   thumbnail?: string
+  thumbnailFit?: ThumbnailFit
   bodyHtml: string
   /** 검색 전용 — 마크다운 서식 기호를 제거한 순수 본문 텍스트 */
   plainBody: string

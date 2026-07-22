@@ -79,7 +79,7 @@ export function ArticleHeader({ article }: { article: Article }) {
         )}
       </motion.div>
 
-      <ArticleThumbnail src={article.thumbnail ?? DEFAULT_THUMBNAIL} />
+      <ArticleThumbnail src={article.thumbnail ?? DEFAULT_THUMBNAIL} fit={article.thumbnailFit} />
     </header>
   )
 }

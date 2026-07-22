@@ -8,12 +8,12 @@ const nextConfig: NextConfig = {
     dangerouslyAllowSVG: true,
     contentDispositionType: "attachment",
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
-    // core/home-dark.html / core/article-detail-dark.html이 원래 쓰던 썸네일 호스트.
+    // 썸네일 URL은 본인이 커밋하는 마크다운에서만 나오므로(런타임에 외부 사용자가 주입할
+    // 경로가 없음) 호스트별 화이트리스트 대신 https 전체를 허용한다.
     remotePatterns: [
       {
         protocol: "https",
-        hostname: "lh3.googleusercontent.com",
-        pathname: "/aida-public/**",
+        hostname: "**",
       },
     ],
   },

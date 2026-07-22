@@ -9,19 +9,26 @@ function formatCardDate(iso: string) {
   return iso.replaceAll("-", ".")
 }
 
-export function BlogCard({ slug, title, thumbnail, publishedAt }: BlogCardData) {
+export function BlogCard({ slug, title, thumbnail, thumbnailFit, publishedAt }: BlogCardData) {
+  const src = thumbnail ?? DEFAULT_THUMBNAIL
+  const isContain = thumbnailFit === "contain"
+
   return (
     <Link
       href={`/article/${slug}`}
       className="group block overflow-hidden rounded-lg bg-surface-container transition-all duration-300"
     >
       <article>
-        <div className="relative h-56 overflow-hidden">
+        <div className="relative h-56 overflow-hidden bg-surface-container-high">
           <Image
-            src={thumbnail ?? DEFAULT_THUMBNAIL}
+            src={src}
             alt=""
             fill
-            className="object-cover transition-transform duration-500 group-hover:scale-105"
+            className={
+              isContain
+                ? "object-contain"
+                : "object-cover transition-transform duration-500 group-hover:scale-105"
+            }
           />
         </div>
         <div className="flex h-32 flex-col justify-between p-stack-md">

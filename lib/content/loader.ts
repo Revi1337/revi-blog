@@ -28,6 +28,7 @@ async function loadArticleFile(filePath: string): Promise<Article> {
     readingTimeMinutes,
     tags: frontmatter.tags,
     thumbnail: frontmatter.thumbnail ?? DEFAULT_THUMBNAIL,
+    thumbnailFit: frontmatter.thumbnailFit,
     bodyHtml,
     plainBody,
     toc,
