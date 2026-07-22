@@ -17,6 +17,39 @@ function readHeaderOffset() {
   return Number.isFinite(parsed) ? parsed : DEFAULT_HEADER_OFFSET
 }
 
+function getScrollStorageKey() {
+  return `toc:scroll:${window.location.pathname}`
+}
+
+function readSavedScroll(key: string) {
+  try {
+    const raw = sessionStorage.getItem(key)
+    if (raw === null) return null
+    const parsed = Number(raw)
+    return Number.isFinite(parsed) ? parsed : null
+  } catch {
+    // 프라이빗 모드 등에서 storage 접근이 막혀 있으면 저장된 위치가 없는 것으로 취급한다.
+    return null
+  }
+}
+
+function writeSavedScroll(key: string, value: number) {
+  try {
+    sessionStorage.setItem(key, String(value))
+  } catch {
+    // 위와 동일한 이유로 조용히 무시한다.
+  }
+}
+
+function isHistoryNavigation() {
+  try {
+    const [entry] = performance.getEntriesByType("navigation")
+    return entry instanceof PerformanceNavigationTiming && (entry.type === "reload" || entry.type === "back_forward")
+  } catch {
+    return false
+  }
+}
+
 export function TocSidebar({
   items,
   variant = "desktop",
@@ -27,25 +60,54 @@ export function TocSidebar({
   const [activeId, setActiveId] = React.useState<string | undefined>(undefined)
   const itemRefs = React.useRef(new Map<string, HTMLAnchorElement>())
 
-  // 새로고침 시 TOC 활성 헤딩이 URL hash와 다른 곳으로 튀는 문제 대응 —
-  // 브라우저의 히스토리 스크롤 복원(scrollRestoration: 'auto')이 hash 앵커 스크롤과
-  // 경쟁하며 비결정적으로 최종 위치를 정했다. 복원을 꺼서 hash 스크롤만 남긴다.
+  // 새로고침·뒤로가기 시 URL hash와 무관하게 "마지막으로 보던 스크롤 위치"로 복원한다 —
+  // 브라우저 기본 스크롤 복원(scrollRestoration: 'auto')이 정확히 이 동작을 제공하지만,
+  // hash 앵커 스크롤과 동시에 경쟁하며 비결정적으로 최종 위치를 정하는 문제가 있어 직접 구현한다.
+  // reload/back-forward에서만 저장된 위치로 복원하고, 새 진입(링크 클릭 등)에서는 URL hash를 따른다.
   // 두 variant가 한 페이지에 동시에 마운트되므로 한쪽에서만 처리하면 충분하다.
   React.useEffect(() => {
     if (variant !== "desktop") return
     window.history.scrollRestoration = "manual"
 
-    const hash = window.location.hash
-    if (!hash) return
+    const scrollKey = getScrollStorageKey()
+    const savedScroll = isHistoryNavigation() ? readSavedScroll(scrollKey) : null
 
-    const scrollToHash = () => {
+    const restore = () => {
+      if (savedScroll !== null) {
+        window.scrollTo({ top: savedScroll })
+        return
+      }
+      const hash = window.location.hash
+      if (!hash) return
       const target = document.getElementById(decodeURIComponent(hash.slice(1)))
       target?.scrollIntoView()
     }
-    scrollToHash()
+
+    restore()
     // 이미지/폰트 로딩으로 뒤늦게 레이아웃이 밀리는 경우를 대비해 완전 로드 후 한 번 더 보정한다.
-    window.addEventListener("load", scrollToHash)
-    return () => window.removeEventListener("load", scrollToHash)
+    window.addEventListener("load", restore)
+
+    let ticking = false
+    const persistScroll = () => writeSavedScroll(scrollKey, window.scrollY)
+    const onScroll = () => {
+      if (ticking) return
+      ticking = true
+      requestAnimationFrame(() => {
+        persistScroll()
+        ticking = false
+      })
+    }
+    window.addEventListener("scroll", onScroll, { passive: true })
+    // 스크롤 이벤트 없이 탭이 닫히거나 백그라운드로 전환되는 순간을 놓치지 않기 위한 안전망.
+    window.addEventListener("pagehide", persistScroll)
+    document.addEventListener("visibilitychange", persistScroll)
+
+    return () => {
+      window.removeEventListener("load", restore)
+      window.removeEventListener("scroll", onScroll)
+      window.removeEventListener("pagehide", persistScroll)
+      document.removeEventListener("visibilitychange", persistScroll)
+    }
   }, [variant])
 
   React.useEffect(() => {
