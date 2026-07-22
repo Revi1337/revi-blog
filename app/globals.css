@@ -298,6 +298,7 @@ body {
   color: color-mix(in srgb, var(--color-on-surface-variant) 55%, transparent);
 }
 .article-body .heading-anchor-label:hover + .heading-anchor,
+.article-body .heading-anchor:hover,
 .article-body .heading-anchor:focus-visible {
   opacity: 1;
   transform: translateX(0);
