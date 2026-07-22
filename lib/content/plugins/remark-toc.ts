@@ -16,7 +16,8 @@ export function remarkToc() {
   return (tree: Root, file: VFile) => {
     const slugger = new GithubSlugger()
     const items: TocItem[] = []
-    let order = 0
+    let h2Order = 0
+    let h3Order = 0
 
     visit(tree, "heading", (node: Heading) => {
       const label = toString(node)
@@ -27,7 +28,16 @@ export function remarkToc() {
 
       if (node.depth !== 2 && node.depth !== 3) return
 
-      order += 1
+      let order: number
+      if (node.depth === 2) {
+        h2Order += 1
+        h3Order = 0
+        order = h2Order
+      } else {
+        h3Order += 1
+        order = h3Order
+      }
+
       items.push({ id, label, order, depth: node.depth })
     })
 
