@@ -10,7 +10,7 @@ import { cn } from "@/lib/utils"
 const HEADER_OFFSET = 96
 
 export function TocSidebar({ items }: { items: TocItem[] }) {
-  const [activeId, setActiveId] = React.useState<string | undefined>(items[0]?.id)
+  const [activeId, setActiveId] = React.useState<string | undefined>(undefined)
 
   React.useEffect(() => {
     const headings = items
@@ -27,7 +27,7 @@ export function TocSidebar({ items }: { items: TocItem[] }) {
       const visibleHeadings = headings.filter((heading) => heading.offsetParent !== null)
       if (visibleHeadings.length === 0) return
 
-      let currentId = visibleHeadings[0].id
+      let currentId: string | undefined
       for (const heading of visibleHeadings) {
         if (heading.getBoundingClientRect().top <= HEADER_OFFSET) {
           currentId = heading.id
