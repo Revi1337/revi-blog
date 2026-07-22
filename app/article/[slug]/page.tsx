@@ -53,6 +53,8 @@ export default async function ArticleDetailPage({
         <article className="space-y-12 lg:col-span-8">
           <ArticleHeader article={article} />
 
+          <TocSidebar items={article.toc} variant="mobile" />
+
           <div className="article-body space-y-0" dangerouslySetInnerHTML={{ __html: article.bodyHtml }} />
           <CodeCopyHandler />
           <ImageLightboxHandler images={article.images} />
@@ -62,7 +64,7 @@ export default async function ArticleDetailPage({
         </article>
 
         <aside className="lg:col-span-4">
-          <TocSidebar items={article.toc} />
+          <TocSidebar items={article.toc} variant="desktop" />
         </aside>
       </main>
     </div>

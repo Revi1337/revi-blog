@@ -210,6 +210,10 @@
   --spacing-gutter: 24px;
   --spacing-section-gap: 80px;
 
+  /* 고정 nav 높이 — article-body heading의 scroll-margin-top과 TocSidebar의
+     스크롤스파이 판정 기준(HEADER_OFFSET)이 이 값 하나만 참조하도록 공유한다. */
+  --header-offset: 96px;
+
   /* 모서리 반경 — dark/light 간 미세 불일치(spec Assumptions)를 통일 */
   --radius-DEFAULT: 4px;
   --radius-lg: 4px;
@@ -256,7 +260,7 @@ body {
    Tailwind preflight가 heading/list 기본 스타일을 리셋하므로 여기서 직접 복원한다. */
 .article-body h2 {
   margin-top: 3rem;
-  scroll-margin-top: 80px;
+  scroll-margin-top: var(--header-offset);
   font-family: var(--font-headline-lg);
   font-size: var(--text-headline-lg);
   line-height: var(--text-headline-lg--line-height);
@@ -270,7 +274,7 @@ body {
 .article-body h3 {
   margin-top: 2rem;
   margin-bottom: 1rem;
-  scroll-margin-top: 80px;
+  scroll-margin-top: var(--header-offset);
   font-size: 1.25rem;
   font-weight: 600;
   color: var(--color-on-surface);
@@ -447,6 +451,11 @@ body {
 }
 .toc-nav::-webkit-scrollbar {
   display: none; /* Chrome/Safari/최신 Edge */
+}
+/* 모바일 TOC(<details>/<summary>) 기본 화살표 마커 제거 — list-none은 Firefox의
+   list-item 마커를 지우고, ::-webkit-details-marker는 Chrome/Safari용 별도 제거가 필요하다 */
+.toc-summary::-webkit-details-marker {
+  display: none;
 }
 /* 라인 넘버 — CSS counter로 생성한 ::before 콘텐츠라 실제 텍스트 노드가 아니며,
    대부분의 브라우저에서 기본적으로 선택되지 않는다. user-select: none으로 드래그 선택도 명시적으로 차단한다. */
