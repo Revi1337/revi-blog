@@ -10,7 +10,7 @@ export function QuickSearchButtons({
   onSelect: (id: string) => void
 }) {
   return (
-    <div className="mb-stack-lg flex gap-2 overflow-x-auto pb-1 sm:flex-wrap sm:overflow-visible">
+    <div className="mb-stack-lg flex flex-wrap gap-2">
       {presets.map((preset) => {
         const isActive = preset.id === activePresetId
         return (
