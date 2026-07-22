@@ -12,6 +12,7 @@ export interface QuickSearchPreset {
  */
 export const quickSearchPresets: QuickSearchPreset[] = [
   { id: "algorithm-concept", label: "Algorithm", tags: ["algorithm", "concept"] },
+  { id: "spring-interview", label: "Spring Interview", tags: ["spring", "interview"] },
   { id: "grpc", label: "gRPC", tags: ["gRPC"] },
   { id: "kafka", label: "Kafka", tags: ["kafka", "spark"] },
   { id: "spark", label: "Spark", tags: ["spark"] },
