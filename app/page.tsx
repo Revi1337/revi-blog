@@ -2,6 +2,7 @@ import { Suspense } from "react"
 
 import { HeroCarousel } from "@/components/home/hero-carousel"
 import { EntryStream } from "@/components/home/entry-stream"
+import { EntryStreamSkeleton } from "@/components/home/entry-stream-skeleton"
 import { blogCards } from "@/lib/data/articles"
 import { DEFAULT_THUMBNAIL } from "@/lib/data/types"
 
@@ -20,7 +21,7 @@ export default function HomePage() {
       </header>
 
       <div className="mx-auto max-w-[1200px] px-gutter pb-section-gap">
-        <Suspense fallback={null}>
+        <Suspense fallback={<EntryStreamSkeleton />}>
           <EntryStream cards={blogCards} />
         </Suspense>
       </div>
