@@ -61,12 +61,13 @@ export function NavBar({ searchIndex }: NavBarProps) {
         </div>
         <div className="flex min-w-0 items-center gap-stack-md">
           <SearchTrigger onOpen={openSearch} />
-          <button
+          {/* 서버가 없어 로그인 기능이 동작하지 않으므로 비활성화. 추후 서버 연동 시 주석 해제 */}
+          {/* <button
             type="button"
             className="hidden shrink-0 rounded-lg bg-primary px-6 py-2 font-label-caps text-label-caps text-on-primary transition-all hover:brightness-110 active:scale-95 dark:bg-primary-container dark:text-on-primary-container sm:block"
           >
             LOGIN
-          </button>
+          </button> */}
           <div className="flex shrink-0 items-center gap-2">
             <span className="hidden text-outline-variant select-none text-code-sm sm:inline">
               |
