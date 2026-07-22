@@ -74,7 +74,10 @@ export function TocSidebar({
 
     const restore = () => {
       if (savedScroll !== null) {
-        window.scrollTo({ top: savedScroll })
+        // 새로고침 복원은 사용자가 의도한 이동이 아니라 "원래 있던 자리로 되돌아가는 것"이라
+        // 애니메이션 없이 즉시 이동한다. behavior: "auto"는 CSSOM 스펙상 html의
+        // scroll-behavior: smooth를 그대로 따르므로(override가 아님) 반드시 "instant"를 써야 한다.
+        window.scrollTo({ top: savedScroll, behavior: "instant" })
         return
       }
       const hash = window.location.hash
