@@ -25,10 +25,13 @@ categories:
           - title: Baeldung
             url: https://www.baeldung.com
             description: Spring/Java 실전 예제
-          - title: Kafka Docs
-            url: https://kafka.apache.org/documentation
-          - title: PostgreSQL Docs
-            url: https://www.postgresql.org/docs
+        categories:
+          - name: Java
+            items:
+              - title: Kafka Docs
+                url: https://kafka.apache.org/documentation
+              - title: PostgreSQL Docs
+                url: https://www.postgresql.org/docs
       - name: Frontend
         items:
           - title: React Docs

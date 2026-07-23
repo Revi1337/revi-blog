@@ -107,6 +107,6 @@ export interface BookmarkCategory {
   /** lucide-react 아이콘 이름 (예: "code", "palette") — 없으면 텍스트 라벨만 표시 */
   icon?: string
   items?: BookmarkItem[]
-  /** 하위 카테고리 — 렌더링은 depth 1까지만 스타일을 구분하지만, 타입/파싱은 깊이 제한이 없다 */
+  /** 하위 카테고리 — 재귀 깊이 제한 없음. depth 0만 큰 헤딩이고 depth 1 이상은 전부 동일한 서브헤딩 스타일을 재사용한다 */
   categories?: BookmarkCategory[]
 }
