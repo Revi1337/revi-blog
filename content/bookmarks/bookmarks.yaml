@@ -1,63 +1,172 @@
 categories:
+  - name: AI
+    icon: sparkles
+    items:
+      - title: Claude Code Docs
+        url: https://code.claude.com/docs/en/overview
+        description: Claude Code 공식 문서
+      - title: Codex CLI Docs
+        url: https://learn.chatgpt.com/docs/developer-commands?surface=cli
+        description: OpenAI Codex CLI 개발자 커맨드 공식 문서
+      - title: Antigravity Docs
+        url: https://antigravity.google/docs/getting-started
+        description: Google Antigravity 공식 문서
+
   - name: Development
     icon: code
-    items:
-      - title: MDN Web Docs
-        url: https://developer.mozilla.org
-        description: 웹 표준 문서
-      - title: TypeScript Handbook
-        url: https://www.typescriptlang.org/docs/handbook/intro.html
-      - title: MDN Web Docs
-        url: https://developer.mozilla.org
-        description: 웹 표준 문서
-      - title: TypeScript Handbook
-        url: https://www.typescriptlang.org/docs/handbook/intro.html
-      - title: MDN Web Docs
-        url: https://developer.mozilla.org
-        description: 웹 표준 문서
-      - title: TypeScript Handbook
-        url: https://www.typescriptlang.org/docs/handbook/intro.html
     categories:
+      - name: Language
+        items:
+          - title: TypeScript Handbook
+            url: https://www.typescriptlang.org/docs/handbook/intro.html
+            description: TypeScript 공식 문서
+          - title: JavaScript Docs
+            url: https://developer.mozilla.org/en-US/docs/Web/JavaScript
+            description: MDN JS 언어 레퍼런스
+          - title: Java Docs
+            url: https://docs.oracle.com/en/java/javase/index.html
+            description: Java SE 공식 문서
+          - title: Python Docs
+            url: https://docs.python.org/3/
+            description: Python 공식 문서
+      - name: Frontend
+        items:
+          - title: CSS Docs
+            url: https://developer.mozilla.org/en-US/docs/Web/CSS
+            description: MDN CSS 레퍼런스
+          - title: React Docs
+            url: https://react.dev/learn
+            description: React 공식 문서 (ko 버전은 ko.react.dev/learn)
+          - title: Next.js Docs
+            url: https://nextjs.org/docs
+            description: Next.js 공식 문서
+          - title: Vue Docs
+            url: https://vuejs.org/guide/introduction.html
+            description: Vue 공식 가이드
+          - title: Nuxt Docs
+            url: https://nuxt.com/docs
+            description: Nuxt 공식 문서
+          - title: Vercel Docs
+            url: https://vercel.com/docs
+            description: Vercel 배포 플랫폼 공식 문서
+          - title: web.dev
+            url: https://web.dev
+            description: 웹 성능/표준 아티클
       - name: Backend
         items:
           - title: Spring Docs
             url: https://spring.io/projects/spring-framework
+            description: Spring Framework 공식 문서 (Learn -> Reference Doc)
+          - title: Spring Boot Docs
+            url: https://spring.io/projects/spring-boot
+            description: Spring Boot 공식 문서 (Learn -> Reference Doc)
+          - title: Spring Web Docs
+            url: https://docs.spring.io/spring-framework/reference/web.html
+            description: Spring Web(MVC) 공식 문서 (Learn -> Reference Doc)
+          - title: Spring Data Access Docs
+            url: https://docs.spring.io/spring-framework/reference/data-access.html
+            description: Spring Data Access 공식 문서
+          - title: Spring Data JPA Docs
+            url: https://spring.io/projects/spring-data-jpa
+            description: Spring Data JPA 공식 문서 (Learn -> Reference Doc)
+          - title: Spring Data Redis Docs
+            url: https://spring.io/projects/spring-data-redis
+            description: Spring Data Redis 공식 문서 (Learn -> Reference Doc)
+          - title: Spring AMQP Docs
+            url: https://spring.io/projects/spring-amqp
+            description: Spring RabbitMQ 공식 문서 (Learn -> Reference Doc)
+          - title: Spring Kafka Docs
+            url: https://spring.io/projects/spring-kafka
+            description: Spring Kafka 공식 문서 (Learn -> Reference Doc)
+          - title: Spring REST Docs
+            url: https://spring.io/projects/spring-restdocs
+            description: Spring REST Docs 공식 문서 (Learn -> Reference Doc)
           - title: Baeldung
             url: https://www.baeldung.com
             description: Spring/Java 실전 예제
-        categories:
-          - name: Java
-            items:
-              - title: Kafka Docs
-                url: https://kafka.apache.org/documentation
-              - title: PostgreSQL Docs
-                url: https://www.postgresql.org/docs
-      - name: Frontend
+      - name: Infra
         items:
-          - title: React Docs
-            url: https://react.dev
-          - title: Next.js Docs
-            url: https://nextjs.org/docs
-          - title: web.dev
-            url: https://web.dev
-            description: 웹 성능/표준 아티클
+          - title: MySQL Docs
+            url: https://dev.mysql.com/doc
+            description: MySQL 공식 문서
+          - title: PostgreSQL Docs
+            url: https://www.postgresql.org/docs
+            description: PostgreSQL 공식 문서
+          - title: Supabase Docs
+            url: https://supabase.com/docs
+            description: Supabase 공식 문서
+          - title: Redis Docs
+            url: https://redis.io/docs/latest
+            description: Redis 공식 문서
+          - title: Redis Gate
+            url: https://redisgate.kr/redis/introduction/redis_intro.php
+            description: 국내 가장 잘되어있는 Redis 블로그
+          - title: MongoDB Docs
+            url: https://www.mongodb.com/docs
+            description: MongoDB 공식 문서
+          - title: RabbitMQ Docs
+            url: https://www.rabbitmq.com/docs
+            description: RabbitMQ 공식 문서
+          - title: Kafka Docs
+            url: https://kafka.apache.org/documentation
+            description: Kafka 공식 문서
+          - title: Docker Docs
+            url: https://docs.docker.com
+            description: Docker 공식 문서
+          - title: Docker Compose Docs
+            url: https://docs.docker.com/compose
+            description: Docker Compose 공식 문서
+          - title: Kubernetes Docs
+            url: https://kubernetes.io/docs/home
+            description: Kubernetes 공식 문서
 
   - name: Design
     icon: palette
     items:
-      - title: Refactoring UI
-        url: https://www.refactoringui.com
-        description: UI 디자인 원칙 정리
+      - title: Lucide Icons
+        url: https://lucide.dev/icons/
+        description: 아이콘 라이브러리
+      - title: getdesign.md
+        url: https://getdesign.md/
+        description: AI 코딩 에이전트용 DESIGN.md 레퍼런스 모음
+      - title: Refero Styles
+        url: https://styles.refero.design/
+        description: AI 에이전트용 DESIGN.md 라이브러리 (색상/타이포/스페이싱/컴포넌트)
+      - title: Dribbble Popular
+        url: https://dribbble.com/shots/popular
+        description: 디자이너 포트폴리오/디자인 인스피레이션 플랫폼 인기 작품 모음
+      - title: Spline Community
+        url: https://app.spline.design/community
+        description: 3D 씬/애니메이션 커뮤니티 갤러리
 
-  - name: Reading
-    icon: book-open
+  - name: Security
+    icon: shield
     items:
-      - title: Overreacted
-        url: https://overreacted.io
-        description: Dan Abramov 블로그
+      - title: HackTheBox
+        url: https://www.hackthebox.com/
+        description: 해킹/보안 실습 플랫폼
+      - title: TryHackMe
+        url: https://tryhackme.com/
+        description: 해킹/보안 학습 플랫폼
+      - title: CyberChef
+        url: https://gchq.github.io/CyberChef/
+        description: 인코딩/디코딩/암호 분석 웹 툴 (GCHQ)
+      - title: HackTricks
+        url: https://hacktricks.wiki/en/index.html
+        description: 해킹 기법/CTF 노트 모음 (ko 도메인을 en -> ko로 수정)
 
   - name: Blogs
-    icon: rss
+    icon: rss # book-open
     items:
-      - title: Josh Comeau
-        url: https://www.joshwcomeau.com
+      - title: Dongre Dev
+        url: https://dongre.dev/
+        description: Dongre 블로그(벌레) (Obsidian Quartz)
+      - title: Erdos Velog
+        url: https://velog.io/@erdosnumber0/posts
+        description: Erdos 블로그(발자국) (Velog)
+      - title: Devboi Tistory
+        url: https://lolesports-devboi.tistory.com/
+        description: Devboi 블로그(개준생) (Tstory)
+      - title: hshong313 Tistory
+        url: https://hshong313.tistory.com/
+        description: hshong313(닭킬) 블로그 (Tstory)
