@@ -1,0 +1,60 @@
+categories:
+  - name: Development
+    icon: code
+    items:
+      - title: MDN Web Docs
+        url: https://developer.mozilla.org
+        description: 웹 표준 문서
+      - title: TypeScript Handbook
+        url: https://www.typescriptlang.org/docs/handbook/intro.html
+      - title: MDN Web Docs
+        url: https://developer.mozilla.org
+        description: 웹 표준 문서
+      - title: TypeScript Handbook
+        url: https://www.typescriptlang.org/docs/handbook/intro.html
+      - title: MDN Web Docs
+        url: https://developer.mozilla.org
+        description: 웹 표준 문서
+      - title: TypeScript Handbook
+        url: https://www.typescriptlang.org/docs/handbook/intro.html
+    categories:
+      - name: Backend
+        items:
+          - title: Spring Docs
+            url: https://spring.io/projects/spring-framework
+          - title: Baeldung
+            url: https://www.baeldung.com
+            description: Spring/Java 실전 예제
+          - title: Kafka Docs
+            url: https://kafka.apache.org/documentation
+          - title: PostgreSQL Docs
+            url: https://www.postgresql.org/docs
+      - name: Frontend
+        items:
+          - title: React Docs
+            url: https://react.dev
+          - title: Next.js Docs
+            url: https://nextjs.org/docs
+          - title: web.dev
+            url: https://web.dev
+            description: 웹 성능/표준 아티클
+
+  - name: Design
+    icon: palette
+    items:
+      - title: Refactoring UI
+        url: https://www.refactoringui.com
+        description: UI 디자인 원칙 정리
+
+  - name: Reading
+    icon: book-open
+    items:
+      - title: Overreacted
+        url: https://overreacted.io
+        description: Dan Abramov 블로그
+
+  - name: Blogs
+    icon: rss
+    items:
+      - title: Josh Comeau
+        url: https://www.joshwcomeau.com

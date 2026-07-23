@@ -95,3 +95,18 @@ export interface SearchResult {
   /** mode가 "text"일 때만 랭킹에 쓰인다 — "tag" 모드에서는 null */
   matchedIn: "title" | "body" | null
 }
+
+export interface BookmarkItem {
+  title: string
+  url: string
+  description?: string
+}
+
+export interface BookmarkCategory {
+  name: string
+  /** lucide-react 아이콘 이름 (예: "code", "palette") — 없으면 텍스트 라벨만 표시 */
+  icon?: string
+  items?: BookmarkItem[]
+  /** 하위 카테고리 — 렌더링은 depth 1까지만 스타일을 구분하지만, 타입/파싱은 깊이 제한이 없다 */
+  categories?: BookmarkCategory[]
+}
