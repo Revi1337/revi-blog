@@ -66,6 +66,20 @@ $$
 
 ![숲길](/images/lightbox-test/photo-3.jpg)
 
+## 옵시디언 wikilink / embed 검증
+
+임베드(별칭 없음): ![[test-photo.jpg]]
+
+임베드(별칭 있음): ![[test-photo.jpg|커스텀 alt 텍스트]]
+
+임베드(이미지가 아닌 파일 — img로 오인하지 않고 평문으로 남아야 함): ![[report.pdf]]
+
+wikilink(slug로 매칭): [[gc-tuning-jvm-applications]]
+
+wikilink(제목으로 매칭, 별칭 있음): [[Spring Transcation Interview|스프링 트랜잭션 글]]
+
+wikilink(존재하지 않는 노트 — 평문으로 남아야 함): [[존재하지-않는-노트]]
+
 #### h4 레벨 소제목 (TOC에는 안 나타나야 함)
 
 <details>

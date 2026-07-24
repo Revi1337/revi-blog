@@ -1,7 +1,7 @@
 import fs from "node:fs"
 import path from "node:path"
 
-import { parseFrontmatter } from "@/lib/content/frontmatter"
+import { parseFrontmatter, type ArticleFrontmatter } from "@/lib/content/frontmatter"
 import { renderMarkdown } from "@/lib/content/pipeline"
 import { stripComments } from "@/lib/content/strip-comments"
 import { computeReadingTimeMinutes } from "@/lib/content/reading-time"
@@ -11,12 +11,33 @@ import type { Article } from "@/lib/data/types"
 
 const CONTENT_DIR = path.join(process.cwd(), "content", "articles")
 
-async function loadArticleFile(filePath: string): Promise<Article> {
+interface ParsedArticleFile {
+  filePath: string
+  slug: string
+  frontmatter: ArticleFrontmatter
+  rawBody: string
+}
+
+function parseArticleFile(filePath: string): ParsedArticleFile {
   const raw = fs.readFileSync(filePath, "utf-8")
   const { frontmatter, rawBody } = parseFrontmatter(filePath, raw)
-  const { bodyHtml, toc, plainBody, images } = await renderMarkdown(stripComments(rawBody))
-
   const slug = frontmatter.slug ?? path.basename(filePath, ".md")
+  return { filePath, slug, frontmatter, rawBody }
+}
+
+/** `[[제목]]`/`[[slug]]` wikilink 해석용 — 옵시디언 노트 제목과 slug 둘 다로 찾을 수 있도록 매핑한다 */
+function buildTitleToSlugMap(parsed: ParsedArticleFile[]): Map<string, string> {
+  const map = new Map<string, string>()
+  for (const { frontmatter, slug } of parsed) {
+    map.set(slug.toLowerCase(), slug)
+    map.set(frontmatter.title.trim().toLowerCase(), slug)
+  }
+  return map
+}
+
+async function loadArticleFile(parsed: ParsedArticleFile, titleToSlug: Map<string, string>): Promise<Article> {
+  const { slug, frontmatter, rawBody } = parsed
+  const { bodyHtml, toc, plainBody, images } = await renderMarkdown(stripComments(rawBody), titleToSlug)
   const readingTimeMinutes = frontmatter.readingTimeMinutes ?? computeReadingTimeMinutes(rawBody)
 
   return {
@@ -61,7 +82,12 @@ export async function loadArticles(): Promise<LoadedContent> {
   const filenames = fs.readdirSync(CONTENT_DIR).filter((name) => name.endsWith(".md"))
   const filePaths = filenames.map((name) => path.join(CONTENT_DIR, name))
 
-  const loaded = await Promise.all(filePaths.map((filePath) => loadArticleFile(filePath)))
+  // wikilink가 다른 글을 참조할 수 있으므로, 렌더링 전에 전체 글의 frontmatter부터 훑어
+  // title/slug → slug 매핑을 먼저 만든다.
+  const parsedFiles = filePaths.map((filePath) => parseArticleFile(filePath))
+  const titleToSlug = buildTitleToSlugMap(parsedFiles)
+
+  const loaded = await Promise.all(parsedFiles.map((parsed) => loadArticleFile(parsed, titleToSlug)))
   assertNoDuplicateSlugs(loaded.map((article, index) => ({ slug: article.slug, filePath: filePaths[index] })))
 
   const sortedDesc = [...loaded].sort((a, b) => (a.publishedAt < b.publishedAt ? 1 : -1))
