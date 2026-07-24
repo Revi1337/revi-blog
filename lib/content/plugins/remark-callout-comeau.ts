@@ -2,10 +2,11 @@ import { visit } from "unist-util-visit"
 import type { Root, Blockquote, Paragraph, PhrasingContent, Text } from "mdast"
 
 /** `[#TYPE]` 마커 — 기존 GitHub Alert 스타일 콜아웃(`[!TYPE]`, remark-callout.ts)과
- * 완전히 분리된 별도 문법. 두 시스템은 같은 문서 안에서 공존 가능하다 */
-const MARKER_RE = /^\[#(\w+)\](?:\s+(.*))?$/
+ * 완전히 분리된 별도 문법. 두 시스템은 같은 문서 안에서 공존 가능하다.
+ * `[#TYPE]-`/`[#TYPE]+`는 remark-callout.ts와 동일한 접기 문법(각각 접힌 채/펼친 채 시작) */
+const MARKER_RE = /^\[#(\w+)\]([-+])?(?:\s+(.*))?$/
 
-type ResolvedType = "note" | "info" | "tip" | "success" | "warning" | "danger" | "quote"
+type ResolvedType = "note" | "info" | "tip" | "success" | "warning" | "danger" | "quote" | "collapse"
 
 const TYPE_MAP: Record<string, ResolvedType> = {
   NOTE: "note",
@@ -15,6 +16,11 @@ const TYPE_MAP: Record<string, ResolvedType> = {
   WARNING: "warning",
   DANGER: "danger",
   QUOTE: "quote",
+  /** note/info 같은 특정 의미 없이 그냥 접히는 섹션 — 순수 raw `<details>`와 같은 용도를
+   * `[#TYPE]` 문법으로 쓰고 싶을 때 사용. 전용 강조색이 없어 --callout-comeau-accent가
+   * 정의되지 않고, 모든 fill/color 선언의 기본값인 --color-outline-variant로 자연히
+   * 떨어진다(중립 회색) */
+  COLLAPSE: "collapse",
 }
 
 interface IconPath {
@@ -42,6 +48,7 @@ const SWOOSH_VARIANT_BY_TYPE: Record<ResolvedType, SwooshVariant> = {
   success: "calm",
   quote: "calm",
   danger: "calm",
+  collapse: "calm",
   warning: "alert",
 }
 
@@ -117,6 +124,17 @@ const ICONS: Record<ResolvedType, IconPath[]> = {
         d: "M5 3a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2 1 1 0 0 1 1 1v1a2 2 0 0 1-2 2 1 1 0 0 0-1 1v2a1 1 0 0 0 1 1 6 6 0 0 0 6-6V5a2 2 0 0 0-2-2z",
       },
     },
+  ],
+  /** lucide UnfoldVertical — 순수 접기/펼치기(collapse) 타입 전용 아이콘 */
+  collapse: [
+    { tag: "path", attrs: { d: "M12 22v-6" } },
+    { tag: "path", attrs: { d: "M12 8V2" } },
+    { tag: "path", attrs: { d: "M4 12H2" } },
+    { tag: "path", attrs: { d: "M10 12H8" } },
+    { tag: "path", attrs: { d: "M16 12h-2" } },
+    { tag: "path", attrs: { d: "M22 12h-2" } },
+    { tag: "path", attrs: { d: "m15 19-3 3-3-3" } },
+    { tag: "path", attrs: { d: "m15 5-3-3-3 3" } },
   ],
 }
 
@@ -233,6 +251,22 @@ function titleNode(title: string) {
   }
 }
 
+/** 접기 가능한 콜아웃의 헤더(rail+badge+title)를 <summary>로 묶는다. 펼침 화살표는 별도
+ * 엘리먼트 없이 globals.css의 범용 `.article-body summary::after` 규칙(회전 애니메이션 포함)을
+ * 그대로 재사용한다 — <details>/<summary> 태그만 맞으면 자동 적용되므로 중복 마크업 불필요.
+ * rail/fallback-bar/badge는 position:absolute라 <summary> 안으로 옮겨도 화면 위치는 그대로다 —
+ * 가장 가까운 position 조상(.callout-comeau, 곧 <details>)을 기준으로 계속 절대 배치되기 때문.
+ * children을 일반 mdast children 배열로 넣어 각 노드가 자기 자신의 data.hName으로 재귀
+ * 변환되게 한다(hChildren을 직접 주면 안 됨 — 이미 hName을 가진 커스텀 노드는 raw hast가
+ * 아니라서 hChildren 배열에 넣으면 변환되지 않는다) */
+function summaryNode(resolvedType: ResolvedType, title: string) {
+  return {
+    type: "calloutComeauSummary",
+    data: { hName: "summary", hProperties: { className: ["callout-comeau-summary"] } },
+    children: [railNode(resolvedType), fallbackBarNode(), badgeNode(resolvedType), titleNode(title)],
+  }
+}
+
 function isTextNode(node: PhrasingContent | undefined): node is Text {
   return node?.type === "text"
 }
@@ -257,7 +291,9 @@ export function remarkCalloutComeau() {
       const match = firstLine.match(MARKER_RE)
       if (!match) return
 
-      const [, rawType, customTitle] = match
+      const [, rawType, collapseMarker, customTitle] = match
+      const collapseState: "none" | "collapsed" | "expanded" =
+        collapseMarker === "-" ? "collapsed" : collapseMarker === "+" ? "expanded" : "none"
       const resolvedType = TYPE_MAP[rawType.toUpperCase()] ?? "note"
       const title = customTitle?.trim() ? customTitle.trim() : rawType
 
@@ -276,17 +312,20 @@ export function remarkCalloutComeau() {
         children: bodyChildren,
       }
 
-      node.children = [
-        railNode(resolvedType),
-        fallbackBarNode(),
-        badgeNode(resolvedType),
-        titleNode(title),
-        body,
-      ] as unknown as Blockquote["children"]
+      const isCollapsible = collapseState !== "none"
+
+      node.children = (
+        isCollapsible
+          ? [summaryNode(resolvedType, title), body]
+          : [railNode(resolvedType), fallbackBarNode(), badgeNode(resolvedType), titleNode(title), body]
+      ) as unknown as Blockquote["children"]
       node.data = {
         ...node.data,
-        hName: "aside",
-        hProperties: { className: ["callout-comeau", `callout-comeau-${resolvedType}`] },
+        hName: isCollapsible ? "details" : "aside",
+        hProperties: {
+          className: ["callout-comeau", `callout-comeau-${resolvedType}`],
+          ...(collapseState === "expanded" ? { open: true } : {}),
+        },
       }
     })
   }

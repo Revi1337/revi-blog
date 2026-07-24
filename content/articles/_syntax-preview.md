@@ -30,6 +30,12 @@ thumbnail: "/images/lightbox-test/photo-1.jpg"
 > [#WARNING] 경고
 > 경고 타입 색상 확인용.
 
+> [#WARNING]- 접힌 경고
+> 접힌 경고 타입 색상 확인용.
+
+> [#TIP]+ 펼친 채 시작하는 팁
+> 접기 마커가 `+`면 details에 open 속성이 붙어 처음부터 펼쳐진 채로 렌더된다.
+
 > [#DANGER] 위험
 > 위험 타입 색상 확인용.
 
@@ -68,3 +74,8 @@ $$
 디자인 톤이 콜아웃 접기와 통일되어야 한다.
 
 </details>
+
+같은 걸 Comeau 콜아웃의 무타입(collapse) 버전으로 구현하면:
+
+> [#COLLAPSE]- 접기/펼치기
+> unfold-vertical 아이콘 + 중립 회색(--color-outline-variant) 조합. 특정 타입 강조색이 없는 순수 접기 섹션용.

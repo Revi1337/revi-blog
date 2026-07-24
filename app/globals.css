@@ -613,12 +613,38 @@ body {
    컨테이너가 좁아지면(container query) 장식을 접고 단순 border-left로 대체한다. */
 .article-body .callout-comeau {
   position: relative;
+  /* 접기 가능한 콜아웃은 <details>로 렌더되어 범용 `.article-body details{overflow:hidden}`
+     규칙과도 매치된다 — 그대로 두면 뱃지가 카드 왼쪽 바깥으로 나가는 부분이 잘린다 */
+  overflow: visible;
   container-type: inline-size;
   container-name: callout-comeau;
   margin: 1.5rem 0;
   padding: 1.25rem 1.25rem 1.25rem 2.75rem;
   border-radius: var(--radius-lg);
   background-color: color-mix(in srgb, var(--callout-comeau-accent, var(--color-outline-variant)) 6%, var(--color-surface-container-lowest));
+}
+.article-body .callout-comeau-summary {
+  /* 접기 가능한 콜아웃(<details>)의 헤더 — 범용 `.article-body summary` 규칙(코드체 폰트,
+     0.75rem 1rem 패딩 등)이 이 클래스 선택자보다 우선순위가 낮아 자동으로 깔리므로 명시
+     초기화한다. 화살표(::after)와 marker 숨김은 범용 규칙을 그대로 재사용 — details/summary
+     태그만 맞으면 자동 적용되고 회전 애니메이션도 이미 갖춰져 있다 */
+  display: flex;
+  align-items: center;
+  gap: 0;
+  padding: 0;
+  cursor: pointer;
+  font: inherit;
+  color: inherit;
+}
+.article-body .callout-comeau-summary .callout-comeau-title {
+  /* 요약줄 안에서는 flex 1로 남는 폭을 차지해야 화살표가 우측 끝에 붙는다 */
+  flex: 1 1 auto;
+  margin-bottom: 0;
+}
+.article-body .callout-comeau-body {
+  /* 접기 가능한 콜아웃은 <details>가 되어 범용 `.article-body details > *:not(summary)`
+     규칙(padding: 0 1rem 1rem)과도 매치된다 — 카드 자체 패딩과 이중으로 겹치지 않게 0으로 리셋 */
+  padding: 0;
 }
 .article-body .callout-comeau-rail {
   position: absolute;
