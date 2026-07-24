@@ -7,39 +7,39 @@ showOnHomepage: false
 thumbnail: "/images/lightbox-test/photo-1.jpg"
 ---
 
-## 콜아웃
+## 콜아웃 (GitHub Alert 스타일)
 
-> [!NOTE]
+> [#NOTE]
 > 기본 노트 콜아웃
 
-> [!WARNING]- 접힌 경고
+> [#WARNING]- 접힌 경고
 > 클릭하면 펼쳐진다
 
-> [!IMPORTANT]
+> [#IMPORTANT]
 > GitHub Alert 별칭이 옵시디언 콜아웃과 동일하게 렌더링되는지 확인
 
 ## 콜아웃 (Comeau 스타일 프로토타입)
 
-> [#SUCCESS] Carved tooltips
+> [!SUCCESS] Carved tooltips
 > joshwcomeau.com의 콜아웃을 벤치마킹한 프로토타입. 좌측에 SVG 곡선 장식이 흐르다가
 > 아이콘 뱃지와 겹치는 지점에서 끝나고, 그 아래는 단색 바로 이어진다.
 
-> [#INFO] 정보
+> [!INFO] 정보
 > 컨테이너 쿼리로 폭이 좁아지면 장식을 접고 단순 border-left로 바뀐다.
 
-> [#WARNING] 경고
+> [!WARNING] 경고
 > 경고 타입 색상 확인용.
 
-> [#WARNING]- 접힌 경고
+> [!WARNING]- 접힌 경고
 > 접힌 경고 타입 색상 확인용.
 
-> [#TIP]+ 펼친 채 시작하는 팁
+> [!TIP]+ 펼친 채 시작하는 팁
 > 접기 마커가 `+`면 details에 open 속성이 붙어 처음부터 펼쳐진 채로 렌더된다.
 
-> [#DANGER] 위험
+> [!DANGER] 위험
 > 위험 타입 색상 확인용.
 
-> [#QUOTE] 인용
+> [!QUOTE] 인용
 > 인용 타입 색상 확인용.
 
 ## 수식
@@ -77,5 +77,5 @@ $$
 
 같은 걸 Comeau 콜아웃의 무타입(collapse) 버전으로 구현하면:
 
-> [#COLLAPSE]- 접기/펼치기
+> [!COLLAPSE]- 접기/펼치기
 > unfold-vertical 아이콘 + 중립 회색(--color-outline-variant) 조합. 특정 타입 강조색이 없는 순수 접기 섹션용.

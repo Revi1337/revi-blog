@@ -1,10 +1,10 @@
 import { visit } from "unist-util-visit"
 import type { Root, Blockquote, Paragraph, PhrasingContent, Text } from "mdast"
 
-/** `[#TYPE]` 마커 — 기존 GitHub Alert 스타일 콜아웃(`[!TYPE]`, remark-callout.ts)과
+/** `[!TYPE]` 마커 — 기존 GitHub Alert 스타일 콜아웃(`[#TYPE]`, remark-callout.ts)과
  * 완전히 분리된 별도 문법. 두 시스템은 같은 문서 안에서 공존 가능하다.
- * `[#TYPE]-`/`[#TYPE]+`는 remark-callout.ts와 동일한 접기 문법(각각 접힌 채/펼친 채 시작) */
-const MARKER_RE = /^\[#(\w+)\]([-+])?(?:\s+(.*))?$/
+ * `[!TYPE]-`/`[!TYPE]+`는 remark-callout.ts와 동일한 접기 문법(각각 접힌 채/펼친 채 시작) */
+const MARKER_RE = /^\[!(\w+)\]([-+])?(?:\s+(.*))?$/
 
 type ResolvedType = "note" | "info" | "tip" | "success" | "warning" | "danger" | "quote" | "collapse"
 
@@ -17,7 +17,7 @@ const TYPE_MAP: Record<string, ResolvedType> = {
   DANGER: "danger",
   QUOTE: "quote",
   /** note/info 같은 특정 의미 없이 그냥 접히는 섹션 — 순수 raw `<details>`와 같은 용도를
-   * `[#TYPE]` 문법으로 쓰고 싶을 때 사용. 전용 강조색이 없어 --callout-comeau-accent가
+   * `[!TYPE]` 문법으로 쓰고 싶을 때 사용. 전용 강조색이 없어 --callout-comeau-accent가
    * 정의되지 않고, 모든 fill/color 선언의 기본값인 --color-outline-variant로 자연히
    * 떨어진다(중립 회색) */
   COLLAPSE: "collapse",
@@ -272,8 +272,8 @@ function isTextNode(node: PhrasingContent | undefined): node is Text {
 }
 
 /**
- * `> [#TYPE]` blockquote를 joshwcomeau.com 스타일 콜아웃 hast로 치환한다.
- * `[#TYPE]`에 매치하지 않는 blockquote는 그대로 반환한다(no-op).
+ * `> [!TYPE]` blockquote를 joshwcomeau.com 스타일 콜아웃 hast로 치환한다.
+ * `[!TYPE]`에 매치하지 않는 blockquote는 그대로 반환한다(no-op).
  */
 export function remarkCalloutComeau() {
   return (tree: Root) => {

@@ -1,7 +1,7 @@
 import { visit } from "unist-util-visit"
 import type { Root, Blockquote, Paragraph, PhrasingContent, Text } from "mdast"
 
-const MARKER_RE = /^\[!(\w+)\]([-+])?(?:\s+(.*))?$/
+const MARKER_RE = /^\[#(\w+)\]([-+])?(?:\s+(.*))?$/
 
 type ResolvedType =
   | "note"
@@ -16,7 +16,7 @@ type ResolvedType =
   | "quote"
   | "important"
 
-/** `[!TYPE]` 원본 문자열(대소문자 무관) → 정규화된 스타일 타입. GitHub Alerts 별칭 포함 */
+/** `[#TYPE]` 원본 문자열(대소문자 무관) → 정규화된 스타일 타입. GitHub Alerts 별칭 포함 */
 const TYPE_MAP: Record<string, ResolvedType> = {
   NOTE: "note",
   TIP: "tip",
@@ -178,7 +178,7 @@ function isTextNode(node: PhrasingContent | undefined): node is Text {
 }
 
 /**
- * `> [!TYPE]` blockquote를 콜아웃 hast로 치환한다. `[!TYPE]` 패턴에 매치하지 않는 blockquote는
+ * `> [#TYPE]` blockquote를 콜아웃 hast로 치환한다. `[#TYPE]` 패턴에 매치하지 않는 blockquote는
  * 그대로 반환한다(no-op, data-model.md CalloutDirective).
  */
 export function remarkCallout() {

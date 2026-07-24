@@ -613,9 +613,12 @@ body {
    컨테이너가 좁아지면(container query) 장식을 접고 단순 border-left로 대체한다. */
 .article-body .callout-comeau {
   position: relative;
-  /* 접기 가능한 콜아웃은 <details>로 렌더되어 범용 `.article-body details{overflow:hidden}`
-     규칙과도 매치된다 — 그대로 두면 뱃지가 카드 왼쪽 바깥으로 나가는 부분이 잘린다 */
+  /* 접기 가능한 콜아웃은 <details>로 렌더되어 범용 `.article-body details{overflow:hidden;
+     border:1px solid ...}` 규칙과도 매치된다 — overflow는 뱃지가 카드 왼쪽 바깥으로 나가는
+     부분이 잘리는 걸 막기 위해, border는 non-collapsible(<aside>) 버전과 톤을 맞추기 위해
+     둘 다 명시적으로 되돌린다 */
   overflow: visible;
+  border: none;
   container-type: inline-size;
   container-name: callout-comeau;
   margin: 1.5rem 0;
