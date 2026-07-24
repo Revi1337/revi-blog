@@ -672,7 +672,6 @@ body {
 }
 .article-body .callout-comeau-swoosh-cut {
   fill: var(--color-background);
-  transition: fill var(--color-swap-duration, 0.2s);
 }
 .article-body .callout-comeau-swoosh-stroke {
   fill: var(--callout-comeau-accent, var(--color-outline-variant));
