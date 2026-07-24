@@ -607,10 +607,11 @@ body {
 .dark .article-body .callout-quote { --callout-accent: #8b949e; }
 .dark .article-body .callout-important { --callout-accent: #ec6cb9; }
 
-/* joshwcomeau.com 스타일 콜아웃(> [#TYPE], remark-callout-comeau.ts 출력) — 기존
-   .callout(GitHub Alert 스타일)과 완전히 별개의 프로토타입. 좌측에 SVG 2겹으로 그린 곡선
-   장식(스우시)이 흐르다 아이콘 뱃지와 겹치는 지점에서 끝나고, 그 아래는 단색 바로 이어진다.
-   컨테이너가 좁아지면(container query) 장식을 접고 단순 border-left로 대체한다. */
+/* joshwcomeau.com 스타일 콜아웃(> [!TYPE], remark-callout-comeau.ts 출력) — 기존
+   .callout(GitHub Alert 스타일, > [#TYPE])과 완전히 별개의 프로토타입. 좌측에 SVG 2겹으로 그린
+   곡선 장식(스우시)이 흐르다 아이콘 뱃지와 겹치는 지점에서 끝나고, 그 아래는 단색 바로 이어진다.
+   컨테이너가 좁아지면(container query) 장식을 접고 단순 border-left로 대체한다.
+   벤치마킹 원본: https://www.joshwcomeau.com/css/anchor-positioning/#flipped-carets-with-anchored-container-queries-3 */
 .article-body .callout-comeau {
   position: relative;
   /* 접기 가능한 콜아웃은 <details>로 렌더되어 범용 `.article-body details{overflow:hidden;

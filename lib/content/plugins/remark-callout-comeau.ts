@@ -38,7 +38,7 @@ interface IconPath {
  * 두 variant 모두 바닥 꼬리가 6 units 폭으로 그려져 있어, 각자의 viewBox를 정확히 0.5배로
  * 렌더하면(28.5×34.5px / 37.5×35px) 꼬리가 3px로 맞아떨어져 아래 직선 바(3px)와 이음새가
  * 매끄럽다 — 이 "viewBox를 렌더 크기의 정확히 2배로 설계" 하는 게 핵심 트릭이다
- * (https://www.joshwcomeau.com/css/anchor-positioning/ 참고) */
+ * (벤치마킹 원본: https://www.joshwcomeau.com/css/anchor-positioning/#flipped-carets-with-anchored-container-queries-3) */
 type SwooshVariant = "calm" | "alert"
 
 const SWOOSH_VARIANT_BY_TYPE: Record<ResolvedType, SwooshVariant> = {
