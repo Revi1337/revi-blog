@@ -10,6 +10,7 @@ import rehypeStringify from "rehype-stringify"
 import { remarkMetrics } from "@/lib/content/plugins/remark-metrics"
 import { remarkToc } from "@/lib/content/plugins/remark-toc"
 import { remarkCallout } from "@/lib/content/plugins/remark-callout"
+import { remarkCalloutComeau } from "@/lib/content/plugins/remark-callout-comeau"
 import { remarkHighlight } from "@/lib/content/plugins/remark-highlight"
 import { remarkImages } from "@/lib/content/plugins/remark-images"
 import { remarkPlainText } from "@/lib/content/plugins/remark-plain-text"
@@ -29,6 +30,7 @@ const processor = unified()
   .use(remarkGfm)
   .use(remarkMath)
   .use(remarkCallout)
+  .use(remarkCalloutComeau)
   .use(remarkHighlight)
   .use(remarkMetrics)
   .use(remarkImages)

@@ -18,6 +18,24 @@ thumbnail: "/images/lightbox-test/photo-1.jpg"
 > [!IMPORTANT]
 > GitHub Alert 별칭이 옵시디언 콜아웃과 동일하게 렌더링되는지 확인
 
+## 콜아웃 (Comeau 스타일 프로토타입)
+
+> [#SUCCESS] Carved tooltips
+> joshwcomeau.com의 콜아웃을 벤치마킹한 프로토타입. 좌측에 SVG 곡선 장식이 흐르다가
+> 아이콘 뱃지와 겹치는 지점에서 끝나고, 그 아래는 단색 바로 이어진다.
+
+> [#INFO] 정보
+> 컨테이너 쿼리로 폭이 좁아지면 장식을 접고 단순 border-left로 바뀐다.
+
+> [#WARNING] 경고
+> 경고 타입 색상 확인용.
+
+> [#DANGER] 위험
+> 위험 타입 색상 확인용.
+
+> [#QUOTE] 인용
+> 인용 타입 색상 확인용.
+
 ## 수식
 
 인라인 $O(n \log n)$ 그리고 블록:
