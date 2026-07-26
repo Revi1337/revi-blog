@@ -11,6 +11,10 @@ import { cn } from "@/lib/utils"
 // 앵커 스크롤 정지 위치와 스크롤스파이 활성 판정 기준이 어긋난다.
 const DEFAULT_HEADER_OFFSET = 96
 
+// 앵커 스크롤이 scroll-margin-top 목표 지점에 서브픽셀 단위로 근소하게 못 미치고
+// 멈추는 경우(예: top이 96 대신 96.08)를 흡수하기 위한 오차 허용치.
+const SCROLL_SPY_EPSILON = 1
+
 function readHeaderOffset() {
   const raw = getComputedStyle(document.documentElement).getPropertyValue("--header-offset")
   const parsed = Number.parseFloat(raw)
@@ -132,12 +136,22 @@ export function TocSidebar({
 
       let currentId: string | undefined
       for (const heading of visibleHeadings) {
-        if (heading.getBoundingClientRect().top <= headerOffset) {
+        if (heading.getBoundingClientRect().top <= headerOffset + SCROLL_SPY_EPSILON) {
           currentId = heading.id
         } else {
           break
         }
       }
+
+      // 마지막 헤딩 뒤 여백이 headerOffset보다 부족하면 끝까지 스크롤해도 위 조건이
+      // 영원히 성립하지 않는다 — 문서 바닥에 도달했다면 그 조건과 무관하게 마지막으로
+      // 보이는 헤딩을 active로 간주한다.
+      const reachedBottom =
+        window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 1
+      if (reachedBottom) {
+        currentId = visibleHeadings[visibleHeadings.length - 1].id
+      }
+
       if (!cancelled) setActiveId(currentId)
     }
 
@@ -198,6 +212,7 @@ export function TocSidebar({
               else itemRefs.current.delete(item.id)
             }}
             href={`#${item.id}`}
+            onClick={() => setActiveId(item.id)}
             aria-current={isActive ? "location" : undefined}
             className={cn(
               "relative flex items-center gap-2 rounded px-2.5 py-1.5 font-code-sm text-xs text-on-surface-variant transition-colors duration-200 hover:text-primary dark:hover:text-primary-container",
