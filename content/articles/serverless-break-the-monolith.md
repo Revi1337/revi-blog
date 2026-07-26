@@ -1,6 +1,5 @@
 ---
 title: "Serverless Functions: When to Break the Monolith"
-category: "ARCHITECTURE"
 date: "2024-01-22"
 reading_time_minutes: 9
 tags: ["serverless"]

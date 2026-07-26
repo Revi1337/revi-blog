@@ -3,7 +3,6 @@ import matter from "gray-matter"
 export interface ArticleFrontmatter {
   slug?: string
   title: string
-  category: string
   date: string
   updated_at?: string
   tags: string[]
@@ -15,7 +14,7 @@ export interface ArticleFrontmatter {
   show_on_homepage?: boolean
 }
 
-const REQUIRED_FIELDS = ["title", "category", "date", "tags"] as const
+const REQUIRED_FIELDS = ["title", "date", "tags"] as const
 
 const CAMEL_CASE_CHAR = /[A-Z]/g
 

@@ -1,6 +1,5 @@
 ---
 title: "The Future of gRPC in Browser-Based Applications"
-category: "WEB"
 date: "2023-12-18"
 reading_time_minutes: 7
 tags: ["gRPC", "web"]

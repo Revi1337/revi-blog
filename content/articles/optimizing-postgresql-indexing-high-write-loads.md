@@ -1,6 +1,5 @@
 ---
 title: "Optimizing PostgreSQL Indexing for High-Write Loads"
-category: "BACKEND"
 date: "2024-03-15"
 reading_time_minutes: 8
 tags: ["postgreSQL", "indexing"]

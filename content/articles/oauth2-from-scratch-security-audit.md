@@ -1,6 +1,5 @@
 ---
 title: "Implementing OAuth2 from Scratch: A Security Audit"
-category: "SECURITY"
 date: "2024-02-10"
 reading_time_minutes: 15
 tags: ["oAuth2", "security"]

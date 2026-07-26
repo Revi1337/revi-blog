@@ -1,6 +1,5 @@
 ---
 title: "Garbage Collection Tuning for JVM Applications"
-category: "PERFORMANCE"
 date: "2024-01-05"
 reading_time_minutes: 11
 tags: ["jvm", "gc"]

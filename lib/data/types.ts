@@ -49,7 +49,6 @@ export interface ArticleNavRef {
 
 export interface Article {
   slug: string
-  category: string
   title: string
   date: string
   /** 수정 이력이 있을 때만 존재; 없으면 date와 동일한 값으로 간주 */

@@ -1,6 +1,5 @@
 ---
 title: "Spring Transcation Interview"
-category: "Spring"
 date: "2026-7-12"
 updated_at: "2026-7-12"
 tags: ["spring", "interview"]

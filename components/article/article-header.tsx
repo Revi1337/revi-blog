@@ -17,17 +17,6 @@ function formatDate(iso: string) {
 export function ArticleHeader({ article }: { article: Article }) {
   return (
     <header className="space-y-8">
-      <motion.div
-        initial={{ opacity: 0, y: 6 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="flex flex-wrap items-center gap-3"
-      >
-        <span className="rounded border border-outline-variant bg-surface-container px-3 py-1 font-label-caps text-[10px] uppercase tracking-widest text-primary dark:border-outline-variant/30 dark:text-primary-container">
-          {article.category}
-        </span>
-      </motion.div>
-
       <motion.h1
         initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}

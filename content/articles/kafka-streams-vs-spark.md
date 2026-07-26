@@ -1,6 +1,5 @@
 ---
 title: "Kafka Streams vs Spark: Choosing the Right Engine"
-category: "DATA_ENGINEERING"
 date: "2024-02-28"
 reading_time_minutes: 10
 tags: ["kafka", "spark"]

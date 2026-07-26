@@ -42,7 +42,6 @@ async function loadArticleFile(parsed: ParsedArticleFile, titleToSlug: Map<strin
 
   return {
     slug,
-    category: frontmatter.category,
     title: frontmatter.title,
     date: frontmatter.date,
     updatedAt: frontmatter.updated_at,
