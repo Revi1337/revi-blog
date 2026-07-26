@@ -9,6 +9,7 @@ import { NavBar } from "@/components/layout/nav-bar"
 import { Footer } from "@/components/layout/footer"
 import { MotionProvider } from "@/components/motion-provider"
 import { searchIndex } from "@/lib/data/search"
+import { SITE_URL } from "@/lib/site-config"
 
 import "./globals.css"
 
@@ -34,7 +35,7 @@ const pretendard = localFont({
 })
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://revi-blog.vercel.app"),
+  metadataBase: new URL(SITE_URL),
   title: "Revi - Blog",
   description: "Revi's engineering blog",
 }
