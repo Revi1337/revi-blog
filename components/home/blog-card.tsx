@@ -1,16 +1,20 @@
+"use client"
+
 import Image from "next/image"
 import Link from "next/link"
 import { ArrowRight } from "lucide-react"
 
 import type { BlogCardData } from "@/lib/data/types"
-import { DEFAULT_THUMBNAIL } from "@/lib/data/types"
+import { resolveDefaultThumbnail } from "@/lib/data/types"
+import { useTheme } from "@/components/theme/theme-context"
 
 function formatCardDate(iso: string) {
   return iso.replaceAll("-", ".")
 }
 
 export function BlogCard({ slug, title, thumbnail, thumbnailFit, date }: BlogCardData) {
-  const src = thumbnail ?? DEFAULT_THUMBNAIL
+  const { isDark } = useTheme()
+  const src = resolveDefaultThumbnail(thumbnail, isDark)
   const isContain = thumbnailFit === "contain"
 
   return (

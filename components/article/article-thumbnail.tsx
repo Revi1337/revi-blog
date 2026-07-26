@@ -3,7 +3,9 @@
 import Image from "next/image"
 import * as motion from "motion/react-client"
 
+import { resolveDefaultThumbnail } from "@/lib/data/types"
 import { loadImageNaturalSize, openImageLightbox } from "@/lib/lightbox/open-image-lightbox"
+import { useTheme } from "@/components/theme/theme-context"
 
 /** 썸네일 클릭 시 라이트박스를 여는 부분만 별도 클라이언트 컴포넌트로 분리한다 — ArticleHeader
  * 전체를 클라이언트 컴포넌트로 만들지 않기 위함이며, article 전체가 아니라 src 문자열 하나만
@@ -13,10 +15,13 @@ export function ArticleThumbnail({
   src,
   fit = "cover",
 }: {
-  src: string
+  /** 없으면 다크/라이트 테마에 맞는 기본 썸네일로 폴백 — 실제 썸네일은 테마와 무관하게 고정 */
+  src?: string
   /** 없으면 "cover"(꽉 채워 크롭) — 로고처럼 크롭하면 안 되는 썸네일만 "contain"으로 전체 노출 */
   fit?: "cover" | "contain"
 }) {
+  const { isDark } = useTheme()
+  const resolvedSrc = resolveDefaultThumbnail(src, isDark, "detail")
   const isContain = fit === "contain"
 
   return (
@@ -26,12 +31,12 @@ export function ArticleThumbnail({
       transition={{ duration: 0.6, delay: 0.35 }}
       className="group relative aspect-[21/9] w-full cursor-zoom-in overflow-hidden rounded"
       onClick={async () => {
-        const { width, height } = await loadImageNaturalSize(src)
-        void openImageLightbox({ dataSource: [{ src, alt: "", width, height }], index: 0 })
+        const { width, height } = await loadImageNaturalSize(resolvedSrc)
+        void openImageLightbox({ dataSource: [{ src: resolvedSrc, alt: "", width, height }], index: 0 })
       }}
     >
       <Image
-        src={src}
+        src={resolvedSrc}
         alt=""
         fill
         className={

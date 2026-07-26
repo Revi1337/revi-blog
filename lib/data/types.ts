@@ -72,6 +72,24 @@ export interface Article {
 }
 
 export const DEFAULT_THUMBNAIL = "/images/default-thumbnail.svg"
+export const DEFAULT_THUMBNAIL_LIGHT = "/images/default-thumbnail-light.svg"
+/** 아티클 상세 페이지 최상단 히어로 전용 — 홈 카드 그리드용과 달리 배경 그라디언트/글로우가 빠진
+ * 투명 배경 버전이라 페이지 배경 위에 얹었을 때 이질감이 없다 */
+export const DEFAULT_THUMBNAIL_DETAIL = "/images/default-thumbnail-less.svg"
+export const DEFAULT_THUMBNAIL_DETAIL_LIGHT = "/images/default-thumbnail-light-less.svg"
+
+/** 썸네일이 없는 글에 쓸 폴백을 소비처(홈 그리드/캐러셀 vs 아티클 상세 히어로)와 현재 테마에 맞게
+ * 한 곳에서 고른다 — 각 컴포넌트가 `isDark ? A : B` 삼항식을 따로 들고 있으면 폴백 페어가 하나
+ * 늘어날 때마다 소비처 전부를 찾아 고쳐야 하고, 실제로 캐러셀 한 곳을 빠뜨렸던 적이 있다 */
+export function resolveDefaultThumbnail(
+  explicitSrc: string | undefined,
+  isDark: boolean,
+  variant: "grid" | "detail" = "grid"
+): string {
+  if (explicitSrc) return explicitSrc
+  if (variant === "detail") return isDark ? DEFAULT_THUMBNAIL_DETAIL : DEFAULT_THUMBNAIL_DETAIL_LIGHT
+  return isDark ? DEFAULT_THUMBNAIL : DEFAULT_THUMBNAIL_LIGHT
+}
 
 /** 검색 대상 — showOnHomepage가 true인 아티클에서만 파생된다 (lib/content/search-index.ts) */
 export interface SearchIndexEntry {

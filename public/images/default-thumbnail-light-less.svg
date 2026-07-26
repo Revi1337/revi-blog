@@ -1,0 +1,81 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="360" viewBox="0 0 640 360" fill="none">
+  <defs>
+    <!-- Popping Vibrant Border Gradient (Light Theme) -->
+    <linearGradient id="border-grad-light" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#10b981" stop-opacity="0.85" />
+      <stop offset="50%" stop-color="#94a3b8" stop-opacity="0.45" />
+      <stop offset="100%" stop-color="#0ea5e9" stop-opacity="0.85" />
+    </linearGradient>
+
+    <!-- ClipPath for Window Corner Radius -->
+    <clipPath id="window-clip-full-light">
+      <rect width="380" height="230" rx="14" ry="14" />
+    </clipPath>
+
+    <!-- Soft Drop Shadow for Window Card -->
+    <filter id="shadow-light" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="6" stdDeviation="10" flood-color="#0f172a" flood-opacity="0.08" />
+    </filter>
+  </defs>
+
+  <!-- Center Glassmorphism Code Terminal Window (Background is 100% transparent) -->
+  <g transform="translate(130, 65)" filter="url(#shadow-light)">
+    <!-- Clipped Window Content -->
+    <g clip-path="url(#window-clip-full-light)">
+      <!-- Card Background Body -->
+      <rect width="380" height="230" fill="#ffffff" />
+
+      <!-- Seamless Integrated Terminal Header Bar -->
+      <rect width="380" height="40" fill="#f8fafc" />
+      <line x1="0" y1="40" x2="380" y2="40" stroke="#e2e8f0" stroke-width="1" opacity="0.8" />
+
+      <!-- Window Control Dots -->
+      <circle cx="20" cy="20" r="5" fill="#ef4444" opacity="0.85" />
+      <circle cx="36" cy="20" r="5" fill="#f59e0b" opacity="0.85" />
+      <circle cx="52" cy="20" r="5" fill="#10b981" opacity="0.85" />
+
+      <!-- Terminal Path Title -->
+      <text x="190" y="24" fill="#64748b" font-family="'JetBrains Mono', Pretendard, monospace" font-size="11" text-anchor="middle" letter-spacing="0.5">article/default-thumbnail</text>
+
+      <!-- Code Content Inside Terminal -->
+      <g font-family="'JetBrains Mono', Pretendard, monospace" font-size="13">
+        <!-- Line 1: import { blog } from "@/revi" -->
+        <text x="28" y="76" fill="#94a3b8" font-size="11">01</text>
+        <text x="56" y="76" fill="#006d47" font-weight="600">import</text>
+        <text x="108" y="76" fill="#1e293b">{ blog }</text>
+        <text x="178" y="76" fill="#006d47" font-weight="600">from</text>
+        <text x="216" y="76" fill="#0284c7">"@/revi"</text>
+
+        <!-- Line 2 -->
+        <text x="28" y="106" fill="#94a3b8" font-size="11">02</text>
+
+        <!-- Line 3: export default function Article () { -->
+        <text x="28" y="136" fill="#94a3b8" font-size="11">03</text>
+        <text x="56" y="136" fill="#e11d48" font-weight="600">export default</text>
+        <text x="172" y="136" fill="#006d47" font-weight="600">function</text>
+        <text x="242" y="136" fill="#d97706">Article</text>
+        <text x="299" y="136" fill="#1e293b">() {</text>
+
+        <!-- Line 4: return <ReviPost status="published" /> -->
+        <text x="28" y="166" fill="#94a3b8" font-size="11">04</text>
+        <text x="76" y="166" fill="#006d47" font-weight="600">return</text>
+        <text x="128" y="166" fill="#64748b">&lt;</text>
+        <text x="137" y="166" fill="#0284c7">ReviPost</text>
+        <text x="204" y="166" fill="#059669">status</text>
+        <text x="250" y="166" fill="#64748b">=</text>
+        <text x="259" y="166" fill="#0284c7">"published"</text>
+        <text x="353" y="166" fill="#64748b">/&gt;</text>
+
+        <!-- Line 5 -->
+        <text x="28" y="196" fill="#94a3b8" font-size="11">05</text>
+        <text x="56" y="196" fill="#1e293b">}</text>
+
+        <!-- Cursor -->
+        <rect x="70" y="185" width="8" height="14" fill="#006d47" opacity="0.8" />
+      </g>
+    </g>
+
+    <!-- Popping Continuous Overlay Outer Border Frame -->
+    <rect width="380" height="230" rx="14" fill="none" stroke="url(#border-grad-light)" stroke-width="1.5" />
+  </g>
+</svg>

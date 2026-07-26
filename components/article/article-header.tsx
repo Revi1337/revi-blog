@@ -3,7 +3,6 @@ import Link from "next/link"
 import * as motion from "motion/react-client"
 
 import type { Article } from "@/lib/data/types"
-import { DEFAULT_THUMBNAIL } from "@/lib/data/types"
 import { ArticleThumbnail } from "@/components/article/article-thumbnail"
 
 function formatDate(iso: string) {
@@ -70,7 +69,7 @@ export function ArticleHeader({ article }: { article: Article }) {
         )}
       </motion.div>
 
-      <ArticleThumbnail src={article.thumbnail ?? DEFAULT_THUMBNAIL} fit={article.thumbnailFit} />
+      <ArticleThumbnail src={article.thumbnail} fit={article.thumbnailFit} />
     </header>
   )
 }

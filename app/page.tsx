@@ -4,12 +4,11 @@ import { HeroCarousel } from "@/components/home/hero-carousel"
 import { EntryStream } from "@/components/home/entry-stream"
 import { EntryStreamSkeleton } from "@/components/home/entry-stream-skeleton"
 import { blogCards } from "@/lib/data/articles"
-import { DEFAULT_THUMBNAIL } from "@/lib/data/types"
 
 const heroSlides = blogCards.slice(0, 3).map((card) => ({
   slug: card.slug,
   title: card.title,
-  imageUrl: card.thumbnail ?? DEFAULT_THUMBNAIL,
+  imageUrl: card.thumbnail,
   fit: card.thumbnailFit ?? "cover",
 }))
 

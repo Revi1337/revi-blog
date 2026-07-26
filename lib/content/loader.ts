@@ -6,7 +6,6 @@ import { renderMarkdown } from "@/lib/content/pipeline"
 import { stripComments } from "@/lib/content/strip-comments"
 import { computeReadingTimeMinutes } from "@/lib/content/reading-time"
 import { attachPrevNext } from "@/lib/content/prev-next"
-import { DEFAULT_THUMBNAIL } from "@/lib/data/types"
 import type { Article } from "@/lib/data/types"
 
 const CONTENT_DIR = path.join(process.cwd(), "content", "articles")
@@ -47,7 +46,7 @@ async function loadArticleFile(parsed: ParsedArticleFile, titleToSlug: Map<strin
     updatedAt: frontmatter.updated_at,
     readingTimeMinutes,
     tags: frontmatter.tags,
-    thumbnail: frontmatter.thumbnail ?? DEFAULT_THUMBNAIL,
+    thumbnail: frontmatter.thumbnail,
     thumbnailFit: frontmatter.thumbnail_fit,
     bodyHtml,
     plainBody,
