@@ -2,8 +2,8 @@
 title: "Syntax Preview (내부 검증용)"
 date: "2026-07-20"
 tags: ["test"]
-show_on_homepage: false
 thumbnail: "/images/lightbox-test/photo-1.jpg"
+show_on_homepage: false
 ---
 
 ## 콜아웃 (GitHub Alert 스타일)

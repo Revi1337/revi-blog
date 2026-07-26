@@ -2,9 +2,9 @@
 title: "Architecting High-Concurrency Distributed Systems: Lessons from the Edge"
 date: "2024-10-12"
 updated_at: "2024-11-05"
-reading_time_minutes: 12
 tags: ["go_1.21", "redis", "k8s", "gRPC", "prometheus"]
 thumbnail: "https://lh3.googleusercontent.com/aida-public/AB6AXuAG9bNsWCgzKur0D_aDDQtqk06smBtxAmDMPukiOLORVxTQ7lDPyVbtGvkTjV3KgGBZnOPXYUw0fWV_dRcEQK_v78wOaAKWr9UaTPRYMjtSpwYU3vDDkLfhky3M6uagJLzh60qYfn0N2LdxnuS2Inz30L-E_xkqRlLCGgjbHDVlNt39k4sZZqyeIR2MQgId-NRkluW394ltiXEGguMeXRMBk1BLrDna0oFGjv_guyHq7Ru_v6OiGUAp"
+reading_time_minutes: 12
 ---
 
 ## The Problem of Scale
