@@ -15,8 +15,6 @@ function formatDate(iso: string) {
 }
 
 export function ArticleHeader({ article }: { article: Article }) {
-  const updatedAt = article.updatedAt ?? article.date
-
   return (
     <header className="space-y-8">
       <motion.div
@@ -50,11 +48,15 @@ export function ArticleHeader({ article }: { article: Article }) {
             <CalendarDays className="size-4 text-primary dark:text-primary-container" />
             <span>{formatDate(article.date)}</span>
           </div>
-          <span className="text-outline-variant dark:text-outline-variant/40">|</span>
-          <div className="flex items-center gap-1.5">
-            <History className="size-4 text-primary dark:text-primary-container" />
-            <span>{formatDate(updatedAt)}</span>
-          </div>
+          {article.updatedAt ? (
+            <>
+              <span className="text-outline-variant dark:text-outline-variant/40">|</span>
+              <div className="flex items-center gap-1.5">
+                <History className="size-4 text-primary dark:text-primary-container" />
+                <span>{formatDate(article.updatedAt)}</span>
+              </div>
+            </>
+          ) : null}
           <span className="text-outline-variant dark:text-outline-variant/40">|</span>
           <div className="flex items-center gap-1.5">
             <Timer className="size-4 text-primary dark:text-primary-container" />
