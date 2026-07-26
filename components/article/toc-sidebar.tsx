@@ -59,6 +59,7 @@ export function TocSidebar({
 }) {
   const [activeId, setActiveId] = React.useState<string | undefined>(undefined)
   const itemRefs = React.useRef(new Map<string, HTMLAnchorElement>())
+  const navRef = React.useRef<HTMLElement | null>(null)
 
   // 새로고침·뒤로가기 시 URL hash와 무관하게 "마지막으로 보던 스크롤 위치"로 복원한다 —
   // 브라우저 기본 스크롤 복원(scrollRestoration: 'auto')이 정확히 이 동작을 제공하지만,
@@ -159,17 +160,34 @@ export function TocSidebar({
     }
   }, [items])
 
-  // 활성 헤딩이 TOC 자체 스크롤 박스(.toc-nav) 밖으로 밀려나 있으면 안 보이므로,
-  // 메인 페이지 스크롤에는 영향 없이(block: "nearest") 그 항목만 보이게 맞춘다.
+  // 활성 항목이 항상 TOC 스크롤 박스(.toc-nav) 가운데 오도록 맞춘다 — 위/아래에 남은
+  // 헤딩이 부족한 경계(맨 처음·맨 끝)에서는 scrollTop이 [0, scrollHeight - clientHeight]로
+  // 자동 clamp되어 억지로 가운데 맞추지 않는다.
+  // scrollIntoView는 절대 쓰지 않는다: block 값과 무관하게 .toc-nav뿐 아니라 html까지 포함한
+  // 모든 스크롤 가능 조상 체인을 함께 움직이려 하는데, html에는 scroll-behavior: smooth가 걸려
+  // 있어(globals.css) 스크롤 스파이가 갱신될 때마다 사용자가 하던 본문 스크롤과 충돌해
+  // 버벅거림이 발생했다. 대신 .toc-nav의 scrollTop만 직접 계산해서 옮긴다.
   React.useEffect(() => {
     if (!activeId) return
-    itemRefs.current.get(activeId)?.scrollIntoView({ block: "nearest" })
+    const container = navRef.current
+    const item = itemRefs.current.get(activeId)
+    if (!container || !item) return
+
+    const containerRect = container.getBoundingClientRect()
+    const itemRect = item.getBoundingClientRect()
+    const delta =
+      itemRect.top - containerRect.top + itemRect.height / 2 - container.clientHeight / 2
+    container.scrollTo({ top: container.scrollTop + delta, behavior: "auto" })
   }, [activeId])
 
   if (items.length === 0) return null
 
   const nav = (
-    <nav className="toc-nav max-h-[500px] space-y-1 overflow-y-auto pr-2" aria-label="Table of contents">
+    <nav
+      ref={navRef}
+      className="toc-nav max-h-[500px] space-y-1 overflow-y-auto pr-2"
+      aria-label="Table of contents"
+    >
       {items.map((item) => {
         const isActive = item.id === activeId
         return (
