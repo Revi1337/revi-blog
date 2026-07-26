@@ -7,6 +7,7 @@ import { ThemeProvider } from "@/components/theme/theme-context"
 import { THEME_COOKIE_KEY } from "@/components/theme/theme-constants"
 import { NavBar } from "@/components/layout/nav-bar"
 import { Footer } from "@/components/layout/footer"
+import { RouteScrollReset } from "@/components/layout/route-scroll-reset"
 import { MotionProvider } from "@/components/motion-provider"
 import { searchIndex } from "@/lib/data/search"
 import { SITE_URL } from "@/lib/site-config"
@@ -55,6 +56,7 @@ export default async function RootLayout({
       >
         <ThemeProvider initialIsDark={initialIsDark}>
           <MotionProvider>
+            <RouteScrollReset />
             <NavBar searchIndex={searchIndex} />
             <main className="pt-24">{children}</main>
             <Footer />

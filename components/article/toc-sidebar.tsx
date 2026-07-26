@@ -46,7 +46,19 @@ function writeSavedScroll(key: string, value: number) {
   }
 }
 
+// performance.getEntriesByType("navigation")는 탭이 처음 문서를 로드한 방식(reload/back_forward/
+// navigate) 딱 한 번만 기록되고, 이후의 클라이언트 사이드 전환(Link 클릭, router.push, 검색 모달
+// 이동 등)으로는 절대 갱신되지 않는다. 이 값을 매 mount마다 다시 읽으면, 세션 중 새로고침이나
+// 뒤로가기를 단 한 번이라도 했을 때 그 사실이 그 이후의 모든 방문에도 잘못 적용돼 실제로는 새로
+// 들어간 글인데도 이전 스크롤 위치를 복원해버린다 — reload/back_forward 타입은 정의상 문서 전체가
+// 다시 로드될 때만 기록되므로(이 플래그가 리셋되는 시점과 정확히 일치), 이 세션에서 딱 한 번만
+// 신뢰하고 그 뒤로는 항상 false를 반환해 "이 mount가 진짜 reload/back_forward로 인한 것인가"라는
+// 질문에만 답하도록 스코프를 좁힌다.
+let historyNavConsumed = false
+
 function isHistoryNavigation() {
+  if (historyNavConsumed) return false
+  historyNavConsumed = true
   try {
     const [entry] = performance.getEntriesByType("navigation")
     return entry instanceof PerformanceNavigationTiming && (entry.type === "reload" || entry.type === "back_forward")
