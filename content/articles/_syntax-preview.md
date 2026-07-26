@@ -3,7 +3,7 @@ title: "Syntax Preview (내부 검증용)"
 category: "TEST"
 date: "2026-07-20"
 tags: ["test"]
-showOnHomepage: false
+show_on_homepage: false
 thumbnail: "/images/lightbox-test/photo-1.jpg"
 ---
 

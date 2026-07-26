@@ -38,25 +38,25 @@ function buildTitleToSlugMap(parsed: ParsedArticleFile[]): Map<string, string> {
 async function loadArticleFile(parsed: ParsedArticleFile, titleToSlug: Map<string, string>): Promise<Article> {
   const { slug, frontmatter, rawBody } = parsed
   const { bodyHtml, toc, plainBody, images } = await renderMarkdown(stripComments(rawBody), titleToSlug)
-  const readingTimeMinutes = frontmatter.readingTimeMinutes ?? computeReadingTimeMinutes(rawBody)
+  const readingTimeMinutes = frontmatter.reading_time_minutes ?? computeReadingTimeMinutes(rawBody)
 
   return {
     slug,
     category: frontmatter.category,
     title: frontmatter.title,
     date: frontmatter.date,
-    updatedAt: frontmatter.updatedAt,
+    updatedAt: frontmatter.updated_at,
     readingTimeMinutes,
     tags: frontmatter.tags,
     thumbnail: frontmatter.thumbnail ?? DEFAULT_THUMBNAIL,
-    thumbnailFit: frontmatter.thumbnailFit,
+    thumbnailFit: frontmatter.thumbnail_fit,
     bodyHtml,
     plainBody,
     toc,
     images,
     // metrics 카드는 remark-metrics가 bodyHtml 안에 직접 렌더링하므로 별도 구조화 데이터로는 노출하지 않는다
     metrics: [],
-    showOnHomepage: frontmatter.showOnHomepage ?? true,
+    showOnHomepage: frontmatter.show_on_homepage ?? true,
   }
 }
 
