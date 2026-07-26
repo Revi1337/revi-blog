@@ -6,6 +6,7 @@ import { AnimatePresence, m } from "motion/react"
 
 import type { TocItem } from "@/lib/data/types"
 import { cn } from "@/lib/utils"
+import { isPlainLeftClick, scrollToHeadingInstant } from "@/components/article/heading-scroll"
 
 // app/globals.css의 --header-offset과 반드시 같은 값을 가리켜야 한다 — 하나만 바뀌면
 // 앵커 스크롤 정지 위치와 스크롤스파이 활성 판정 기준이 어긋난다.
@@ -212,7 +213,12 @@ export function TocSidebar({
               else itemRefs.current.delete(item.id)
             }}
             href={`#${item.id}`}
-            onClick={() => setActiveId(item.id)}
+            onClick={(event) => {
+              if (!isPlainLeftClick(event)) return
+              event.preventDefault()
+              setActiveId(item.id)
+              scrollToHeadingInstant(item.id)
+            }}
             aria-current={isActive ? "location" : undefined}
             className={cn(
               "relative flex items-center gap-2 rounded px-2.5 py-1.5 font-code-sm text-xs text-on-surface-variant transition-colors duration-200 hover:text-primary dark:hover:text-primary-container",
