@@ -4,7 +4,7 @@ export interface ArticleFrontmatter {
   slug?: string
   title: string
   category: string
-  publishedAt: string
+  date: string
   updatedAt?: string
   tags: string[]
   thumbnail?: string
@@ -15,7 +15,7 @@ export interface ArticleFrontmatter {
   showOnHomepage?: boolean
 }
 
-const REQUIRED_FIELDS = ["title", "category", "publishedAt", "tags"] as const
+const REQUIRED_FIELDS = ["title", "category", "date", "tags"] as const
 
 export function parseFrontmatter(
   filePath: string,

@@ -1,7 +1,7 @@
 ---
 title: "Architecting High-Concurrency Distributed Systems: Lessons from the Edge"
 category: "SYSTEM_ARCHITECTURE"
-publishedAt: "2024-10-12"
+date: "2024-10-12"
 updatedAt: "2024-11-05"
 readingTimeMinutes: 12
 tags: ["go_1.21", "redis", "k8s", "gRPC", "prometheus"]

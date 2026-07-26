@@ -9,7 +9,7 @@ function formatCardDate(iso: string) {
   return iso.replaceAll("-", ".")
 }
 
-export function BlogCard({ slug, title, thumbnail, thumbnailFit, publishedAt }: BlogCardData) {
+export function BlogCard({ slug, title, thumbnail, thumbnailFit, date }: BlogCardData) {
   const src = thumbnail ?? DEFAULT_THUMBNAIL
   const isContain = thumbnailFit === "contain"
 
@@ -43,7 +43,7 @@ export function BlogCard({ slug, title, thumbnail, thumbnailFit, publishedAt }: 
           </h4>
           <div className="mt-auto flex items-center justify-between">
             <span className="font-code-sm text-code-sm text-on-surface-variant">
-              {formatCardDate(publishedAt)}
+              {formatCardDate(date)}
             </span>
             <ArrowRight className="size-4 text-primary transition-transform group-hover:translate-x-1 dark:text-primary-fixed-dim" />
           </div>

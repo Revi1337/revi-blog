@@ -15,7 +15,7 @@ function formatDate(iso: string) {
 }
 
 export function ArticleHeader({ article }: { article: Article }) {
-  const updatedAt = article.updatedAt ?? article.publishedAt
+  const updatedAt = article.updatedAt ?? article.date
 
   return (
     <header className="space-y-8">
@@ -48,7 +48,7 @@ export function ArticleHeader({ article }: { article: Article }) {
         <div className="flex flex-wrap items-center gap-4">
           <div className="flex items-center gap-1.5">
             <CalendarDays className="size-4 text-primary dark:text-primary-container" />
-            <span>{formatDate(article.publishedAt)}</span>
+            <span>{formatDate(article.date)}</span>
           </div>
           <span className="text-outline-variant dark:text-outline-variant/40">|</span>
           <div className="flex items-center gap-1.5">

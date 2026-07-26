@@ -15,7 +15,7 @@ export interface BlogCardData {
   /** 없으면 기본 썸네일 이미지로 폴백 */
   thumbnail?: string
   thumbnailFit?: ThumbnailFit
-  publishedAt: string
+  date: string
   /** QuickSearch 태그 필터 매칭에 사용 (Article.tags와 동일) */
   tags: string[]
 }
@@ -51,8 +51,8 @@ export interface Article {
   slug: string
   category: string
   title: string
-  publishedAt: string
-  /** 수정 이력이 있을 때만 존재; 없으면 publishedAt과 동일한 값으로 간주 */
+  date: string
+  /** 수정 이력이 있을 때만 존재; 없으면 date와 동일한 값으로 간주 */
   updatedAt?: string
   readingTimeMinutes: number
   tags: string[]

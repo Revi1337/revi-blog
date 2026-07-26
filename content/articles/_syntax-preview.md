@@ -1,7 +1,7 @@
 ---
 title: "Syntax Preview (내부 검증용)"
 category: "TEST"
-publishedAt: "2026-07-20"
+date: "2026-07-20"
 tags: ["test"]
 showOnHomepage: false
 thumbnail: "/images/lightbox-test/photo-1.jpg"

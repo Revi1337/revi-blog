@@ -44,7 +44,7 @@ async function loadArticleFile(parsed: ParsedArticleFile, titleToSlug: Map<strin
     slug,
     category: frontmatter.category,
     title: frontmatter.title,
-    publishedAt: frontmatter.publishedAt,
+    date: frontmatter.date,
     updatedAt: frontmatter.updatedAt,
     readingTimeMinutes,
     tags: frontmatter.tags,
@@ -90,7 +90,7 @@ export async function loadArticles(): Promise<LoadedContent> {
   const loaded = await Promise.all(parsedFiles.map((parsed) => loadArticleFile(parsed, titleToSlug)))
   assertNoDuplicateSlugs(loaded.map((article, index) => ({ slug: article.slug, filePath: filePaths[index] })))
 
-  const sortedDesc = [...loaded].sort((a, b) => (a.publishedAt < b.publishedAt ? 1 : -1))
+  const sortedDesc = [...loaded].sort((a, b) => (a.date < b.date ? 1 : -1))
 
   // prev/next 체인은 showOnHomepage 아티클끼리만 계산한다 — 홈 그리드에서 제외된 글은 발행일이
   // 아무리 최신이어도 다른 글의 이전/다음 글로 끼어들지 않는다.

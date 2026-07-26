@@ -12,7 +12,7 @@ export const blogCards: BlogCardData[] = blogSlugs.map((slug) => {
     title: article.title,
     thumbnail: article.thumbnail,
     thumbnailFit: article.thumbnailFit,
-    publishedAt: article.publishedAt,
+    date: article.date,
     tags: article.tags,
   }
 })

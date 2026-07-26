@@ -1,7 +1,7 @@
 ---
 title: "Spring Transcation Interview"
 category: "Spring"
-publishedAt: "2026-7-12"
+date: "2026-7-12"
 updatedAt: "2026-7-12"
 tags: ["spring", "interview"]
 thumbnail: "https://upload.wikimedia.org/wikipedia/commons/4/44/Spring_Framework_Logo_2018.svg"
