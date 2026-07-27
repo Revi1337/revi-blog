@@ -324,6 +324,12 @@ body {
   list-style-type: disc;
   color: var(--color-on-surface-variant);
 }
+.article-body ol {
+  margin-top: 0.5rem;
+  margin-left: 1.5rem;
+  list-style-type: decimal;
+  color: var(--color-on-surface-variant);
+}
 .article-body li {
   margin-top: 0.5rem;
 }
