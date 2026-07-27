@@ -94,8 +94,13 @@ export async function loadArticles(): Promise<LoadedContent> {
   assertNoDuplicateSlugs(loaded.map((article, index) => ({ slug: article.slug, filePath: filePaths[index] })))
 
   // 문자열 그대로 비교하면 "2026-7-12"처럼 자릿수가 안 맞는 날짜가 "2026-07-27"보다 사전순으로
-  // 커져버려 최신순이 깨지므로, 실제 Date로 파싱한 타임스탬프로 비교한다.
-  const sortedDesc = [...loaded].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+  // 커져버려 최신순이 깨지므로, 실제 Date로 파싱한 타임스탬프로 비교한다. date가 완전히 같으면
+  // fs.readdirSync의 반환 순서(OS/파일시스템에 따라 달라짐, 보장 없음)에 기대는 대신 slug(파일명
+  // 기반이라 assertNoDuplicateSlugs로 이미 유일함이 보장됨)로 tie-break해 항상 같은 순서가 나오게 한다.
+  const sortedDesc = [...loaded].sort((a, b) => {
+    const dateDiff = new Date(b.date).getTime() - new Date(a.date).getTime()
+    return dateDiff !== 0 ? dateDiff : a.slug < b.slug ? -1 : 1
+  })
 
   // prev/next 체인은 showOnHomepage 아티클끼리만 계산한다 — 홈 그리드에서 제외된 글은 발행일이
   // 아무리 최신이어도 다른 글의 이전/다음 글로 끼어들지 않는다.
