@@ -235,6 +235,7 @@ export function TocSidebar({
             className={cn(
               "relative flex items-center gap-2 rounded px-2.5 py-1.5 font-code-sm text-xs text-on-surface-variant transition-colors duration-200 hover:text-primary dark:hover:text-primary-container",
               item.depth === 3 && "ml-4",
+              item.depth === 4 && "ml-8",
               isActive && "bg-primary/10 dark:bg-primary-container/10"
             )}
           >

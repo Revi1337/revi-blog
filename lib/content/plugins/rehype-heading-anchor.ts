@@ -45,10 +45,10 @@ function anchorLinkNode(id: string, label: string): Element {
   }
 }
 
-const ANCHORED_HEADING_TAGS = new Set(["h2", "h3"])
+const ANCHORED_HEADING_TAGS = new Set(["h2", "h3", "h4"])
 
-/** remarkToc가 h2/h3에 부여한 id를 이용해, hover 시 나타나는 GitHub 스타일 anchor 링크를 heading 끝에 삽입한다.
- * heading 원래 내용을 inline span으로 감싸는 이유는, h2/h3 자체는 block이라 그대로 두면 hover 영역이
+/** remarkToc가 h2/h3/h4에 부여한 id를 이용해, hover 시 나타나는 GitHub 스타일 anchor 링크를 heading 끝에 삽입한다.
+ * heading 원래 내용을 inline span으로 감싸는 이유는, h2/h3/h4 자체는 block이라 그대로 두면 hover 영역이
  * 텍스트 우측 빈 공간까지 라인 전체로 넓어지기 때문 — 라벨 글자 위에서만 반응하도록 인라인 span으로 hover 영역을 좁힌다. */
 export function rehypeHeadingAnchor() {
   return (tree: Root) => {

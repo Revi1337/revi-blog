@@ -34,7 +34,7 @@
 - `readingTimeMinutes` — frontmatter 값 또는 자동 계산 값
 - `bodyHtml` — remark→rehype 파이프라인의 최종 HTML 문자열. 코드 블록(라인 하이라이트 포함)과
   metrics 카드까지 전부 포함된 완결된 HTML (더 이상 플레이스홀더로 쪼개지지 않음)
-- `toc: TocItem[]` — 본문 heading(H2/H3)에서 자동 파생 (기존 `TocItem` 타입 그대로)
+- `toc: TocItem[]` — 본문 heading(H2/H3/H4)에서 자동 파생
 - `metrics: MetricCard[]` — 본문의 `metrics` 커스텀 블록에서 파생. 블록이 없으면 빈 배열
   (`MetricCardGrid`는 이미 빈 배열일 때 `null` 렌더링을 지원하므로 하위 호환)
 - `prev?`, `next?: ArticleNavRef` — `publishedAt` 내림차순 정렬 기준 자동 계산 (research.md 참고)

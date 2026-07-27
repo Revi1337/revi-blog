@@ -25,8 +25,8 @@ export interface TocItem {
   id: string
   label: string
   order: number
-  /** h2/h3 구분 — TOC 인덴트 렌더링에 사용 */
-  depth: 2 | 3
+  /** h2/h3/h4 구분 — TOC 인덴트 렌더링에 사용 */
+  depth: 2 | 3 | 4
 }
 
 export interface ArticleImage {

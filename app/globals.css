@@ -279,9 +279,17 @@ body {
   font-weight: 600;
   color: var(--color-on-surface);
 }
-/* heading 앵커 링크 — 마크업은 rehype-heading-anchor 플러그인이 빌드 타임에 h2/h3 끝에 삽입한다.
+.article-body h4 {
+  margin-top: 1.5rem;
+  margin-bottom: 0.75rem;
+  scroll-margin-top: var(--header-offset);
+  font-size: 1.0625rem;
+  font-weight: 600;
+  color: var(--color-on-surface);
+}
+/* heading 앵커 링크 — 마크업은 rehype-heading-anchor 플러그인이 빌드 타임에 h2/h3/h4 끝에 삽입한다.
    평소엔 숨겨져 있다가 라벨 텍스트(.heading-anchor-label) 위에 hover/focus하면 살짝 오른쪽에서
-   밀려 들어오며 나타난다(GitHub 스타일). h2/h3는 block이라 라벨을 inline span으로 감싸지 않으면
+   밀려 들어오며 나타난다(GitHub 스타일). h2/h3/h4는 block이라 라벨을 inline span으로 감싸지 않으면
    hover 영역이 텍스트 우측 빈 공간까지 라인 전체로 넓어지므로, 라벨 span 기준으로만 반응하게 한다. */
 .article-body .heading-anchor {
   display: inline-flex;
