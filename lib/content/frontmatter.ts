@@ -23,10 +23,23 @@ function toSnakeCase(key: string): string {
   return key.replace(CAMEL_CASE_CHAR, (char) => `_${char.toLowerCase()}`)
 }
 
+/** YAML은 `2026-01-07`처럼 따옴표 없는 날짜를 문자열이 아닌 Date로 파싱하므로 다시 문자열로 되돌린다 */
+function toDateOnlyString(value: Date): string {
+  return value.toISOString().slice(0, 10)
+}
+
+const DATE_FIELDS = ["date", "updated_at"] as const
+
 function normalizeFrontmatterKeys(data: Record<string, unknown>): Record<string, unknown> {
   const normalized: Record<string, unknown> = {}
   for (const [key, value] of Object.entries(data)) {
     normalized[toSnakeCase(key)] = value
+  }
+  for (const field of DATE_FIELDS) {
+    const value = normalized[field]
+    if (value instanceof Date) {
+      normalized[field] = toDateOnlyString(value)
+    }
   }
   return normalized
 }
