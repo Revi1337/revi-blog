@@ -17,10 +17,15 @@ interface ParsedArticleFile {
   rawBody: string
 }
 
+/** 파일명의 공백은 URL에서 %20으로 깨지므로 하이픈으로 치환해 슬러그를 만든다 */
+function slugifyFilename(basename: string): string {
+  return basename.trim().replace(/\s+/g, "-")
+}
+
 function parseArticleFile(filePath: string): ParsedArticleFile {
   const raw = fs.readFileSync(filePath, "utf-8")
   const { frontmatter, rawBody } = parseFrontmatter(filePath, raw)
-  const slug = frontmatter.slug ?? path.basename(filePath, ".md")
+  const slug = frontmatter.slug ?? slugifyFilename(path.basename(filePath, ".md"))
   return { filePath, slug, frontmatter, rawBody }
 }
 
