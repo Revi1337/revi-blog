@@ -82,7 +82,9 @@ export interface LoadedContent {
 }
 
 export async function loadArticles(): Promise<LoadedContent> {
-  const filenames = fs.readdirSync(CONTENT_DIR).filter((name) => name.endsWith(".md"))
+  const filenames = fs
+    .readdirSync(CONTENT_DIR, { recursive: true, encoding: "utf-8" })
+    .filter((name) => name.endsWith(".md"))
   const filePaths = filenames.map((name) => path.join(CONTENT_DIR, name))
 
   // wikilink가 다른 글을 참조할 수 있으므로, 렌더링 전에 전체 글의 frontmatter부터 훑어
