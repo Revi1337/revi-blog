@@ -52,13 +52,13 @@ export default async function RootLayout({
   return (
     <html lang="en" className={initialIsDark ? "dark" : undefined}>
       <body
-        className={`${inter.variable} ${jetbrainsMono.variable} ${pretendard.variable} min-h-screen font-body-md antialiased`}
+        className={`${inter.variable} ${jetbrainsMono.variable} ${pretendard.variable} flex min-h-screen flex-col font-body-md antialiased`}
       >
         <ThemeProvider initialIsDark={initialIsDark}>
           <MotionProvider>
             <RouteScrollReset />
             <NavBar searchIndex={searchIndex} />
-            <main className="pt-24">{children}</main>
+            <main className="relative flex-1 pt-24">{children}</main>
             <Footer />
           </MotionProvider>
         </ThemeProvider>
