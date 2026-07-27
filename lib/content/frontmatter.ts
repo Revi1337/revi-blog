@@ -23,9 +23,11 @@ function toSnakeCase(key: string): string {
   return key.replace(CAMEL_CASE_CHAR, (char) => `_${char.toLowerCase()}`)
 }
 
-/** YAML은 `2026-01-07`처럼 따옴표 없는 날짜를 문자열이 아닌 Date로 파싱하므로 다시 문자열로 되돌린다 */
-function toDateOnlyString(value: Date): string {
-  return value.toISOString().slice(0, 10)
+/** YAML은 `2026-01-07`처럼 따옴표 없는 날짜를 문자열이 아닌 Date로 파싱하므로 다시 문자열로 되돌린다.
+ * 시간까지 적었으면(`2026-01-07T10:30:00`) 정렬(loader.ts)이 시간까지 반영할 수 있도록 ISO
+ * 문자열 그대로 보존한다 — 화면에는 어차피 날짜만 잘라서 보여준다(formatCardDate/formatDate). */
+function toIsoString(value: Date): string {
+  return value.toISOString()
 }
 
 const DATE_FIELDS = ["date", "updated_at"] as const
@@ -38,7 +40,7 @@ function normalizeFrontmatterKeys(data: Record<string, unknown>): Record<string,
   for (const field of DATE_FIELDS) {
     const value = normalized[field]
     if (value instanceof Date) {
-      normalized[field] = toDateOnlyString(value)
+      normalized[field] = toIsoString(value)
     }
   }
   return normalized

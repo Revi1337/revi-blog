@@ -9,7 +9,7 @@ import { resolveDefaultThumbnail } from "@/lib/data/types"
 import { useTheme } from "@/components/theme/theme-context"
 
 function formatCardDate(iso: string) {
-  return iso.replaceAll("-", ".")
+  return iso.slice(0, 10).replaceAll("-", ".")
 }
 
 export function BlogCard({ slug, title, thumbnail, thumbnailFit, date }: BlogCardData) {
