@@ -47,7 +47,16 @@ export function EntryStream({ cards }: { cards: BlogCardData[] }) {
     return cards.filter((_, i) => matchIds.has(i))
   }, [cards, activeFilter, tagIndex])
 
+  const filterKey = activeFilter?.id ?? "all"
+  const [page, setPage] = useState(1)
+  const [lastFilterKey, setLastFilterKey] = useState(filterKey)
+  if (filterKey !== lastFilterKey) {
+    setLastFilterKey(filterKey)
+    setPage(1)
+  }
+
   const totalPages = Math.max(1, Math.ceil(filteredCards.length / CARDS_PER_PAGE))
+  const pagedCards = filteredCards.slice((page - 1) * CARDS_PER_PAGE, page * CARDS_PER_PAGE)
 
   return (
     <>
@@ -86,14 +95,14 @@ export function EntryStream({ cards }: { cards: BlogCardData[] }) {
       </div>
 
       {filteredCards.length > 0 ? (
-        <BlogCardGrid cards={filteredCards} />
+        <BlogCardGrid cards={pagedCards} />
       ) : (
         <p className="py-section-gap text-center font-code-sm text-code-sm text-on-surface-variant">
           No articles match this filter.
         </p>
       )}
 
-      <HomePagination key={activeFilter?.id ?? "all"} totalPages={totalPages} />
+      <HomePagination page={page} totalPages={totalPages} onPageChange={setPage} />
     </>
   )
 }
