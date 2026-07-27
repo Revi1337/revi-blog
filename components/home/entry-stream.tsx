@@ -10,7 +10,8 @@ import { QuickSearchButtons } from "@/components/home/quick-search-buttons"
 import { BlogCardGrid } from "@/components/home/blog-card-grid"
 import { HomePagination } from "@/components/home/pagination"
 
-const CARDS_PER_PAGE = 9
+// 홈 그리드는 3열이라 6개면 2행이 꽉 찬다 (core/home-*.html 목업 기준).
+const CARDS_PER_PAGE = 6
 
 export function EntryStream({ cards }: { cards: BlogCardData[] }) {
   const router = useRouter()
@@ -57,15 +58,10 @@ export function EntryStream({ cards }: { cards: BlogCardData[] }) {
   }
 
   const totalPages = Math.max(1, Math.ceil(filteredCards.length / CARDS_PER_PAGE))
-
-  // 마지막 페이지에 카드가 몰려(예: 10장 → 9+1) 페이지마다 높이가 들쭉날쭉해지는 걸 막기 위해,
-  // 전체 카드를 페이지 수만큼 최대한 균등하게 나눈다 (10장·2페이지 → 5+5).
-  // 앞쪽 remainder개 페이지가 base+1장, 나머지 페이지는 base장을 갖는다.
-  const base = Math.floor(filteredCards.length / totalPages)
-  const remainder = filteredCards.length % totalPages
-  const startIndex = (page - 1) * base + Math.min(page - 1, remainder)
-  const pageSize = base + (page <= remainder ? 1 : 0)
-  const pagedCards = filteredCards.slice(startIndex, startIndex + pageSize)
+  // 앞 페이지부터 CARDS_PER_PAGE만큼 순서대로 채운다 (마지막 페이지에만 나머지가 남는다).
+  // 페이지마다 높이가 달라져도 Footer가 튀지 않는 건 아래 goToPage의 스크롤-투-톱과
+  // sticky-footer 레이아웃이 보장하므로, 굳이 카드 수를 균등 분배하지 않는다.
+  const pagedCards = filteredCards.slice((page - 1) * CARDS_PER_PAGE, page * CARDS_PER_PAGE)
 
   // 페이지를 넘기면 목록 최상단으로 부드럽게 스크롤한다. 카드 수가 페이지마다 달라도
   // 항상 같은 지점에서 목록이 시작되므로, 아래쪽에서 넘길 때 Footer 위치가 흔들려 보이지 않는다.
