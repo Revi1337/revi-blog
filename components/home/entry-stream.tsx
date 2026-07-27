@@ -10,8 +10,10 @@ import { QuickSearchButtons } from "@/components/home/quick-search-buttons"
 import { BlogCardGrid } from "@/components/home/blog-card-grid"
 import { HomePagination } from "@/components/home/pagination"
 
-// 홈 그리드는 3열이라 6개면 2행이 꽉 찬다 (core/home-*.html 목업 기준).
-const CARDS_PER_PAGE = 6
+// 페이지당 카드 수. 브레이크포인트와 무관한 단일 상수라 데스크탑·태블릿·모바일 모두
+// 동일하게 9개씩 나뉜다 — 어느 기기에서 봐도 같은 글이 같은 페이지에 배치된다.
+// (그리드 열 수만 반응형: 모바일 1열 / 태블릿 2열 / 데스크탑 3열)
+const CARDS_PER_PAGE = 9
 
 export function EntryStream({ cards }: { cards: BlogCardData[] }) {
   const router = useRouter()
