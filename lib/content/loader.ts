@@ -93,7 +93,9 @@ export async function loadArticles(): Promise<LoadedContent> {
   const loaded = await Promise.all(parsedFiles.map((parsed) => loadArticleFile(parsed, titleToSlug)))
   assertNoDuplicateSlugs(loaded.map((article, index) => ({ slug: article.slug, filePath: filePaths[index] })))
 
-  const sortedDesc = [...loaded].sort((a, b) => (a.date < b.date ? 1 : -1))
+  // 문자열 그대로 비교하면 "2026-7-12"처럼 자릿수가 안 맞는 날짜가 "2026-07-27"보다 사전순으로
+  // 커져버려 최신순이 깨지므로, 실제 Date로 파싱한 타임스탬프로 비교한다.
+  const sortedDesc = [...loaded].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
 
   // prev/next 체인은 showOnHomepage 아티클끼리만 계산한다 — 홈 그리드에서 제외된 글은 발행일이
   // 아무리 최신이어도 다른 글의 이전/다음 글로 끼어들지 않는다.
