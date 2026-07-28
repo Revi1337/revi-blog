@@ -3,7 +3,11 @@
 .article-body h2 {
   margin-top: 3rem;
   scroll-margin-top: var(--header-offset);
-  font-family: var(--font-headline-lg);
+  /* var(--font-headline-lg) 대신 --font-pretendard를 직접 참조한다 — Tailwind v4의 "@theme inline"
+     토큰은 자체 유틸리티 클래스(.font-headline-lg 등)에만 값이 리터럴로 인라인되고, 이 파일처럼
+     유틸리티 클래스를 거치지 않는 raw CSS에서 var(--font-headline-lg)로 참조하면 값이 비어
+     body의 font-body-md(Inter 우선)로 조용히 폴백해버린다. */
+  font-family: var(--font-pretendard), sans-serif;
   font-size: var(--text-headline-lg);
   line-height: var(--text-headline-lg--line-height);
   letter-spacing: var(--text-headline-lg--letter-spacing);
@@ -17,6 +21,7 @@
   margin-top: 2rem;
   margin-bottom: 1rem;
   scroll-margin-top: var(--header-offset);
+  font-family: var(--font-pretendard), sans-serif;
   font-size: 1.625rem;
   line-height: 2.125rem;
   font-weight: 600;
@@ -26,6 +31,7 @@
   margin-top: 1.5rem;
   margin-bottom: 0.75rem;
   scroll-margin-top: var(--header-offset);
+  font-family: var(--font-pretendard), sans-serif;
   font-size: 1.25rem;
   line-height: 1.75rem;
   font-weight: 600;
@@ -38,6 +44,7 @@
 .article-body h6 {
   margin-top: 1.5rem;
   margin-bottom: 0.75rem;
+  font-family: var(--font-pretendard), sans-serif;
   font-size: 1.25rem;
   line-height: 1.75rem;
   font-weight: 600;

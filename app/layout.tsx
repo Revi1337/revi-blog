@@ -39,6 +39,19 @@ const suit = localFont({
   display: "swap",
 })
 
+/** 헤딩 전용 폰트 — Inter(라틴)+SUIT(한글)를 한 헤딩에 섞으면(예: "Python 코드") 같은 font-weight를
+ * 줘도 서체 디자인 차이로 굵기가 달라 보인다. Pretendard는 라틴 글리프를 Apple 계열 산세리프에 맞춰
+ * 디자인해 한글과 섞여도 자연스러워서 헤딩(headline-xl/lg/lg-mobile)에서만 전체 교체로 사용한다.
+ * 실사용 굵기(600/700)만 SUIT와 동일한 방식으로 static woff2 자체 호스팅 — 가변 폰트 npm 의존성 없음 */
+const pretendard = localFont({
+  src: [
+    { path: "../public/fonts/pretendard/Pretendard-SemiBold.woff2", weight: "600", style: "normal" },
+    { path: "../public/fonts/pretendard/Pretendard-Bold.woff2", weight: "700", style: "normal" },
+  ],
+  variable: "--font-pretendard",
+  display: "swap",
+})
+
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: "Revi - Blog",
@@ -56,7 +69,7 @@ export default async function RootLayout({
   return (
     <html lang="en" className={initialIsDark ? "dark" : undefined}>
       <body
-        className={`${inter.variable} ${jetbrainsMono.variable} ${suit.variable} flex min-h-screen flex-col font-body-md antialiased`}
+        className={`${inter.variable} ${jetbrainsMono.variable} ${suit.variable} ${pretendard.variable} flex min-h-screen flex-col font-body-md antialiased`}
       >
         <ThemeProvider initialIsDark={initialIsDark}>
           <MotionProvider>

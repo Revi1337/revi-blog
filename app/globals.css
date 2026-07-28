@@ -171,11 +171,16 @@
      한글 글리프가 없어 한글이 임의의 시스템 폰트로 폴백되던 문제를 막기 위해 SUIT를
      한글 전용 폴백으로 끼워 넣는다 — 라틴 문자는 여전히 Inter/JetBrains Mono가 그대로 매칭된다 */
   --font-body-md: var(--font-inter), var(--font-suit), sans-serif;
-  --font-headline-xl: var(--font-inter), var(--font-suit), sans-serif;
-  --font-headline-lg: var(--font-inter), var(--font-suit), sans-serif;
-  --font-headline-lg-mobile: var(--font-inter), var(--font-suit), sans-serif;
   --font-label-caps: var(--font-jetbrains-mono), var(--font-suit), monospace;
   --font-code-sm: var(--font-jetbrains-mono), var(--font-suit), monospace;
+
+  /* 헤딩(headline-*)만 예외: 라틴+한글이 한 헤딩에 섞이면(예: "Python 코드") Inter(라틴)와
+     SUIT(한글)의 font-weight 값이 같아도 서체 디자인 차이로 굵기가 달라 보인다. Pretendard는
+     라틴 글리프를 애초에 한글과 나란히 쓰였을 때 자연스럽도록 디자인해서, 헤딩은 Inter/SUIT
+     조합 대신 Pretendard 하나로 통일한다 */
+  --font-headline-xl: var(--font-pretendard), sans-serif;
+  --font-headline-lg: var(--font-pretendard), sans-serif;
+  --font-headline-lg-mobile: var(--font-pretendard), sans-serif;
 
   /* 폰트 크기 토큰 (core/*.html의 tailwind.config fontSize 그대로) */
   --text-body-md: 16px;
