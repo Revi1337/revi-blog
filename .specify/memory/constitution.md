@@ -1,19 +1,22 @@
 <!--
 Sync Impact Report
-- Version change: 1.1.1 → 1.1.2
+- Version change: 1.1.2 → 1.1.3
 - Modified principles:
-  - I. Feature-Level Verification (NON-NEGOTIABLE) — removed claude-in-chrome MCP from the browser
-    verification tool priority; playwright-cli skill is now the default driver, with the playwright
-    MCP screenshot tools reserved for when pixel-level vision is required
+  - II. Visual Consistency Across Dark/Light — typography sentence was stale (still said "Inter
+    (headings/titles/body) and JetBrains Mono (labels/code/meta); no other font family may be
+    introduced"), predating two font changes already shipped in code: SUIT added as a self-hosted
+    Hangul-only fallback for Inter/JetBrains Mono, and Pretendard added as a headings-only
+    replacement for the Inter+SUIT pair (mixing the two in one heading produced mismatched visual
+    weight at the same numeric font-weight). Updated to name all four font families and their scope.
 - Added principles: none
 - Added sections: none
 - Removed sections: none
 - Templates checked for consistency:
   - .specify/templates/plan-template.md ✅ (Constitution Check reads this file dynamically; no
     hardcoded principle text to update)
+  - .specify/templates/spec-template.md ✅ (no font-related references)
   - .specify/templates/tasks-template.md ✅ (no constitution-specific references to update)
-  - AGENTS.md ✅ (Testing section already updated to the same playwright-cli-default → playwright MCP
-    order in this same change)
+  - AGENTS.md ✅ (Fonts section already updated to the same four-font breakdown in the same change)
 - Deferred items: none
 -->
 
@@ -36,8 +39,11 @@ already built on top of it.
 ### II. Visual Consistency Across Dark/Light
 Any change to a `core/*.html` screen (layout, copy, spacing, links, or anything else) MUST be applied
 to its dark/light counterpart in the same change — a screen MUST NOT exist in only one theme.
-Typography is limited to Inter (headings/titles/body) and JetBrains Mono (labels/code/meta); no other
-font family may be introduced.
+Typography is limited to four font families: Inter (body text), JetBrains Mono (labels/code/meta),
+SUIT (Hangul-only fallback for both, since Inter/JetBrains Mono are Latin-only subsets), and
+Pretendard (headings only — mixing Inter+SUIT in one heading produces mismatched visual weight at the
+same numeric font-weight, so headings use Pretendard alone instead of that pair). No other font family
+may be introduced.
 
 Rationale: the dark/light pair is the product itself, not a cosmetic variant. Shipping one theme
 updated and the other stale is equivalent to shipping a half-broken product.
@@ -79,4 +85,4 @@ guidance, PATCH for wording/clarification only — and (2) re-check `.specify/te
 compliance with these principles before proceeding past Phase 0; violations must be justified in the
 plan's Complexity Tracking section or the plan must be revised.
 
-**Version**: 1.1.2 | **Ratified**: 2026-07-17 | **Last Amended**: 2026-07-28
+**Version**: 1.1.3 | **Ratified**: 2026-07-17 | **Last Amended**: 2026-07-28
