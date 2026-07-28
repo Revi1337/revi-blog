@@ -16,8 +16,9 @@ export function ArticleComments() {
   const { isDark } = useTheme()
 
   return (
-    <div className="mt-12 border-t border-outline-variant/20 pt-6">
-      <div className="mb-4 flex items-center gap-2 text-primary dark:text-primary-container">
+    <div className="mt-12">
+      <div className="h-px w-full bg-gradient-to-r from-transparent via-primary/40 to-transparent dark:via-primary-container/40" />
+      <div className="mb-4 mt-6 flex items-center gap-2 text-primary dark:text-primary-container">
         <MessageSquare className="size-4" />
         <h4 className="font-label-caps text-xs tracking-widest">Comments</h4>
       </div>
