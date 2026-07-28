@@ -16,14 +16,26 @@ function formatDate(iso: string) {
 export function ArticleHeader({ article }: { article: Article }) {
   return (
     <header className="space-y-8">
-      <motion.h1
-        initial={{ opacity: 0, y: 8 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, delay: 0.1 }}
-        className="font-headline-xl text-headline-xl leading-[1.1] text-on-surface"
-      >
-        {article.title}
-      </motion.h1>
+      <div className="flex items-center justify-between gap-4">
+        <motion.h1
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.1 }}
+          className="font-headline-xl text-headline-xl leading-[1.1] text-on-surface"
+        >
+          {article.title}
+        </motion.h1>
+        {article.thumbnail ? (
+          <motion.div
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.15 }}
+            className="hidden md:block"
+          >
+            <ArticleThumbnailButton src={article.thumbnail} />
+          </motion.div>
+        ) : null}
+      </div>
 
       <motion.div
         initial={{ opacity: 0, y: 8 }}
@@ -50,12 +62,6 @@ export function ArticleHeader({ article }: { article: Article }) {
             <Timer className="size-4 text-primary dark:text-primary-container" />
             <span>{article.readingTimeMinutes} min read</span>
           </div>
-          {article.thumbnail ? (
-            <>
-              <span className="text-outline-variant dark:text-outline-variant/40">|</span>
-              <ArticleThumbnailButton src={article.thumbnail} />
-            </>
-          ) : null}
         </div>
         {article.tags.length > 0 && (
           <div className="flex flex-wrap items-center gap-2">
