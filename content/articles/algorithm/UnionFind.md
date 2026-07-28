@@ -7,7 +7,7 @@ tags:
   - union-find
   - concept
 description: "서로소 집합을 효율적으로 관리하기 위해 트리 및 배열 구조로 Union과 Find 연산을 수행하는 유니온 파인드 알고리즘"
-thumbnail: https://pub-8c61ed96347b483a91c17765cea907da.r2.dev/images/2026-07-28/UnionFind-thumbnail.jpg
+thumbnail: https://pub-8c61ed96347b483a91c17765cea907da.r2.dev/images/2026-07-29/UnionFind-thumbnail.jpg
 ---
 
 ## Union Find

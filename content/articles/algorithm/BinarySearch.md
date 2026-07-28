@@ -7,7 +7,7 @@ tags:
   - binary_search
   - concept
 description: "정렬된 배열에서 시간 복잡도 O(log N)으로 특정 값을 탐색하는 이분 탐색, Lower Bound, Upper Bound 알고리즘"
-thumbnail: https://pub-8c61ed96347b483a91c17765cea907da.r2.dev/images/2026-07-28/BinarySearch-thumbnail.jpg
+thumbnail: https://pub-8c61ed96347b483a91c17765cea907da.r2.dev/images/2026-07-29/BinarySearch-thumbnail.jpg
 ---
 
 ## Binary Search
