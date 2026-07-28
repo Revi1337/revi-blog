@@ -28,10 +28,14 @@ const jetbrainsMono = JetBrains_Mono({
 
 /** Inter/JetBrains Mono는 한글 글리프가 없어 한글 텍스트가 임의의 시스템 폰트로 폴백되던 문제를
  * 해결하기 위한 한글 전용 폴백 폰트 — 라틴 문자는 여전히 Inter/JetBrains Mono가 우선 매칭된다 */
-const pretendard = localFont({
-  src: "../node_modules/pretendard/dist/web/variable/woff2/PretendardVariable.woff2",
-  variable: "--font-pretendard",
-  weight: "45 920",
+const suit = localFont({
+  src: [
+    { path: "../public/fonts/suit/SUIT-Regular.woff2", weight: "400", style: "normal" },
+    { path: "../public/fonts/suit/SUIT-Medium.woff2", weight: "500", style: "normal" },
+    { path: "../public/fonts/suit/SUIT-SemiBold.woff2", weight: "600", style: "normal" },
+    { path: "../public/fonts/suit/SUIT-Bold.woff2", weight: "700", style: "normal" },
+  ],
+  variable: "--font-suit",
   display: "swap",
 })
 
@@ -52,7 +56,7 @@ export default async function RootLayout({
   return (
     <html lang="en" className={initialIsDark ? "dark" : undefined}>
       <body
-        className={`${inter.variable} ${jetbrainsMono.variable} ${pretendard.variable} flex min-h-screen flex-col font-body-md antialiased`}
+        className={`${inter.variable} ${jetbrainsMono.variable} ${suit.variable} flex min-h-screen flex-col font-body-md antialiased`}
       >
         <ThemeProvider initialIsDark={initialIsDark}>
           <MotionProvider>

@@ -6,9 +6,9 @@ This project develops with spec-kit (Spec-Driven Development). `specs/<feature>/
 ## Fonts
 - **Inter** — headings/titles/body text (`headline-xl`, `headline-lg`, `headline-lg-mobile`, `body-md`)
 - **JetBrains Mono** — labels/code/meta info (`label-caps`, `code-sm`): nav, buttons, badges, dates, tags, TOC, code blocks, footer
-- **Pretendard** — Hangul-only fallback for both of the above. Inter/JetBrains Mono are Latin-only subsets with no Hangul glyphs, so every `--font-*` stack in `app/globals.css` lists Pretendard second (`Inter, Pretendard, sans-serif` / `JetBrains Mono, Pretendard, monospace`) — Latin characters still resolve to Inter/JetBrains Mono, only Hangul falls through to Pretendard. Loaded via `next/font/local` in `app/layout.tsx` as `--font-pretendard`.
+- **SUIT** — Hangul-only fallback for both of the above. Inter/JetBrains Mono are Latin-only subsets with no Hangul glyphs, so every `--font-*` stack in `app/globals.css` lists SUIT second (`Inter, SUIT, sans-serif` / `JetBrains Mono, SUIT, monospace`) — Latin characters still resolve to Inter/JetBrains Mono, only Hangul falls through to SUIT. Loaded via `next/font/local` in `app/layout.tsx` as `--font-suit`, self-hosted as static woff2 files (400/500/600/700) under `public/fonts/suit/` (sourced from `sunn-us/SUIT`, OFL-licensed — no npm package, unlike Pretendard's variable font).
 
-Applies consistently across all 4 screens (`core/home-dark.html`, `core/home-light.html`, `core/article-detail-dark.html`, `core/article-detail-light.html`). Do not mix in other font families beyond Inter/JetBrains Mono/Pretendard (e.g. Geist).
+Applies consistently across all 4 screens (`core/home-dark.html`, `core/home-light.html`, `core/article-detail-dark.html`, `core/article-detail-light.html`). Do not mix in other font families beyond Inter/JetBrains Mono/SUIT (e.g. Geist).
 
 ## Editing rule
 `core/*.html` files always come in dark/light pairs. Any change to one (layout, copy, spacing, links, etc.) must be applied to its dark/light counterpart in the same edit — never update just one and leave the other stale.
