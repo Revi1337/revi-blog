@@ -2,6 +2,7 @@
 title: "Default Thumbnail Check (내부 검증용)"
 date: "2026-07-27"
 tags: ["test"]
+show_on_homepage: false
 ---
 
 ## 더미 본문
