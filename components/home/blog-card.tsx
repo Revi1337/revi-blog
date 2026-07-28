@@ -2,7 +2,7 @@
 
 import Image from "next/image"
 import Link from "next/link"
-import { ArrowRight } from "lucide-react"
+import { ArrowRight, CalendarDays, Timer } from "lucide-react"
 
 import type { BlogCardData } from "@/lib/data/types"
 import { resolveDefaultThumbnail } from "@/lib/data/types"
@@ -12,7 +12,14 @@ function formatCardDate(iso: string) {
   return iso.slice(0, 10).replaceAll("-", ".")
 }
 
-export function BlogCard({ slug, title, thumbnail, thumbnailFit, date }: BlogCardData) {
+export function BlogCard({
+  slug,
+  title,
+  thumbnail,
+  thumbnailFit,
+  date,
+  readingTimeMinutes,
+}: BlogCardData) {
   const { isDark } = useTheme()
   const src = resolveDefaultThumbnail(thumbnail, isDark)
   const isContain = thumbnailFit === "contain"
@@ -46,9 +53,17 @@ export function BlogCard({ slug, title, thumbnail, thumbnailFit, date }: BlogCar
             {title}
           </h4>
           <div className="mt-auto flex items-center justify-between">
-            <span className="font-code-sm text-code-sm text-on-surface-variant">
-              {formatCardDate(date)}
-            </span>
+            <div className="flex items-center gap-1.5 font-code-sm text-code-sm text-on-surface-variant">
+              <div className="flex items-center gap-1">
+                <CalendarDays className="size-4 text-primary dark:text-primary-fixed-dim" />
+                <span>{formatCardDate(date)}</span>
+              </div>
+              <span className="text-outline-variant dark:text-outline-variant/40">|</span>
+              <div className="flex items-center gap-1">
+                <Timer className="size-4 text-primary dark:text-primary-fixed-dim" />
+                <span>{readingTimeMinutes} min read</span>
+              </div>
+            </div>
             <ArrowRight className="size-4 text-primary transition-transform group-hover:translate-x-1 dark:text-primary-fixed-dim" />
           </div>
         </div>

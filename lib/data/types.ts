@@ -16,6 +16,7 @@ export interface BlogCardData {
   thumbnail?: string
   thumbnailFit?: ThumbnailFit
   date: string
+  readingTimeMinutes: number
   /** QuickSearch 태그 필터 매칭에 사용 (Article.tags와 동일) */
   tags: string[]
 }
