@@ -212,7 +212,7 @@ export function TocSidebar({
   const nav = (
     <nav
       ref={navRef}
-      className="toc-nav max-h-[500px] space-y-1 overflow-y-auto pr-2"
+      className="toc-nav max-h-[500px] space-y-0.5 overflow-y-auto pr-2"
       aria-label="Table of contents"
     >
       {items.map((item) => {
@@ -233,7 +233,7 @@ export function TocSidebar({
             }}
             aria-current={isActive ? "location" : undefined}
             className={cn(
-              "relative flex items-center gap-2 rounded px-2.5 py-1.5 font-code-sm text-xs text-on-surface-variant transition-colors duration-200 hover:text-primary dark:hover:text-primary-container",
+              "relative flex items-center gap-2 rounded px-2.5 py-1 font-code-sm text-xs text-on-surface-variant transition-colors duration-200 hover:text-primary dark:hover:text-primary-container",
               item.depth === 3 && "ml-4",
               item.depth === 4 && "ml-8",
               isActive && "bg-primary/10 dark:bg-primary-container/10"
