@@ -90,6 +90,14 @@
 .article-body li {
   margin-top: 0.5rem;
 }
+/* ul/ol이 li 안에 중첩되면(예: ol > li > ul) 위쪽 규칙의 margin-top/bottom: 1.5rem이
+   그대로 상속돼 li 간격(0.5rem)과 뒤섞이면서 항목마다 간격이 들쭉날쭉해 보였다.
+   중첩된 리스트는 부모 li의 리듬(0.5rem)을 따르도록 여백을 좁게 재정의한다. */
+.article-body li > ul,
+.article-body li > ol {
+  margin-top: 0.5rem;
+  margin-bottom: 0;
+}
 
 /* GFM 테이블(remark-gfm) — body의 32px grid 배경 위에 표를 그리면 배경/테두리가 없어 셀
    구분이 전혀 보이지 않던 문제를 해결한다. table에 직접 overflow-x를 걸어(GitHub markdown-body와
