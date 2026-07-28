@@ -29,19 +29,19 @@ export function remarkToc() {
 
       if (node.depth !== 2 && node.depth !== 3 && node.depth !== 4) return
 
-      let order: number
+      let order: string
       if (node.depth === 2) {
         h2Order += 1
         h3Order = 0
         h4Order = 0
-        order = h2Order
+        order = String(h2Order).padStart(2, "0")
       } else if (node.depth === 3) {
         h3Order += 1
         h4Order = 0
-        order = h3Order
+        order = `${String(h2Order).padStart(2, "0")}.${h3Order}`
       } else {
         h4Order += 1
-        order = h4Order
+        order = `${String(h2Order).padStart(2, "0")}.${h3Order}.${h4Order}`
       }
 
       items.push({ id, label, order, depth: node.depth })

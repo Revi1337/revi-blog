@@ -24,7 +24,8 @@ export interface TocItem {
   /** 본문 heading의 anchor id와 매칭 (활성 상태 하이라이트용) */
   id: string
   label: string
-  order: number
+  /** 계층형 점 표기 — h2 "02", h3 "02.1", h4 "02.1.1" */
+  order: string
   /** h2/h3/h4 구분 — TOC 인덴트 렌더링에 사용 */
   depth: 2 | 3 | 4
 }

@@ -256,7 +256,7 @@ export function TocSidebar({
                 isActive && "text-primary opacity-100 dark:text-primary-container"
               )}
             >
-              {String(item.order).padStart(2, "0")}
+              {item.order}
             </span>
             <span
               className={cn(
