@@ -17,6 +17,15 @@
 .article-body h2:first-child {
   margin-top: 0;
 }
+/* H2만 구분선을 둔다 — H3~H6는 이미 폰트 크기/굵기로 body와 충분히 구분되고, H3까지 넣으면
+   섹션당 여러 개 반복돼 오히려 화면이 잘게 쪼개져 보인다(사용자 피드백). */
+.article-body h2::after {
+  content: "";
+  display: block;
+  margin-top: 0.5rem;
+  height: 1px;
+  background-color: color-mix(in srgb, var(--color-on-surface) 30%, transparent);
+}
 .article-body h3 {
   margin-top: 2rem;
   margin-bottom: 1rem;
