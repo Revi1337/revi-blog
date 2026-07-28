@@ -275,7 +275,8 @@ body {
   margin-top: 2rem;
   margin-bottom: 1rem;
   scroll-margin-top: var(--header-offset);
-  font-size: 1.25rem;
+  font-size: 1.625rem;
+  line-height: 2.125rem;
   font-weight: 600;
   color: var(--color-on-surface);
 }
@@ -283,7 +284,8 @@ body {
   margin-top: 1.5rem;
   margin-bottom: 0.75rem;
   scroll-margin-top: var(--header-offset);
-  font-size: 1.0625rem;
+  font-size: 1.25rem;
+  line-height: 1.75rem;
   font-weight: 600;
   color: var(--color-on-surface);
 }
