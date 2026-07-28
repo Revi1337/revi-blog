@@ -67,19 +67,24 @@
 }
 .article-body p {
   margin-top: 1rem;
+  line-height: 1.75rem;
   font-weight: var(--text-body-md--font-weight);
   color: var(--color-on-surface-variant);
 }
 .article-body ul {
-  margin-top: 0.5rem;
+  margin-top: 1.5rem;
+  margin-bottom: 1.5rem;
   margin-left: 1.5rem;
   list-style-type: disc;
+  font-weight: var(--text-body-md--font-weight);
   color: var(--color-on-surface-variant);
 }
 .article-body ol {
-  margin-top: 0.5rem;
+  margin-top: 1.5rem;
+  margin-bottom: 1.5rem;
   margin-left: 1.5rem;
   list-style-type: decimal;
+  font-weight: var(--text-body-md--font-weight);
   color: var(--color-on-surface-variant);
 }
 .article-body li {
@@ -600,5 +605,5 @@
 }
 /* 이미지 문단(p > img) 바로 다음에 오는, 이미지가 아닌(=순수 텍스트) 문단에만 여백 추가 */
 .article-body p:has(> img) + p:not(:has(> img)) {
-  margin-top: 2rem; /* 기존 .article-body p { margin-top: 1rem } 위에 덮어씀 */
+  margin-top: 2.5rem; /* 기존 .article-body p { margin-top: 1rem } 위에 덮어씀 */
 }
