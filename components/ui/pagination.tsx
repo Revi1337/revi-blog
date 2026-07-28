@@ -53,7 +53,7 @@ function PaginationLink({
           variant: isActive ? "default" : "ghost",
           size,
         }),
-        "h-9 min-w-9 px-3 font-code-sm text-code-sm",
+        "h-8 min-w-8 px-3 font-code-sm text-code-sm",
         className
       )}
       {...props}
@@ -100,7 +100,7 @@ function PaginationEllipsis({ className, ...props }: React.ComponentProps<"span"
     <span
       aria-hidden
       data-slot="pagination-ellipsis"
-      className={cn("flex size-9 items-center justify-center", className)}
+      className={cn("flex size-8 items-center justify-center", className)}
       {...props}
     >
       <MoreHorizontal className="size-4" />
