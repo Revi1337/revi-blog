@@ -16,13 +16,11 @@ export function BlogCard({
   slug,
   title,
   thumbnail,
-  thumbnailFit,
   date,
   readingTimeMinutes,
 }: BlogCardData) {
   const { isDark } = useTheme()
   const src = resolveDefaultThumbnail(thumbnail, isDark)
-  const isContain = thumbnailFit === "contain"
 
   return (
     <Link
@@ -30,17 +28,8 @@ export function BlogCard({
       className="group block overflow-hidden rounded-lg bg-surface-container transition-all duration-300"
     >
       <article>
-        <div className="relative h-56 overflow-hidden bg-surface-container-high">
-          <Image
-            src={src}
-            alt=""
-            fill
-            className={
-              isContain
-                ? "object-contain"
-                : "object-cover transition-transform duration-500 group-hover:scale-105"
-            }
-          />
+        <div className="relative aspect-[2/1] overflow-hidden bg-surface-container-high">
+          <Image src={src} alt="" fill className="object-cover" />
         </div>
         <div className="flex h-32 flex-col justify-between p-stack-md">
           <h4

@@ -50,7 +50,7 @@ export function HeroCarousel({ slides }: { slides: HeroSlide[] }) {
       setApi={setApi}
       opts={{ loop: true }}
       plugins={[autoplay]}
-      className="group relative h-[480px] w-full overflow-hidden rounded-xl bg-surface-container"
+      className="group relative aspect-[2/1] w-full overflow-hidden rounded-xl bg-surface-container"
     >
       <CarouselContent className="h-full">
         {slides.map((slide, index) => (

@@ -3,7 +3,7 @@ import Link from "next/link"
 import * as motion from "motion/react-client"
 
 import type { Article } from "@/lib/data/types"
-import { ArticleThumbnail } from "@/components/article/article-thumbnail"
+import { ArticleThumbnailButton } from "@/components/article/article-thumbnail-button"
 
 function formatDate(iso: string) {
   return new Date(iso).toLocaleDateString("en-US", {
@@ -50,6 +50,12 @@ export function ArticleHeader({ article }: { article: Article }) {
             <Timer className="size-4 text-primary dark:text-primary-container" />
             <span>{article.readingTimeMinutes} min read</span>
           </div>
+          {article.thumbnail ? (
+            <>
+              <span className="text-outline-variant dark:text-outline-variant/40">|</span>
+              <ArticleThumbnailButton src={article.thumbnail} />
+            </>
+          ) : null}
         </div>
         {article.tags.length > 0 && (
           <div className="flex flex-wrap items-center gap-2">
@@ -68,8 +74,6 @@ export function ArticleHeader({ article }: { article: Article }) {
           </div>
         )}
       </motion.div>
-
-      <ArticleThumbnail src={article.thumbnail} fit={article.thumbnailFit} />
     </header>
   )
 }
