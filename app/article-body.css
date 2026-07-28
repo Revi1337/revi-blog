@@ -598,3 +598,7 @@
 .article-body img {
   cursor: zoom-in;
 }
+/* 이미지 문단(p > img) 바로 다음에 오는, 이미지가 아닌(=순수 텍스트) 문단에만 여백 추가 */
+.article-body p:has(> img) + p:not(:has(> img)) {
+  margin-top: 2rem; /* 기존 .article-body p { margin-top: 1rem } 위에 덮어씀 */
+}
