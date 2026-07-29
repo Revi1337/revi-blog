@@ -1,6 +1,6 @@
 "use client"
 
-import { useMemo, useRef, useState } from "react"
+import { useMemo, useRef } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 
 import type { BlogCardData } from "@/lib/data/types"
@@ -19,29 +19,22 @@ export function EntryStream({ cards }: { cards: BlogCardData[] }) {
   const router = useRouter()
   const searchParams = useSearchParams()
   const urlTag = searchParams.get("tag")
+  const presetId = searchParams.get("preset")
   const topRef = useRef<HTMLDivElement>(null)
 
-  const [activePresetId, setActivePresetId] = useState<string | null>(null)
-
-  const handleSelectPreset = (id: string) => {
-    if (urlTag) router.replace("/", { scroll: false })
-    setActivePresetId((current) => (current === id ? null : id))
-  }
-
-  const clearFilter = () => {
-    setActivePresetId(null)
-    if (urlTag) router.replace("/", { scroll: false })
-  }
-
+  // page/필터를 로컬 state 대신 URL 쿼리만으로 관리한다 — 브라우저 뒤로가기는 이 컴포넌트를
+  // 새로 마운트시킬 수 있어(Router Cache 미스) 로컬 state는 그 순간 초기값으로 사라지지만,
+  // 히스토리 엔트리에 박힌 URL 자체는 뒤로가기로 정확히 복원되므로, URL을 단일 진실 소스로
+  // 삼으면 마운트 여부와 무관하게 항상 떠나기 전과 같은 페이지/필터가 렌더링된다.
   const activeFilter = useMemo(() => {
-    if (activePresetId) {
-      return quickSearchPresets.find((preset) => preset.id === activePresetId) ?? null
+    if (presetId) {
+      return quickSearchPresets.find((preset) => preset.id === presetId) ?? null
     }
     if (urlTag) {
       return { id: `tag:${urlTag}`, label: urlTag, tags: [urlTag] }
     }
     return null
-  }, [activePresetId, urlTag])
+  }, [presetId, urlTag])
 
   const tagIndex = useMemo(() => createTagIndex(cards), [cards])
 
@@ -51,27 +44,38 @@ export function EntryStream({ cards }: { cards: BlogCardData[] }) {
     return cards.filter((_, i) => matchIds.has(i))
   }, [cards, activeFilter, tagIndex])
 
-  const filterKey = activeFilter?.id ?? "all"
-  const [page, setPage] = useState(1)
-  const [lastFilterKey, setLastFilterKey] = useState(filterKey)
-  if (filterKey !== lastFilterKey) {
-    setLastFilterKey(filterKey)
-    setPage(1)
-  }
-
   const totalPages = Math.max(1, Math.ceil(filteredCards.length / CARDS_PER_PAGE))
+  // URL의 page가 범위를 벗어나면(예: 3페이지를 보다가 필터를 걸어 1페이지 분량만 남는 경우)
+  // 안전하게 마지막 페이지로 clamp한다 — URL 자체는 건드리지 않고 렌더링 값만 보정한다.
+  const rawPage = Number(searchParams.get("page"))
+  const page = Number.isInteger(rawPage) && rawPage > 0 ? Math.min(rawPage, totalPages) : 1
   // 앞 페이지부터 CARDS_PER_PAGE만큼 순서대로 채운다 (마지막 페이지에만 나머지가 남는다).
   // 페이지마다 높이가 달라져도 Footer가 튀지 않는 건 아래 goToPage의 스크롤-투-톱과
   // sticky-footer 레이아웃이 보장하므로, 굳이 카드 수를 균등 분배하지 않는다.
   const pagedCards = filteredCards.slice((page - 1) * CARDS_PER_PAGE, page * CARDS_PER_PAGE)
 
+  const handleSelectPreset = (id: string) => {
+    const nextPresetId = presetId === id ? null : id
+    const query = nextPresetId ? `?preset=${encodeURIComponent(nextPresetId)}` : ""
+    router.replace(`/${query}`, { scroll: false })
+  }
+
+  const clearFilter = () => {
+    router.replace("/", { scroll: false })
+  }
+
   // 페이지를 넘기면 목록 최상단으로 부드럽게 스크롤한다. 카드 수가 페이지마다 달라도
   // 항상 같은 지점에서 목록이 시작되므로, 아래쪽에서 넘길 때 Footer 위치가 흔들려 보이지 않는다.
   // scroll-mt-24는 fixed navbar(main의 pt-24와 동일) 아래로 목록 상단을 맞추기 위한 여백.
-  // setPage 직후 곧바로 스크롤하면 리렌더로 그리드 DOM이 바뀌면서 브라우저 scroll-anchoring이
+  // router.replace 직후 곧바로 스크롤하면 리렌더로 그리드 DOM이 바뀌면서 브라우저 scroll-anchoring이
   // 방금 시작한 smooth 스크롤을 취소해버린다. rAF로 커밋 다음 프레임까지 미뤄 안정적으로 스크롤한다.
   const goToPage = (next: number) => {
-    setPage(next)
+    const params = new URLSearchParams()
+    if (presetId) params.set("preset", presetId)
+    else if (urlTag) params.set("tag", urlTag)
+    if (next > 1) params.set("page", String(next))
+    const query = params.toString()
+    router.replace(`/${query ? `?${query}` : ""}`, { scroll: false })
     requestAnimationFrame(() => {
       topRef.current?.scrollIntoView({ behavior: "smooth", block: "start" })
     })
@@ -111,7 +115,7 @@ export function EntryStream({ cards }: { cards: BlogCardData[] }) {
 
       <QuickSearchButtons
         presets={quickSearchPresets}
-        activePresetId={activePresetId}
+        activePresetId={presetId}
         onSelect={handleSelectPreset}
       />
 
