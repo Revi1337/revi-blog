@@ -4,6 +4,11 @@ const PLACEHOLDER_PRESET_COUNT = 6
 export function EntryStreamSkeleton() {
   return (
     <div className="animate-pulse" aria-hidden="true">
+      <div className="mb-stack-lg flex items-end justify-between border-l-4 border-outline-variant pl-4">
+        <div className="h-10 w-48 rounded bg-surface-container" />
+        <div className="h-5 w-24 rounded bg-surface-container" />
+      </div>
+
       <div className="mb-stack-lg flex flex-wrap gap-2">
         {Array.from({ length: PLACEHOLDER_PRESET_COUNT }, (_, i) => (
           <div
@@ -11,11 +16,6 @@ export function EntryStreamSkeleton() {
             className="h-8 w-24 shrink-0 rounded border border-outline-variant bg-surface-container"
           />
         ))}
-      </div>
-
-      <div className="mb-stack-lg flex items-end justify-between border-l-4 border-outline-variant pl-4">
-        <div className="h-7 w-40 rounded bg-surface-container" />
-        <div className="h-5 w-16 rounded bg-surface-container" />
       </div>
 
       <div className="grid grid-cols-1 gap-stack-lg md:grid-cols-2 lg:grid-cols-3">

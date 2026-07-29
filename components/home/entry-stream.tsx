@@ -81,12 +81,6 @@ export function EntryStream({ cards }: { cards: BlogCardData[] }) {
     <>
       <div ref={topRef} aria-hidden className="scroll-mt-24" />
 
-      <QuickSearchButtons
-        presets={quickSearchPresets}
-        activePresetId={activePresetId}
-        onSelect={handleSelectPreset}
-      />
-
       <div className="mb-stack-lg flex items-end justify-between border-l-4 border-primary pl-4 dark:border-primary-fixed">
         <h3 className="font-headline-lg text-headline-lg text-on-surface">
           Entry Stream
@@ -114,6 +108,12 @@ export function EntryStream({ cards }: { cards: BlogCardData[] }) {
           )}
         </span>
       </div>
+
+      <QuickSearchButtons
+        presets={quickSearchPresets}
+        activePresetId={activePresetId}
+        onSelect={handleSelectPreset}
+      />
 
       {filteredCards.length > 0 ? (
         <BlogCardGrid cards={pagedCards} />
