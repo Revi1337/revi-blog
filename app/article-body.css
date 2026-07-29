@@ -221,7 +221,7 @@
   justify-content: flex-end;
   overflow: hidden;
   margin: 0;
-  font-family: var(--font-code-sm);
+  font-family: var(--font-jetbrains-mono), var(--font-suit), monospace;
   font-size: 0.75rem;
   white-space: nowrap;
   text-overflow: ellipsis;
@@ -268,7 +268,7 @@
 .article-body [data-rehype-pretty-code-figure] pre {
   overflow-x: auto;
   background-color: transparent !important;
-  font-family: var(--font-code-sm);
+  font-family: var(--font-jetbrains-mono), var(--font-suit), monospace;
   font-size: var(--text-code-sm);
   line-height: var(--text-code-sm--line-height);
   padding: 1rem 1.25rem 1rem 0.25rem;
@@ -306,6 +306,7 @@
    대부분의 브라우저에서 기본적으로 선택되지 않는다. user-select: none으로 드래그 선택도 명시적으로 차단한다. */
 .article-body [data-rehype-pretty-code-figure] code {
   counter-reset: line;
+  font-family: var(--font-jetbrains-mono), var(--font-suit), monospace;
 }
 .article-body [data-rehype-pretty-code-figure] [data-line] {
   counter-increment: line;
