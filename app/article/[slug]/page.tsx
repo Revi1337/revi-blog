@@ -8,6 +8,7 @@ import { TocSidebar } from "@/components/article/toc-sidebar"
 import { ArticleNav } from "@/components/article/article-nav"
 import { CodeCopyHandler } from "@/components/article/code-copy-handler"
 import { ImageLightboxHandler } from "@/components/article/image-lightbox-handler"
+import { ImageLoadingIndicatorHandler } from "@/components/article/image-loading-indicator-handler"
 import { HeadingAnchorScrollHandler } from "@/components/article/heading-anchor-scroll-handler"
 import { ArticleComments } from "@/components/article/article-comments"
 
@@ -59,6 +60,7 @@ export default async function ArticleDetailPage({
           <div className="article-body space-y-0" dangerouslySetInnerHTML={{ __html: article.bodyHtml }} />
           <CodeCopyHandler />
           <ImageLightboxHandler images={article.images} />
+          <ImageLoadingIndicatorHandler hasImages={article.images.length > 0} />
           <HeadingAnchorScrollHandler />
 
           <ArticleNav prev={article.prev} next={article.next} />
