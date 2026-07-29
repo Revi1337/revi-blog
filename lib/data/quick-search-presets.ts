@@ -11,10 +11,7 @@ export interface QuickSearchPreset {
  * 초기값은 spec.md Assumptions가 제안한 3개 예시를 그대로 사용한다.
  */
 export const quickSearchPresets: QuickSearchPreset[] = [
+  { id: "datastructure-concept", label: "DataStructure", tags: ["datastructure", "concept"] },
   { id: "algorithm-concept", label: "Algorithm", tags: ["algorithm", "concept"] },
   { id: "spring-interview", label: "Spring Interview", tags: ["spring", "interview"] },
-  { id: "grpc", label: "gRPC", tags: ["gRPC"] },
-  { id: "kafka", label: "Kafka", tags: ["kafka", "spark"] },
-  { id: "spark", label: "Spark", tags: ["spark"] },
-  { id: "oauth2-security", label: "OAuth2", tags: ["oauth2", "security"] },
 ]
