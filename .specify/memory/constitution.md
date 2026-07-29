@@ -1,22 +1,23 @@
 <!--
 Sync Impact Report
-- Version change: 1.1.2 → 1.1.3
+- Version change: 1.1.3 → 1.2.0
 - Modified principles:
-  - II. Visual Consistency Across Dark/Light — typography sentence was stale (still said "Inter
-    (headings/titles/body) and JetBrains Mono (labels/code/meta); no other font family may be
-    introduced"), predating two font changes already shipped in code: SUIT added as a self-hosted
-    Hangul-only fallback for Inter/JetBrains Mono, and Pretendard added as a headings-only
-    replacement for the Inter+SUIT pair (mixing the two in one heading produced mismatched visual
-    weight at the same numeric font-weight). Updated to name all four font families and their scope.
+  - I. Feature-Level Verification (NON-NEGOTIABLE) — expanded with a NON-NEGOTIABLE sub-rule:
+    `content/articles/**` edits are cached by a top-level `await loadArticles()` in
+    `lib/data/articles.ts` and are invisible to Turbopack/webpack's file watcher (markdown is read via
+    `fs.readFileSync`, not imported), so Fast Refresh never picks them up. A `next dev` restart (or
+    `npm run build`) is now explicitly required before any `content/articles/**` change can be
+    considered verified — a plain browser refresh confirms stale cached output, not the edit.
 - Added principles: none
 - Added sections: none
 - Removed sections: none
 - Templates checked for consistency:
   - .specify/templates/plan-template.md ✅ (Constitution Check reads this file dynamically; no
     hardcoded principle text to update)
-  - .specify/templates/spec-template.md ✅ (no font-related references)
+  - .specify/templates/spec-template.md ✅ (no content-loading-related references)
   - .specify/templates/tasks-template.md ✅ (no constitution-specific references to update)
-  - AGENTS.md ✅ (Fonts section already updated to the same four-font breakdown in the same change)
+  - AGENTS.md ✅ (new "⚠️ IMPORTANT: content/articles/** changes require a next dev restart" section
+    added in the same change, same rationale)
 - Deferred items: none
 -->
 
@@ -31,10 +32,24 @@ The default check is an `npm` build followed by driving the running app in a rea
 (inspecting rendered pixels, not just DOM/console state) is required to confirm the change. Any error
 surfaced by any of these checks MUST be fixed before the feature is considered done.
 
+**⚠️ `content/articles/**` changes require a `next dev` restart to verify (NON-NEGOTIABLE).**
+`lib/data/articles.ts` loads every file under `content/articles/**` via a top-level
+`await loadArticles()` that runs exactly once, when the module is first evaluated, and caches the
+rendered result (parsed frontmatter + HTML) for the life of the process. `loader.ts` reads markdown
+with `fs.readFileSync`, which is invisible to Turbopack/webpack's import-graph-based file watcher — so
+editing anything under `content/articles/**` (any nesting, e.g. `content/articles/algorithm/`) does
+**NOT** trigger Fast Refresh, unlike component/CSS edits. A browser refresh alone will **never** show
+the change. Before treating any `content/articles/**` edit as verified, the running `next dev` process
+MUST be killed and restarted (or `npm run build` re-run) so the top-level await re-executes — refreshing
+the browser against a stale process is not verification, it is confirming cached output.
+
 Rationale: this project is worked on by more than one agent (Claude Code and Antigravity) handing
 features off to each other mid-pipeline. A feature that "looks correct" in a diff but was never
 actually run accumulates silent breakage that is expensive to trace back once another agent has
-already built on top of it.
+already built on top of it. The `content/articles/**` caching behavior is a specific, easy-to-miss
+instance of this: it was discovered mid-session when a markdown fix appeared unverified against a
+process that had cached the pre-fix content, and it is called out explicitly here because it silently
+defeats Principle I's browser-verification step in a way that produces false-positive confidence.
 
 ### II. Visual Consistency Across Dark/Light
 Any change to a `core/*.html` screen (layout, copy, spacing, links, or anything else) MUST be applied
@@ -85,4 +100,4 @@ guidance, PATCH for wording/clarification only — and (2) re-check `.specify/te
 compliance with these principles before proceeding past Phase 0; violations must be justified in the
 plan's Complexity Tracking section or the plan must be revised.
 
-**Version**: 1.1.3 | **Ratified**: 2026-07-17 | **Last Amended**: 2026-07-28
+**Version**: 1.2.0 | **Ratified**: 2026-07-17 | **Last Amended**: 2026-07-29

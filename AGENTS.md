@@ -22,3 +22,8 @@ Before creating any git commit in this repo, invoke the `commit` skill and follo
 
 ## Testing
 By default, verify changes with an npm build, then drive the app in a real browser using the `playwright-cli` skill. When vision (looking at rendered pixels, not just DOM/console output) is needed, use the `playwright` MCP server's screenshot tools instead. If any check turns up an error, fix it before considering the change done.
+
+## ⚠️ IMPORTANT: `content/articles/**` changes require a `next dev` restart
+`lib/data/articles.ts` loads all markdown via a **top-level `await loadArticles()`**, which runs once when the module is first evaluated and caches the parsed result (including the rendered HTML) for the life of the process. `loader.ts` reads `.md` files with `fs.readFileSync`, which is invisible to Turbopack/webpack's import-graph-based file watcher — so editing anything under `content/articles/` does **not** trigger Fast Refresh, unlike component/CSS changes.
+
+**A browser refresh alone will never show the change.** To verify any edit to `content/articles/**` (including nested dirs like `content/articles/algorithm/`), you must kill the running `next dev` process and start it again — only then does the top-level await re-run and re-render the markdown. This applies whether the edit is frontmatter, body text, or a plugin-affecting change (callouts, images, code fences, etc.).
