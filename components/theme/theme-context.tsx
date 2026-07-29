@@ -11,16 +11,16 @@ interface ThemeContextValue {
 
 const ThemeContext = createContext<ThemeContextValue | null>(null)
 
-export function ThemeProvider({
-  initialIsDark,
-  children,
-}: {
-  initialIsDark: boolean
-  children: ReactNode
-}) {
-  // 서버(layout.tsx)가 쿠키로 읽어온 값을 그대로 초기 상태로 사용한다.
-  // 마운트 후 다시 읽어와 바꿔치기하지 않으므로 하드 리프레시 시 토글 아이콘 깜빡임이 없다.
-  const [isDark, setIsDark] = useState(initialIsDark)
+export function ThemeProvider({ children }: { children: ReactNode }) {
+  // layout.tsx의 인라인 스크립트가 hydration 전에 이미 <html>의 "dark" 클래스를 쿠키 기준으로
+  // 맞춰놨으므로, 그 결과를 그대로 읽어 초기 상태로 삼는다 — 서버는 항상 "dark"로 렌더링하지만
+  // 이 컴포넌트가 처음 실행되는 시점(hydration)엔 이미 스크립트가 보정을 끝낸 뒤라 실제 사용자
+  // 설정과 일치하고, 따로 useEffect로 다시 읽어와 바꿔치기하지 않으므로 토글 아이콘 깜빡임도 없다.
+  const [isDark, setIsDark] = useState(() =>
+    typeof document === "undefined"
+      ? true
+      : document.documentElement.classList.contains("dark"),
+  )
 
   function toggleTheme() {
     const next = !isDark

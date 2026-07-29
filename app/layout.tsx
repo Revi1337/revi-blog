@@ -1,7 +1,6 @@
 import type { Metadata } from "next"
 import { Inter, JetBrains_Mono } from "next/font/google"
 import localFont from "next/font/local"
-import { cookies } from "next/headers"
 
 import { ThemeProvider } from "@/components/theme/theme-context"
 import { THEME_COOKIE_KEY } from "@/components/theme/theme-constants"
@@ -58,20 +57,36 @@ export const metadata: Metadata = {
   description: "Revi's engineering blog",
 }
 
-export default async function RootLayout({
+// 다크모드가 기본값이므로 서버는 항상 "dark" 클래스로 렌더링한다 — 라이트 모드 사용자는 아래
+// 인라인 스크립트가 hydration 전에 쿠키를 읽어 "dark"를 제거해준다. 예전에는 이 판단을 서버에서
+// cookies()로 미리 읽어 렌더링했는데, 그러면 쿠키를 참조한다는 이유만으로 Next가 이 레이아웃 아래
+// 모든 라우트(/, /article/[slug], /bookmark)를 통째로 dynamic 렌더링 대상으로 강제 전환시켰다.
+// 그 결과 정적으로 미리 구워둘 수 있었던 페이지들이 요청마다 서버리스 함수를 새로 실행하게 됐고,
+// Next의 자동 링크 prefetch(화면에 보이는 카드/네비 링크마다 실행)까지 겹치면서 홈페이지 진입 한 번에
+// 수십 개의 서버리스 함수 호출이 동시에 몰려 반응이 느려지고 간헐적으로 503까지 발생했다(Vercel
+// 프로덕션에서 실측). 테마 판단을 클라이언트(쿠키를 읽는 인라인 스크립트)로 옮기면 cookies()가
+// 완전히 사라져 이 라우트들이 다시 정적으로 빌드되고, prefetch도 진짜 함수 호출이 아닌 CDN 캐시
+// 히트가 된다.
+const THEME_INIT_SCRIPT = `(function(){try{var m=document.cookie.match(/(?:^|; )${THEME_COOKIE_KEY}=([^;]*)/);if(m&&decodeURIComponent(m[1])==="light"){document.documentElement.classList.remove("dark")}}catch(e){}})()`
+
+export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode
 }>) {
-  const cookieStore = await cookies()
-  const initialIsDark = cookieStore.get(THEME_COOKIE_KEY)?.value !== "light"
-
+  // 아래 인라인 스크립트가 hydration 전에 className을 직접 고쳐써서, 실제 사용자가 라이트
+  // 모드면 서버가 보낸 "dark"와 React가 기대하는 값이 어긋난다 — React는 이 값을 되돌리지
+  // 않지만(className이 정적 리터럴이라 재조정 대상이 아님) 콘솔에 hydration mismatch 에러를
+  // 띄우므로, 의도된 어긋남임을 명시해 억제한다.
   return (
-    <html lang="en" className={initialIsDark ? "dark" : undefined}>
+    <html lang="en" className="dark" suppressHydrationWarning>
       <body
         className={`${inter.variable} ${jetbrainsMono.variable} ${suit.variable} ${pretendard.variable} flex min-h-screen flex-col font-body-md antialiased`}
       >
-        <ThemeProvider initialIsDark={initialIsDark}>
+        {/* body의 첫 자식이라 하이드레이션/페인트보다 먼저 동기 실행되며, 이 시점에 이미 파싱된
+         * document.documentElement(<html>)의 클래스를 고쳐도 화면 깜빡임 없이 반영된다. */}
+        <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
+        <ThemeProvider>
           <MotionProvider>
             <RouteScrollReset />
             <NavBar searchIndex={searchIndex} />
