@@ -1,22 +1,18 @@
 import { Suspense } from "react"
 
-import { HeroCarousel } from "@/components/home/hero-carousel"
+import { HeroIntro } from "@/components/home/hero-intro"
 import { EntryStream } from "@/components/home/entry-stream"
 import { EntryStreamSkeleton } from "@/components/home/entry-stream-skeleton"
 import { blogCards } from "@/lib/data/articles"
-
-const heroSlides = blogCards.slice(0, 3).map((card) => ({
-  slug: card.slug,
-  title: card.title,
-  imageUrl: card.thumbnail,
-  fit: card.thumbnailFit ?? "cover",
-}))
+import { getHeroContent } from "@/lib/data/hero"
 
 export default function HomePage() {
+  const hero = getHeroContent()
+
   return (
     <>
       <header className="mx-auto max-w-[1200px] px-gutter pb-12">
-        <HeroCarousel slides={heroSlides} />
+        <HeroIntro hero={hero} />
       </header>
 
       <div className="mx-auto max-w-[1200px] px-gutter pb-section-gap">

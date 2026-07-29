@@ -1,0 +1,16 @@
+hero:
+  name: "Revi"
+  headline: "코드 너머의 동작 원리를, 시각적으로 파고듭니다."
+  philosophy:
+    - icon: "visibility"
+      label: "[VISUALIZATION]"
+      texts:
+        - "지식은 눈에 보일 때 비로소 내 것이 됩니다. 배운 걸 그림과 다이어그램으로 남깁니다."
+    - icon: "settings_suggest"
+      label: "[INTERNALS]"
+      texts:
+        - "궁금하면 디버거부터 켭니다. 다양한 분석 도구로 내부 동작을 끝까지 따라갑니다."
+    - icon: "edit_note"
+      label: "[WRITING]"
+      texts:
+        - "이해한 원리는 글로 남겨야 진짜 내 것이 됩니다. 그래서 이 블로그를 씁니다."

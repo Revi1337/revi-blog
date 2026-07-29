@@ -113,6 +113,19 @@ export interface BookmarkItem {
   description?: string
 }
 
+export interface PhilosophyItem {
+  /** 원본은 Material Symbols 이름(예: "visibility") — components/home/hero-icon.tsx가 lucide 아이콘으로 매핑 */
+  icon: string
+  label: string
+  texts: string[]
+}
+
+export interface HeroContent {
+  name: string
+  headline: string
+  philosophy: PhilosophyItem[]
+}
+
 export interface BookmarkCategory {
   name: string
   /** lucide-react 아이콘 이름 (예: "code", "palette") — 없으면 텍스트 라벨만 표시 */
