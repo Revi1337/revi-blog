@@ -352,6 +352,23 @@
   white-space: break-spaces;
 }
 
+/* 마커 없는 일반 인용구(`>` 문법) — [#TYPE]/[!TYPE] 마커가 있는 blockquote는
+   remark-callout(-comeau).ts가 hName을 div/aside/details로 치환해버리므로 이 셀렉터에는
+   걸리지 않는다. 즉 실제 <blockquote> 태그로 남는 건 마커 없는 순수 인용구뿐이다. */
+.article-body blockquote {
+  margin: 1.5rem 0;
+  padding-left: 1rem;
+  border-left: 3px solid var(--color-outline-variant);
+  color: var(--color-on-surface-variant);
+  font-style: italic;
+}
+.article-body blockquote p {
+  margin-top: 0;
+}
+.article-body blockquote p + p {
+  margin-top: 0.5rem;
+}
+
 /* 콜아웃(> [!TYPE]) + raw <details>/<summary>(옵시디언 원고 접이식 섹션) 공용 스타일
    (remark-callout.ts 출력, spec.md FR-001~FR-014) */
 .article-body details {
