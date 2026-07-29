@@ -1,7 +1,7 @@
 "use client"
 
-import { useMemo, useRef } from "react"
-import { useRouter, useSearchParams } from "next/navigation"
+import { useEffect, useMemo, useRef, useState } from "react"
+import { useSearchParams } from "next/navigation"
 
 import type { BlogCardData } from "@/lib/data/types"
 import { createTagIndex } from "@/lib/data/tag-match"
@@ -15,17 +15,64 @@ import { HomePagination } from "@/components/home/pagination"
 // (그리드 열 수만 반응형: 모바일 1열 / 태블릿 2열 / 데스크탑 3열)
 const CARDS_PER_PAGE = 9
 
-export function EntryStream({ cards }: { cards: BlogCardData[] }) {
-  const router = useRouter()
+interface EntryStreamUrlState {
+  tag: string | null
+  presetId: string | null
+  rawPage: string | null
+}
+
+function readUrlState(search: string): EntryStreamUrlState {
+  const params = new URLSearchParams(search)
+  return {
+    tag: params.get("tag"),
+    presetId: params.get("preset"),
+    rawPage: params.get("page"),
+  }
+}
+
+/** page/preset/tag를 URL에 쓰고 읽는 걸 Next 라우터(router.replace) 대신 history.replaceState +
+ * popstate로 직접 처리한다. 루트 레이아웃이 theme 쿠키를 읽으려고 cookies()를 쓰는 탓에 이 라우트
+ * 전체가 dynamic 렌더링 대상이 되고, 그 결과 router.replace는 검색 파라미터만 바뀌어도 매번 서버에
+ * RSC 페이로드를 새로 요청한다 — 로컬 dev 서버는 항상 warm하고 왕복이 사실상 0ms라 안 느껴지지만,
+ * Vercel 서버리스 프로덕션에서는 실제 네트워크 왕복(+ 콜드스타트)이 클릭마다 끼어들어 눈에 띄게
+ * 느려진다(실측: DataStructure 프리셋 클릭 시 `GET /?preset=...&_rsc=...` 요청 발생). 필터링/페이지
+ * 분할은 이미 클라이언트에서 cards를 슬라이싱해 끝내고 있어 이 요청은 애초에 새로 가져올 데이터가
+ * 없으므로, URL 동기화를 순수 클라이언트에서 끝내 서버 왕복 자체를 없앤다.
+ *
+ * 브라우저 뒤/앞으로가기는 history.replaceState를 거치지 않는 진짜 popstate이므로,
+ * window.location.search를 직접 읽어 로컬 state를 재동기화해 "뒤로가기는 떠나기 전 페이지/필터로
+ * 돌아온다"는 2aada84의 목표를 그대로 유지한다.
+ */
+function useEntryStreamUrlState() {
   const searchParams = useSearchParams()
-  const urlTag = searchParams.get("tag")
-  const presetId = searchParams.get("preset")
+  const [state, setState] = useState<EntryStreamUrlState>(() => ({
+    tag: searchParams.get("tag"),
+    presetId: searchParams.get("preset"),
+    rawPage: searchParams.get("page"),
+  }))
+
+  useEffect(() => {
+    const onPopState = () => setState(readUrlState(window.location.search))
+    window.addEventListener("popstate", onPopState)
+    return () => window.removeEventListener("popstate", onPopState)
+  }, [])
+
+  const replace = (query: string) => {
+    window.history.replaceState(
+      window.history.state,
+      "",
+      `${window.location.pathname}${query}`,
+    )
+    setState(readUrlState(query.startsWith("?") ? query.slice(1) : ""))
+  }
+
+  return { ...state, replace }
+}
+
+export function EntryStream({ cards }: { cards: BlogCardData[] }) {
+  const { tag: urlTag, presetId, rawPage, replace } = useEntryStreamUrlState()
   const topRef = useRef<HTMLDivElement>(null)
 
-  // page/필터를 로컬 state 대신 URL 쿼리만으로 관리한다 — 브라우저 뒤로가기는 이 컴포넌트를
-  // 새로 마운트시킬 수 있어(Router Cache 미스) 로컬 state는 그 순간 초기값으로 사라지지만,
-  // 히스토리 엔트리에 박힌 URL 자체는 뒤로가기로 정확히 복원되므로, URL을 단일 진실 소스로
-  // 삼으면 마운트 여부와 무관하게 항상 떠나기 전과 같은 페이지/필터가 렌더링된다.
   const activeFilter = useMemo(() => {
     if (presetId) {
       return quickSearchPresets.find((preset) => preset.id === presetId) ?? null
@@ -47,8 +94,8 @@ export function EntryStream({ cards }: { cards: BlogCardData[] }) {
   const totalPages = Math.max(1, Math.ceil(filteredCards.length / CARDS_PER_PAGE))
   // URL의 page가 범위를 벗어나면(예: 3페이지를 보다가 필터를 걸어 1페이지 분량만 남는 경우)
   // 안전하게 마지막 페이지로 clamp한다 — URL 자체는 건드리지 않고 렌더링 값만 보정한다.
-  const rawPage = Number(searchParams.get("page"))
-  const page = Number.isInteger(rawPage) && rawPage > 0 ? Math.min(rawPage, totalPages) : 1
+  const rawPageNum = Number(rawPage)
+  const page = Number.isInteger(rawPageNum) && rawPageNum > 0 ? Math.min(rawPageNum, totalPages) : 1
   // 앞 페이지부터 CARDS_PER_PAGE만큼 순서대로 채운다 (마지막 페이지에만 나머지가 남는다).
   // 페이지마다 높이가 달라져도 Footer가 튀지 않는 건 아래 goToPage의 스크롤-투-톱과
   // sticky-footer 레이아웃이 보장하므로, 굳이 카드 수를 균등 분배하지 않는다.
@@ -57,11 +104,11 @@ export function EntryStream({ cards }: { cards: BlogCardData[] }) {
   const handleSelectPreset = (id: string) => {
     const nextPresetId = presetId === id ? null : id
     const query = nextPresetId ? `?preset=${encodeURIComponent(nextPresetId)}` : ""
-    router.replace(`/${query}`, { scroll: false })
+    replace(query)
   }
 
   const clearFilter = () => {
-    router.replace("/", { scroll: false })
+    replace("")
   }
 
   // 페이지를 넘기면 목록 최상단으로 부드럽게 스크롤한다. 카드 수가 페이지마다 달라도
@@ -75,7 +122,7 @@ export function EntryStream({ cards }: { cards: BlogCardData[] }) {
     else if (urlTag) params.set("tag", urlTag)
     if (next > 1) params.set("page", String(next))
     const query = params.toString()
-    router.replace(`/${query ? `?${query}` : ""}`, { scroll: false })
+    replace(query ? `?${query}` : "")
     requestAnimationFrame(() => {
       topRef.current?.scrollIntoView({ behavior: "smooth", block: "start" })
     })
