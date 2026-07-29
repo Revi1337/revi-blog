@@ -22,13 +22,13 @@ function BookmarkItemRow({
       <span
         aria-hidden
         className={cn(
-          "absolute left-0 top-0 w-px bg-primary dark:bg-primary-fixed",
+          "absolute left-0 top-0 w-px bg-outline dark:bg-outline-variant",
           isLast ? ITEM_TIE_STUB : "h-full"
         )}
       />
       <span
         aria-hidden
-        className={cn("absolute left-0 h-px w-6 bg-primary dark:bg-primary-fixed", ITEM_TIE_OFFSET)}
+        className={cn("absolute left-0 h-px w-6 bg-outline dark:bg-outline-variant", ITEM_TIE_OFFSET)}
       />
       <a
         href={item.url}
@@ -66,13 +66,13 @@ function BookmarkSubCategoryRow({
       <span
         aria-hidden
         className={cn(
-          "absolute left-0 top-0 w-px bg-primary dark:bg-primary-fixed",
+          "absolute left-0 top-0 w-px bg-outline dark:bg-outline-variant",
           isLast ? "h-2" : "h-full"
         )}
       />
       <span
         aria-hidden
-        className="absolute left-0 top-2 h-px w-6 bg-primary dark:bg-primary-fixed"
+        className="absolute left-0 top-2 h-px w-6 bg-outline dark:bg-outline-variant"
       />
       <BookmarkCategorySection category={category} depth={depth} />
     </li>
