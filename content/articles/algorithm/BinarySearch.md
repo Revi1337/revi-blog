@@ -91,10 +91,10 @@ Lower Bound Search는 `찾고자 하는 값보다 크거나 같은 값 중`에�
 > [!question] left < right 동안 반복하는 이유
 > Lower Bound는 탐색 중간에 값을 리턴하지 않기 때문에, left == right인 상태가 반드시 발생합니다. 만약 반복 조건을 left <= right 로 설정하게 된다면 left/mid/right 포인터가 계속 같은 위치로 반복되는 무한루프 상황이 발생하게 됩니다. 따라서 반복 조건을 left < right 로 설정합니다.
 
-> [!question] right = mid가 되는 이유  
+> [!question] right = mid가 되는 이유
 > 현재 `arr[mid]`가 조건을 만족한다면, 정답일 가능성이 있으므로 mid를 버리지 않고 탐색 범위에 포함시켜야 합니다. 따라서 right = mid가 됩니다. 반대로 `arr[mid]`가 조건을 만족하지 않으면 mid + 1부터 탐색하므로 left = mid + 1이 됩니다.
 
-> [!question] 초기 right = len(arr)로 설정하는 이유  
+> [!question] 초기 right = len(arr)로 설정하는 이유
 > Lower Bound는 찾으려는 값이 존재하지 않아도, 그 값이 정렬을 유지하며 들어갈 수 있는 위치를 반환해야 합니다. 예를 들어 `[1, 3, 3, 6, 7]`에서 lower_bound(5)는 값 6의 인덱스 3을 반환합니다. 반면 lower_bound(10)은 배열에 10 이상 값이 없으므로 삽입 위치인 5를 반환해야 합니다. 이를 위해 right = len(arr)로 설정해, 배열 마지막 이후의 위치까지 고려하게 됩니다.
 
 <br>
