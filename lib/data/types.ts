@@ -57,6 +57,8 @@ export interface Article {
   updatedAt?: string
   readingTimeMinutes: number
   tags: string[]
+  /** 없으면 SITE_DESCRIPTION으로 폴백 (OG/메타 description 전용 — 화면에는 노출 안 함) */
+  description?: string
   /** 없으면 기본 썸네일 이미지로 폴백 (BlogCardData와 동일 필드명) */
   thumbnail?: string
   thumbnailFit?: ThumbnailFit
@@ -75,6 +77,11 @@ export interface Article {
 
 export const DEFAULT_THUMBNAIL = "/images/default-thumbnail.svg"
 export const DEFAULT_THUMBNAIL_LIGHT = "/images/default-thumbnail-light.svg"
+
+/** OG 이미지 전용 폴백 — 크롤러(카카오톡/페이스북 등)가 SVG og:image를 못 읽는 경우가 많아
+ * PNG를 별도로 둔다. OG 메타데이터는 방문자의 테마 쿠키를 알 수 없는 시점(빌드/요청 시)에
+ * 생성되므로 dark/light 분기 없이 이 이미지 하나로 고정한다 */
+export const DEFAULT_OG_IMAGE = "/images/default-thumbnail.png"
 
 /** 썸네일이 없는 글에 쓸 폴백을 현재 테마에 맞게 한 곳에서 고른다 — 각 컴포넌트가
  * `isDark ? A : B` 삼항식을 따로 들고 있으면 폴백 페어가 하나 늘어날 때마다 소비처 전부를

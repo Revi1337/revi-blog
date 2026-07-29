@@ -51,6 +51,7 @@ async function loadArticleFile(parsed: ParsedArticleFile, titleToSlug: Map<strin
     updatedAt: frontmatter.updated_at,
     readingTimeMinutes,
     tags: frontmatter.tags,
+    description: frontmatter.description,
     thumbnail: frontmatter.thumbnail,
     thumbnailFit: frontmatter.thumbnail_fit,
     bodyHtml,

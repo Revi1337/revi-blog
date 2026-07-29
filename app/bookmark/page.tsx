@@ -1,7 +1,28 @@
+import type { Metadata } from "next"
 import * as motion from "motion/react-client"
 
 import { getBookmarkCategories } from "@/lib/data/bookmarks"
 import { BookmarkCategorySection } from "@/components/bookmark/bookmark-category-section"
+import { SITE_URL, SITE_NAME } from "@/lib/site-config"
+import { DEFAULT_OG_IMAGE } from "@/lib/data/types"
+
+const TITLE = `${SITE_NAME}: Bookmark`
+const DESCRIPTION = "Revi가 정리한 개발 관련 북마크 모음"
+
+export const metadata: Metadata = {
+  title: TITLE,
+  description: DESCRIPTION,
+  openGraph: {
+    type: "website",
+    title: TITLE,
+    description: DESCRIPTION,
+    siteName: SITE_NAME,
+    url: `${SITE_URL}/bookmark`,
+    // 이 세그먼트가 자체 openGraph를 정의하면 루트의 opengraph-image.png 컨벤션 이미지가
+    // 자동 상속되지 않아 직접 지정해야 한다 (실측: 안 넣으면 og:image 자체가 사라짐)
+    images: [DEFAULT_OG_IMAGE],
+  },
+}
 
 export default function BookmarkPage() {
   const bookmarkCategories = getBookmarkCategories()

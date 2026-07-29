@@ -9,7 +9,7 @@ import { Footer } from "@/components/layout/footer"
 import { RouteScrollReset } from "@/components/layout/route-scroll-reset"
 import { MotionProvider } from "@/components/motion-provider"
 import { searchIndex } from "@/lib/data/search"
-import { SITE_URL } from "@/lib/site-config"
+import { SITE_URL, SITE_NAME, SITE_DESCRIPTION } from "@/lib/site-config"
 
 import "./globals.css"
 
@@ -53,8 +53,18 @@ const pretendard = localFont({
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
-  title: "Revi - Blog",
-  description: "Revi's engineering blog",
+  title: SITE_NAME,
+  description: SITE_DESCRIPTION,
+  openGraph: {
+    type: "website",
+    title: SITE_NAME,
+    description: SITE_DESCRIPTION,
+    siteName: SITE_NAME,
+    url: SITE_URL,
+  },
+  twitter: {
+    card: "summary_large_image",
+  },
 }
 
 // 다크모드가 기본값이므로 서버는 항상 "dark" 클래스로 렌더링한다 — 라이트 모드 사용자는 아래

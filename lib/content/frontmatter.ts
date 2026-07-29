@@ -6,6 +6,7 @@ export interface ArticleFrontmatter {
   date: string
   updated_at?: string
   tags: string[]
+  description?: string
   thumbnail?: string
   /** 없으면 "cover"(꽉 채워 크롭) — 로고처럼 크롭하면 안 되는 썸네일만 "contain"으로 전체 노출 */
   thumbnail_fit?: "cover" | "contain"

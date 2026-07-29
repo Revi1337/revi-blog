@@ -2,7 +2,8 @@ import type { Metadata } from "next"
 import { notFound } from "next/navigation"
 
 import { articles, getArticleBySlug } from "@/lib/data/articles"
-import { DEFAULT_THUMBNAIL } from "@/lib/data/types"
+import { DEFAULT_OG_IMAGE } from "@/lib/data/types"
+import { SITE_URL, SITE_NAME, SITE_DESCRIPTION } from "@/lib/site-config"
 import { ArticleHeader } from "@/components/article/article-header"
 import { TocSidebar } from "@/components/article/toc-sidebar"
 import { ArticleNav } from "@/components/article/article-nav"
@@ -28,11 +29,18 @@ export async function generateMetadata({
     return {}
   }
 
+  const description = article.description ?? SITE_DESCRIPTION
+
   return {
     title: article.title,
+    description,
     openGraph: {
+      type: "article",
       title: article.title,
-      images: [article.thumbnail ?? DEFAULT_THUMBNAIL],
+      description,
+      siteName: SITE_NAME,
+      url: `${SITE_URL}/article/${article.slug}`,
+      images: [article.thumbnail ?? DEFAULT_OG_IMAGE],
     },
   }
 }
