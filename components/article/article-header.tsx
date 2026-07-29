@@ -15,7 +15,7 @@ function formatDate(iso: string) {
 
 export function ArticleHeader({ article }: { article: Article }) {
   return (
-    <header className="space-y-8">
+    <header className="space-y-4">
       <div className="flex items-center justify-between gap-4">
         <motion.h1
           initial={{ opacity: 0, y: 8 }}
