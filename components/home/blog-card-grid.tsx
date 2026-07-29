@@ -13,14 +13,16 @@ import { BlogCard } from "@/components/home/blog-card"
 export function BlogCardGrid({ cards }: { cards: BlogCardData[] }) {
   return (
     <div className="grid grid-cols-1 gap-stack-lg md:grid-cols-2 lg:grid-cols-3">
-      {cards.map((card) => (
+      {cards.map((card, index) => (
         <m.div
           key={card.slug}
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3 }}
         >
-          <BlogCard {...card} />
+          {/* 첫 카드는 모든 브레이크포인트(1/2/3열)에서 공통으로 좌상단에 오고 실측 LCP
+           * 엘리먼트였다 — priority로 프리로드해 lazy 로딩 대기 없이 바로 받아온다. */}
+          <BlogCard {...card} priority={index === 0} />
         </m.div>
       ))}
     </div>

@@ -18,7 +18,8 @@ export function BlogCard({
   thumbnail,
   date,
   readingTimeMinutes,
-}: BlogCardData) {
+  priority,
+}: BlogCardData & { priority?: boolean }) {
   const { isDark } = useTheme()
   const src = resolveDefaultThumbnail(thumbnail, isDark)
 
@@ -29,7 +30,18 @@ export function BlogCard({
     >
       <article>
         <div className="relative aspect-[2/1] overflow-hidden bg-surface-container-high">
-          <Image src={src} alt="" fill className="object-cover" />
+          {/* sizes 없이 fill만 쓰면 Next가 실제 표시 크기(그리드 열 폭)와 무관하게 항상 최대
+           * 해상도(deviceSizes 최대값, 3840px)로 원격 썸네일을 요청한다 — R2에서 매번 그만큼
+           * 리사이징/전송해야 해서 카드마다 로딩이 끝나는 시점이 들쭉날쭉해 보였다. 그리드
+           * 브레이크포인트(1열/2열/3열)에 맞는 sizes를 주면 실제 필요한 크기만 받아온다. */}
+          <Image
+            src={src}
+            alt=""
+            fill
+            sizes="(max-width: 767px) 100vw, (max-width: 1023px) 50vw, 33vw"
+            priority={priority}
+            className="object-cover"
+          />
         </div>
         <div className="flex h-32 flex-col justify-between p-stack-md">
           <h4
