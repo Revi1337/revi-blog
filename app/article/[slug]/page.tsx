@@ -45,6 +45,9 @@ export async function generateMetadata({
       siteName: SITE_NAME,
       url,
       images: [article.thumbnail ?? DEFAULT_ARTICLE_OG_IMAGE],
+      publishedTime: article.date,
+      modifiedTime: article.updatedAt ?? article.date,
+      authors: [SITE_AUTHOR],
     },
   }
 }
