@@ -3,6 +3,7 @@ import { Terminal } from "lucide-react"
 import * as motion from "motion/react-client"
 
 import { HeroIcon } from "@/components/home/hero-icon"
+import { VisitorStatsWidget } from "@/components/stats/visitor-stats-widget"
 import type { HeroContent } from "@/lib/data/types"
 
 export function HeroIntro({ hero }: { hero: HeroContent }) {
@@ -18,6 +19,10 @@ export function HeroIntro({ hero }: { hero: HeroContent }) {
           <Terminal className="size-4" />
           WHOAMI: {hero.name}
         </motion.p>
+
+        <div className="mb-stack-md">
+          <VisitorStatsWidget variant="mobile" />
+        </div>
 
         <motion.h1
           initial={{ opacity: 0, y: 8 }}

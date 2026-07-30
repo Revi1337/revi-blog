@@ -4,6 +4,7 @@ import * as motion from "motion/react-client"
 
 import type { Article } from "@/lib/data/types"
 import { ArticleThumbnailButton } from "@/components/article/article-thumbnail-button"
+import { VisitorStatsWidget } from "@/components/stats/visitor-stats-widget"
 
 function formatDate(iso: string) {
   return new Date(iso).toLocaleDateString("en-US", {
@@ -62,6 +63,8 @@ export function ArticleHeader({ article }: { article: Article }) {
             <Timer className="size-4 text-primary dark:text-primary-container" />
             <span>{article.readingTimeMinutes} min read</span>
           </div>
+          <span className="text-outline-variant dark:text-outline-variant/40">|</span>
+          <VisitorStatsWidget variant="mobile" articleSlug={article.slug} />
         </div>
         {article.tags.length > 0 && (
           <div className="flex flex-wrap items-center gap-2">

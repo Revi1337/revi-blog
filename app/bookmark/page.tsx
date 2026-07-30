@@ -3,6 +3,7 @@ import * as motion from "motion/react-client"
 
 import { getBookmarkCategories } from "@/lib/data/bookmarks"
 import { BookmarkCategorySection } from "@/components/bookmark/bookmark-category-section"
+import { VisitorStatsWidget } from "@/components/stats/visitor-stats-widget"
 import { SITE_URL, SITE_NAME } from "@/lib/site-config"
 import { DEFAULT_WEBSITE_OG_IMAGE } from "@/lib/data/types"
 
@@ -32,6 +33,12 @@ export default function BookmarkPage() {
 
   return (
     <div className="mx-auto max-w-[1200px] px-gutter pb-section-gap">
+      <VisitorStatsWidget variant="desktop" />
+
+      <div className="mb-8">
+        <VisitorStatsWidget variant="mobile" />
+      </div>
+
       <div className="flex flex-col gap-12">
         {bookmarkCategories.map((category, index) => (
           <motion.div
