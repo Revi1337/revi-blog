@@ -1,6 +1,6 @@
 "use client"
 
-import type { ComponentType } from "react"
+import { type ComponentType, useLayoutEffect, useRef, useState } from "react"
 import { Users, TrendingUp, History, Eye } from "lucide-react"
 import { AnimatePresence, m } from "motion/react"
 
@@ -45,6 +45,34 @@ function AnimatedStatValue({ value }: { value: number | undefined }) {
   )
 }
 
+// flex-wrap 행에서 자기 자신이 새 줄의 첫 항목으로 밀려났는지를 감지한다 — CSS만으로는 "이
+// flex 아이템이 줄바꿈된 줄의 첫 항목인지"를 판별할 선택자가 없어(:first-child는 DOM 순서 기준일
+// 뿐 시각적 줄바꿈과 무관), 바로 앞 형제와 offsetTop을 비교하는 방식으로 우회한다.
+function useIsWrappedToNewLine<T extends HTMLElement>() {
+  const ref = useRef<T>(null)
+  const [isWrapped, setIsWrapped] = useState(false)
+
+  useLayoutEffect(() => {
+    const el = ref.current
+    const parent = el?.parentElement
+    if (!el || !parent) return
+
+    const update = () => {
+      const prev = el.previousElementSibling
+      setIsWrapped(prev !== null && el.offsetTop > (prev as HTMLElement).offsetTop)
+    }
+
+    update()
+    // 자기 자신의 폭 변화(숫자 자릿수 변화)뿐 아니라 형제 항목들의 줄바꿈으로 인한 위치 변화도
+    // 감지해야 하므로 부모(메타 줄) 전체를 관찰한다.
+    const observer = new ResizeObserver(update)
+    observer.observe(parent)
+    return () => observer.disconnect()
+  }, [])
+
+  return { ref, isWrapped }
+}
+
 function StatItem({
   icon: Icon,
   label,
@@ -64,6 +92,36 @@ function StatItem({
         {label}
       </span>
       <AnimatedStatValue value={value} />
+    </div>
+  )
+}
+
+function InlineStatItem({
+  item,
+  isLoaded,
+}: {
+  item: { icon: ComponentType<{ className?: string }>; label: string; value: number | undefined }
+  isLoaded: boolean
+}) {
+  const { ref, isWrapped } = useIsWrappedToNewLine<HTMLDivElement>()
+
+  return (
+    <div
+      ref={ref}
+      className={cn(
+        "flex items-center gap-4 transition-opacity duration-300",
+        isLoaded ? "opacity-100" : "opacity-0"
+      )}
+    >
+      {/* 줄바꿈으로 이 항목이 새 줄의 첫머리로 밀려났을 땐 구분자를 감춘다 — 앞선 항목과 같은
+       * 줄에 있을 때만 "|"로 이어붙는 게 자연스럽다. */}
+      {!isWrapped && (
+        <span className="text-outline-variant dark:text-outline-variant/40">|</span>
+      )}
+      <div className="flex items-center gap-1.5">
+        <item.icon className="size-4 text-primary dark:text-primary-container" />
+        <AnimatedStatValue value={item.value} />
+      </div>
     </div>
   )
 }
@@ -103,19 +161,7 @@ export function VisitorStatsWidget({
     return (
       <>
         {items.map((item) => (
-          <div
-            key={item.label}
-            className={cn(
-              "flex items-center gap-4 transition-opacity duration-300",
-              isLoaded ? "opacity-100" : "opacity-0"
-            )}
-          >
-            <span className="text-outline-variant dark:text-outline-variant/40">|</span>
-            <div className="flex items-center gap-1.5">
-              <item.icon className="size-4 text-primary dark:text-primary-container" />
-              <AnimatedStatValue value={item.value} />
-            </div>
-          </div>
+          <InlineStatItem key={item.label} item={item} isLoaded={isLoaded} />
         ))}
       </>
     )
