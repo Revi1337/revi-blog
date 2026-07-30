@@ -12,6 +12,9 @@ const DESCRIPTION = "Revi가 정리한 개발 관련 북마크 모음"
 export const metadata: Metadata = {
   title: TITLE,
   description: DESCRIPTION,
+  alternates: {
+    canonical: `${SITE_URL}/bookmark`,
+  },
   openGraph: {
     type: "website",
     title: TITLE,

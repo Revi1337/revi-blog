@@ -30,16 +30,20 @@ export async function generateMetadata({
   }
 
   const description = article.description ?? SITE_DESCRIPTION
+  const url = `${SITE_URL}/article/${article.slug}`
 
   return {
     title: article.title,
     description,
+    alternates: {
+      canonical: url,
+    },
     openGraph: {
       type: "article",
       title: article.title,
       description,
       siteName: SITE_NAME,
-      url: `${SITE_URL}/article/${article.slug}`,
+      url,
       images: [article.thumbnail ?? DEFAULT_ARTICLE_OG_IMAGE],
     },
   }

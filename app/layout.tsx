@@ -56,6 +56,12 @@ export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: SITE_NAME,
   description: SITE_DESCRIPTION,
+  // revi-blog.vercel.app(Vercel 기본 도메인)이 CNAME 대상으로 계속 살아있어 커스텀 도메인과
+  // 동일한 콘텐츠를 그대로 서빙함 — canonical로 SITE_URL을 명시해 두 호스트가 별개의 중복
+  // 콘텐츠로 인덱싱되지 않고 blog.revi1337.com으로 신호가 모이도록 함
+  alternates: {
+    canonical: SITE_URL,
+  },
   icons: {
     icon: "/images/favicon.ico",
   },
