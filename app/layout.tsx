@@ -94,7 +94,7 @@ export default function RootLayout({
   // 않지만(className이 정적 리터럴이라 재조정 대상이 아님) 콘솔에 hydration mismatch 에러를
   // 띄우므로, 의도된 어긋남임을 명시해 억제한다.
   return (
-    <html lang="en" className="dark" suppressHydrationWarning>
+    <html lang="ko" className="dark" suppressHydrationWarning>
       <body
         className={`${inter.variable} ${jetbrainsMono.variable} ${suit.variable} ${pretendard.variable} flex min-h-screen flex-col font-body-md antialiased`}
       >
