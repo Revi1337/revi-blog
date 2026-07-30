@@ -21,7 +21,10 @@ function StatItem({
   return (
     <div className="flex h-5 items-center gap-1.5">
       <Icon className="size-4 text-primary dark:text-primary-container" />
-      <span className="font-label-caps text-[10px] uppercase tracking-wide opacity-70 dark:opacity-50">
+      {/* JetBrains Mono/SUIT 조합은 대문자 전용 텍스트(디센더 없음)의 ascent 여유가 커서,
+       * 아이콘·숫자와 같은 flex 행에서 items-center로 정렬해도 라벨 텍스트의 잉크(실제 획)가
+       * 시각적으로 위로 치우쳐 보인다 — translate-y로 그 폰트 메트릭 오차만큼 보정한다. */}
+      <span className="translate-y-0.5 font-label-caps text-[10px] uppercase tracking-wide opacity-70 dark:opacity-50">
         {label}
       </span>
       {/* width를 항상 현재 값의 실제 자릿수(콤마 포함)만큼 잡는다 — 안의 숫자는 애니메이션 중
