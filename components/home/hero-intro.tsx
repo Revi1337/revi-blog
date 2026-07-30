@@ -63,7 +63,7 @@ export function HeroIntro({ hero }: { hero: HeroContent }) {
         className="shrink-0 self-start md:self-auto"
       >
         <Image
-          src="/parrot.png"
+          src="/images/hero.png"
           alt={hero.name}
           width={1024}
           height={1024}
