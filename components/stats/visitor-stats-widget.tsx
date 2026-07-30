@@ -56,7 +56,7 @@ export function VisitorStatsWidget({
         className={cn(
           "flex flex-wrap items-center gap-4 font-code-sm text-sm text-on-surface transition-opacity duration-300",
           isLoaded ? "opacity-100" : "opacity-0",
-          "2xl:hidden"
+          "min-[1600px]:hidden"
         )}
       >
         {items.map((item, index) => (
@@ -73,14 +73,15 @@ export function VisitorStatsWidget({
 
   return (
     <div
-      // 본문 컨테이너(mx-auto max-w-[1200px])의 왼쪽 여백 폭은 (100vw - 1200px) / 2이고,
-      // 그 여백의 가로 중앙은 그 절반인 (100vw - 1200px) / 4 지점이다. -translate-x-1/2로
-      // 그 지점에 박스의 좌우 중심을 맞춰, 뷰포트 폭이 바뀌어도 항상 여백 한가운데에 고정된다.
-      // 위젯 실측 폭(~152px)이 안 겹치려면 여백이 그 폭 이상이어야 하는데(중심이 여백의 절반
-      // 지점에 있으므로 필요 뷰포트는 1200 + 4*76 ≈ 1504px), xl(1280px)에서 전환하면 그 사이
-      // 구간에서 desktop 위젯이 hero 텍스트를 침범한다 — 여유를 두고 2xl(1536px)에서 전환한다.
+      // 본문 컨테이너(mx-auto max-w-[1200px])의 왼쪽 여백 폭은 (100vw - 1200px) / 2이다.
+      // 여백 한가운데((100vw - 1200px) / 4)에서 16px만큼 본문 쪽으로 당겨 "정중앙보다 살짝
+      // 오른쪽"에 두되, -translate-x-1/2로 그 지점에 박스의 좌우 중심을 맞춰 뷰포트 폭이
+      // 바뀌어도 같은 상대 위치를 유지한다.
+      // 위젯 실측 폭(~152px) + 16px 오프셋이 본문을 안 넘으려면 필요 뷰포트가 약 1568px인데
+      // (여백 한가운데 기준 1504px에 오프셋만큼 40px 정도 더 필요), 여유를 두고 1600px에서
+      // 전환한다 — Tailwind 2xl(1536px)보다 커서 임의 breakpoint(min-[1600px])를 쓴다.
       className={cn(
-        "fixed top-40 left-[calc((100vw-1200px)/4)] hidden w-max -translate-x-1/2 flex-col gap-3 rounded border border-outline-variant/20 bg-surface-container-lowest p-4 font-code-sm text-sm text-on-surface transition-opacity duration-300 2xl:flex",
+        "fixed top-40 left-[calc((100vw-1200px)/4+16px)] hidden w-max -translate-x-1/2 flex-col gap-3 rounded border border-outline-variant/20 bg-surface-container-lowest p-4 font-code-sm text-sm text-on-surface transition-opacity duration-300 min-[1600px]:flex",
         isLoaded ? "opacity-100" : "opacity-0"
       )}
     >
