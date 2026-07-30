@@ -36,9 +36,14 @@ export default function BookmarkPage() {
     <div className="mx-auto max-w-[1200px] px-gutter pb-section-gap">
       <TrackVisit />
 
-      <div className="mb-8">
+      <motion.div
+        initial={{ opacity: 0, y: 8 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="mb-8"
+      >
         <VisitorStatsWidget variant="mobile" hideOnWideViewport={false} />
-      </div>
+      </motion.div>
 
       <div className="flex flex-col gap-12">
         {bookmarkCategories.map((category, index) => (
