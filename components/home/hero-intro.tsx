@@ -20,21 +20,18 @@ export function HeroIntro({ hero }: { hero: HeroContent }) {
           WHOAMI: {hero.name}
         </motion.p>
 
-        {/* 위젯 자체가 min-[1600px]:hidden으로 숨는 지점과 동일한 breakpoint에서 wrapper도
-         * 같이 숨어야 마진이 안 남는다 — wrapper만 항상 렌더되면 자식이 안 보여도 mb-stack-md가
-         * 그대로 남아 WHOAMI와 헤드라인 사이가 넓어진다. */}
-        <div className="mb-stack-md min-[1600px]:hidden min-[1600px]:mb-0">
-          <VisitorStatsWidget variant="mobile" />
-        </div>
-
         <motion.h1
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.1 }}
-          className="mb-stack-lg font-headline-lg-mobile text-headline-lg-mobile text-on-surface md:font-headline-lg md:text-headline-lg"
+          className="mb-stack-md font-headline-lg-mobile text-headline-lg-mobile text-on-surface md:font-headline-lg md:text-headline-lg"
         >
           {hero.headline}
         </motion.h1>
+
+        <div className="mb-stack-lg">
+          <VisitorStatsWidget variant="mobile" hideOnWideViewport={false} />
+        </div>
 
         <ul className="flex flex-col gap-stack-md">
           {hero.philosophy.map((item, index) => (
