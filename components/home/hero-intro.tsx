@@ -29,9 +29,14 @@ export function HeroIntro({ hero }: { hero: HeroContent }) {
           {hero.headline}
         </motion.h1>
 
-        <div className="mb-stack-lg">
+        <motion.div
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+          className="mb-stack-lg"
+        >
           <VisitorStatsWidget variant="mobile" hideOnWideViewport={false} />
-        </div>
+        </motion.div>
 
         <ul className="flex flex-col gap-stack-md">
           {hero.philosophy.map((item, index) => (
