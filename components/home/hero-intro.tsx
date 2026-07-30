@@ -20,7 +20,10 @@ export function HeroIntro({ hero }: { hero: HeroContent }) {
           WHOAMI: {hero.name}
         </motion.p>
 
-        <div className="mb-stack-md">
+        {/* 위젯 자체가 2xl:hidden으로 숨는 지점과 동일한 breakpoint에서 wrapper도 같이 숨어야
+         * 마진이 안 남는다 — wrapper만 항상 렌더되면 자식이 안 보여도 mb-stack-md가 그대로 남아
+         * WHOAMI와 헤드라인 사이가 넓어진다. */}
+        <div className="mb-stack-md 2xl:hidden 2xl:mb-0">
           <VisitorStatsWidget variant="mobile" />
         </div>
 
