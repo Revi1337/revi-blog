@@ -11,6 +11,7 @@
   "dependencies": {
     "@giscus/react": "^3.1.0",
     "@radix-ui/react-slot": "^1.1.1",
+    "@upstash/redis": "^1.38.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cmdk": "^1.1.1",
@@ -36,6 +37,7 @@
     "remark-parse": "^11.0.0",
     "remark-rehype": "^11.1.2",
     "shiki": "^1.24.0",
+    "swr": "^2.4.2",
     "tailwind-merge": "^2.6.0",
     "unified": "^11.0.5",
     "unist-util-visit": "^5.1.0",
