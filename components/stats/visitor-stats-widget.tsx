@@ -142,13 +142,9 @@ function InlineStatsRow({
 export function VisitorStatsWidget({
   variant,
   articleSlug,
-  hideOnWideViewport = true,
 }: {
-  variant: "desktop" | "mobile" | "inline"
+  variant: "mobile" | "inline"
   articleSlug?: string
-  // mobile variant를 1600px 이상에서도 그대로 노출하고 싶은 페이지(예: 북마크)를 위한 탈출구.
-  // 기본값 true는 desktop variant(고정 사이드바)와 짝을 이루는 기존 페이지들의 동작을 유지한다.
-  hideOnWideViewport?: boolean
 }) {
   const stats = useVisitorStats(articleSlug)
   // 데이터가 오기 전엔 value를 undefined로 두어 StatItem이 아무 것도 그리지 않게 하고, 위젯
@@ -174,43 +170,20 @@ export function VisitorStatsWidget({
     return <InlineStatsRow items={items} isLoaded={isLoaded} />
   }
 
-  if (variant === "mobile") {
-    return (
-      <div
-        className={cn(
-          "flex flex-wrap items-center gap-4 font-code-sm text-sm text-on-surface transition-opacity duration-300",
-          isLoaded ? "opacity-100" : "opacity-0",
-          hideOnWideViewport && "min-[1600px]:hidden"
-        )}
-      >
-        {items.map((item, index) => (
-          <div key={item.label} className="flex items-center gap-4">
-            {index > 0 && (
-              <span className="text-outline-variant dark:text-outline-variant/40">|</span>
-            )}
-            <StatItem {...item} />
-          </div>
-        ))}
-      </div>
-    )
-  }
-
   return (
     <div
-      // 본문 컨테이너(mx-auto max-w-[1200px])의 왼쪽 여백 폭은 (100vw - 1200px) / 2이다.
-      // 여백 한가운데((100vw - 1200px) / 4)에서 16px만큼 본문 쪽으로 당겨 "정중앙보다 살짝
-      // 오른쪽"에 두되, -translate-x-1/2로 그 지점에 박스의 좌우 중심을 맞춰 뷰포트 폭이
-      // 바뀌어도 같은 상대 위치를 유지한다.
-      // 위젯 실측 폭(~152px) + 16px 오프셋이 본문을 안 넘으려면 필요 뷰포트가 약 1568px인데
-      // (여백 한가운데 기준 1504px에 오프셋만큼 40px 정도 더 필요), 여유를 두고 1600px에서
-      // 전환한다 — Tailwind 2xl(1536px)보다 커서 임의 breakpoint(min-[1600px])를 쓴다.
       className={cn(
-        "fixed top-40 left-[calc((100vw-1200px)/4+16px)] hidden w-max -translate-x-1/2 flex-col gap-3 rounded border border-outline-variant/20 bg-surface-container-lowest p-4 font-code-sm text-sm text-on-surface transition-opacity duration-300 min-[1600px]:flex",
+        "flex flex-wrap items-center gap-4 font-code-sm text-sm text-on-surface transition-opacity duration-300",
         isLoaded ? "opacity-100" : "opacity-0"
       )}
     >
-      {items.map((item) => (
-        <StatItem key={item.label} {...item} />
+      {items.map((item, index) => (
+        <div key={item.label} className="flex items-center gap-4">
+          {index > 0 && (
+            <span className="text-outline-variant dark:text-outline-variant/40">|</span>
+          )}
+          <StatItem {...item} />
+        </div>
       ))}
     </div>
   )

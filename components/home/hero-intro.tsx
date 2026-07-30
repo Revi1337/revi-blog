@@ -35,7 +35,7 @@ export function HeroIntro({ hero }: { hero: HeroContent }) {
           transition={{ duration: 0.6, delay: 0.2 }}
           className="mb-stack-lg"
         >
-          <VisitorStatsWidget variant="mobile" hideOnWideViewport={false} />
+          <VisitorStatsWidget variant="mobile" />
         </motion.div>
 
         <ul className="flex flex-col gap-stack-md">

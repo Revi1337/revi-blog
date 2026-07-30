@@ -42,7 +42,7 @@ export default function BookmarkPage() {
         transition={{ duration: 0.5 }}
         className="mb-8"
       >
-        <VisitorStatsWidget variant="mobile" hideOnWideViewport={false} />
+        <VisitorStatsWidget variant="mobile" />
       </motion.div>
 
       <div className="flex flex-col gap-12">
