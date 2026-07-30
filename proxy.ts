@@ -17,6 +17,13 @@ export async function proxy(request: NextRequest) {
     return NextResponse.next()
   }
 
+  // next/link의 뷰포트 자동 prefetch(next-router-prefetch 헤더)는 사용자가 실제로 보지 않은
+  // 요청이라 실방문 집계에서 제외해야 한다 — 이걸 걸러내지 않으면 화면에 보이는 카드/네비
+  // 링크 개수만큼 조회수가 중복으로 올라간다.
+  if (request.headers.get("next-router-prefetch")) {
+    return NextResponse.next()
+  }
+
   const ip = getClientIp(request)
   // x-forwarded-for가 없는 요청(비정상 프록시 등)은 IP 없이는 중복 방문을 구분할 수 없으므로
   // 전역 카운터 집계를 건너뛴다 — Vercel 엣지 네트워크는 이 헤더를 항상 채워주므로 실사용 시엔 발생하지 않는다.
