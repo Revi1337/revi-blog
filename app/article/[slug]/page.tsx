@@ -3,7 +3,7 @@ import { notFound } from "next/navigation"
 
 import { articles, getArticleBySlug } from "@/lib/data/articles"
 import { DEFAULT_ARTICLE_OG_IMAGE } from "@/lib/data/types"
-import { SITE_URL, SITE_NAME, SITE_DESCRIPTION } from "@/lib/site-config"
+import { SITE_URL, SITE_NAME, SITE_DESCRIPTION, SITE_AUTHOR } from "@/lib/site-config"
 import { ArticleHeader } from "@/components/article/article-header"
 import { TocSidebar } from "@/components/article/toc-sidebar"
 import { ArticleNav } from "@/components/article/article-nav"
@@ -57,8 +57,23 @@ export default async function ArticleDetailPage({
     notFound()
   }
 
+  const thumbnail = article.thumbnail ?? DEFAULT_ARTICLE_OG_IMAGE
+  const articleJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    headline: article.title,
+    description: article.description ?? SITE_DESCRIPTION,
+    datePublished: article.date,
+    dateModified: article.updatedAt ?? article.date,
+    // article.thumbnail은 R2 CDN 절대 URL일 수도, DEFAULT_ARTICLE_OG_IMAGE처럼 사이트 내 상대 경로일 수도 있음
+    image: thumbnail.startsWith("http") ? thumbnail : `${SITE_URL}${thumbnail}`,
+    author: { "@type": "Person", name: SITE_AUTHOR },
+    mainEntityOfPage: { "@type": "WebPage", "@id": `${SITE_URL}/article/${article.slug}` },
+  }
+
   return (
     <div className="article-selection mx-auto max-w-[1200px] px-gutter pb-section-gap pt-8">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }} />
       <main className="grid grid-cols-1 gap-12 lg:grid-cols-12">
         <article className="space-y-12 lg:col-span-8">
           <ArticleHeader article={article} />

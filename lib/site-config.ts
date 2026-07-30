@@ -4,5 +4,9 @@ export const SITE_URL = process.env.SITE_URL ?? "https://blog.revi1337.com"
 
 export const SITE_NAME = "Revi Blog"
 
+/** 아티클 JSON-LD(BlogPosting) author 필드 전용 — 필자가 항상 본인 한 명인 개인 블로그라
+ * frontmatter에 별도 author 필드를 두지 않고 고정값으로 사용 */
+export const SITE_AUTHOR = "Revi"
+
 /** 아티클에 description 프론트매터가 없을 때 OG/메타 description 폴백으로 쓰는 사이트 기본 설명 */
 export const SITE_DESCRIPTION = "Revi's engineering blog"
