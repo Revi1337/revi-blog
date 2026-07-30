@@ -35,10 +35,9 @@ export default function BookmarkPage() {
   return (
     <div className="mx-auto max-w-[1200px] px-gutter pb-section-gap">
       <TrackVisit />
-      <VisitorStatsWidget variant="desktop" />
 
       <div className="mb-8">
-        <VisitorStatsWidget variant="mobile" />
+        <VisitorStatsWidget variant="mobile" hideOnWideViewport={false} />
       </div>
 
       <div className="flex flex-col gap-12">

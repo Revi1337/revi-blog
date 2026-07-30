@@ -60,9 +60,13 @@ function StatItem({
 export function VisitorStatsWidget({
   variant,
   articleSlug,
+  hideOnWideViewport = true,
 }: {
   variant: "desktop" | "mobile"
   articleSlug?: string
+  // mobile variant를 1600px 이상에서도 그대로 노출하고 싶은 페이지(예: 북마크)를 위한 탈출구.
+  // 기본값 true는 desktop variant(고정 사이드바)와 짝을 이루는 기존 페이지들의 동작을 유지한다.
+  hideOnWideViewport?: boolean
 }) {
   const stats = useVisitorStats(articleSlug)
   // 데이터가 오기 전엔 value를 undefined로 두어 StatItem이 아무 것도 그리지 않게 하고, 위젯
@@ -85,7 +89,7 @@ export function VisitorStatsWidget({
         className={cn(
           "flex flex-wrap items-center gap-4 font-code-sm text-sm text-on-surface transition-opacity duration-300",
           isLoaded ? "opacity-100" : "opacity-0",
-          "min-[1600px]:hidden"
+          hideOnWideViewport && "min-[1600px]:hidden"
         )}
       >
         {items.map((item, index) => (
