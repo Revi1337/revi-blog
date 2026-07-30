@@ -45,32 +45,38 @@ function AnimatedStatValue({ value }: { value: number | undefined }) {
   )
 }
 
-// flex-wrap 행에서 자기 자신이 새 줄의 첫 항목으로 밀려났는지를 감지한다 — CSS만으로는 "이
-// flex 아이템이 줄바꿈된 줄의 첫 항목인지"를 판별할 선택자가 없어(:first-child는 DOM 순서 기준일
-// 뿐 시각적 줄바꿈과 무관), 바로 앞 형제와 offsetTop을 비교하는 방식으로 우회한다.
-function useIsWrappedToNewLine<T extends HTMLElement>() {
-  const ref = useRef<T>(null)
-  const [isWrapped, setIsWrapped] = useState(false)
+// flex-wrap 행에서 각 항목이 새 줄의 첫머리로 밀려났는지를 감지한다 — CSS만으로는 "이 flex
+// 아이템이 줄바꿈된 줄의 첫 항목인지"를 판별할 선택자가 없어(:first-child는 DOM 순서 기준일 뿐
+// 시각적 줄바꿈과 무관), 바로 앞 형제와 offsetTop을 비교하는 방식으로 우회한다.
+//
+// 항목 하나당 ResizeObserver를 하나씩 붙이면 같은 부모(메타 줄)를 N개의 옵저버가 중복 관찰하게
+// 되므로, 행 전체를 옵저버 하나로 관찰하고 모든 항목의 줄바꿈 여부를 한 번에 계산한다.
+function useWrapDetection(itemCount: number) {
+  const itemRefs = useRef<(HTMLElement | null)[]>([])
+  const [wrapped, setWrapped] = useState<boolean[]>(() => Array(itemCount).fill(false))
 
   useLayoutEffect(() => {
-    const el = ref.current
-    const parent = el?.parentElement
-    if (!el || !parent) return
+    const parent = itemRefs.current.find(Boolean)?.parentElement
+    if (!parent) return
 
     const update = () => {
-      const prev = el.previousElementSibling
-      setIsWrapped(prev !== null && el.offsetTop > (prev as HTMLElement).offsetTop)
+      setWrapped((prev) => {
+        const next = itemRefs.current.map((el) => {
+          const prevSibling = el?.previousElementSibling as HTMLElement | null
+          return el !== null && prevSibling !== null && el.offsetTop > prevSibling.offsetTop
+        })
+        const changed = next.some((value, index) => value !== prev[index])
+        return changed ? next : prev
+      })
     }
 
     update()
-    // 자기 자신의 폭 변화(숫자 자릿수 변화)뿐 아니라 형제 항목들의 줄바꿈으로 인한 위치 변화도
-    // 감지해야 하므로 부모(메타 줄) 전체를 관찰한다.
     const observer = new ResizeObserver(update)
     observer.observe(parent)
     return () => observer.disconnect()
   }, [])
 
-  return { ref, isWrapped }
+  return { itemRefs, wrapped }
 }
 
 function StatItem({
@@ -96,33 +102,40 @@ function StatItem({
   )
 }
 
-function InlineStatItem({
-  item,
+function InlineStatsRow({
+  items,
   isLoaded,
 }: {
-  item: { icon: ComponentType<{ className?: string }>; label: string; value: number | undefined }
+  items: { icon: ComponentType<{ className?: string }>; label: string; value: number | undefined }[]
   isLoaded: boolean
 }) {
-  const { ref, isWrapped } = useIsWrappedToNewLine<HTMLDivElement>()
+  const { itemRefs, wrapped } = useWrapDetection(items.length)
 
   return (
-    <div
-      ref={ref}
-      className={cn(
-        "flex items-center gap-4 transition-opacity duration-300",
-        isLoaded ? "opacity-100" : "opacity-0"
-      )}
-    >
-      {/* 줄바꿈으로 이 항목이 새 줄의 첫머리로 밀려났을 땐 구분자를 감춘다 — 앞선 항목과 같은
-       * 줄에 있을 때만 "|"로 이어붙는 게 자연스럽다. */}
-      {!isWrapped && (
-        <span className="text-outline-variant dark:text-outline-variant/40">|</span>
-      )}
-      <div className="flex items-center gap-1.5">
-        <item.icon className="size-4 text-primary dark:text-primary-container" />
-        <AnimatedStatValue value={item.value} />
-      </div>
-    </div>
+    <>
+      {items.map((item, index) => (
+        <div
+          key={item.label}
+          ref={(el) => {
+            itemRefs.current[index] = el
+          }}
+          className={cn(
+            "flex items-center gap-4 transition-opacity duration-300",
+            isLoaded ? "opacity-100" : "opacity-0"
+          )}
+        >
+          {/* 줄바꿈으로 이 항목이 새 줄의 첫머리로 밀려났을 땐 구분자를 감춘다 — 앞선 항목과
+           * 같은 줄에 있을 때만 "|"로 이어붙는 게 자연스럽다. */}
+          {!wrapped[index] && (
+            <span className="text-outline-variant dark:text-outline-variant/40">|</span>
+          )}
+          <div className="flex items-center gap-1.5">
+            <item.icon className="size-4 text-primary dark:text-primary-container" />
+            <AnimatedStatValue value={item.value} />
+          </div>
+        </div>
+      ))}
+    </>
   )
 }
 
@@ -158,13 +171,7 @@ export function VisitorStatsWidget({
   // 숫자로만 렌더링해 시각적으로 한 줄처럼 이어지게 한다. 숫자 애니메이션만 AnimatedStatValue로
   // 그대로 공유. 데이터가 도착하기 전엔 항목 자체를 opacity로 숨겨 빈 항목이 먼저 깜빡이지 않게 한다.
   if (variant === "inline") {
-    return (
-      <>
-        {items.map((item) => (
-          <InlineStatItem key={item.label} item={item} isLoaded={isLoaded} />
-        ))}
-      </>
-    )
+    return <InlineStatsRow items={items} isLoaded={isLoaded} />
   }
 
   if (variant === "mobile") {
