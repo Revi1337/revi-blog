@@ -6,7 +6,6 @@ import { DEFAULT_ARTICLE_OG_IMAGE } from "@/lib/data/types"
 import { SITE_URL, SITE_NAME, SITE_DESCRIPTION, SITE_AUTHOR } from "@/lib/site-config"
 import { ArticleHeader } from "@/components/article/article-header"
 import { TocSidebar } from "@/components/article/toc-sidebar"
-import { VisitorStatsWidget } from "@/components/stats/visitor-stats-widget"
 import { TrackVisit } from "@/components/stats/track-visit"
 import { ArticleNav } from "@/components/article/article-nav"
 import { CodeCopyHandler } from "@/components/article/code-copy-handler"
@@ -84,7 +83,6 @@ export default async function ArticleDetailPage({
     <div className="article-selection mx-auto max-w-[1200px] px-gutter pb-section-gap pt-8">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }} />
       <TrackVisit slug={article.slug} />
-      <VisitorStatsWidget variant="desktop" articleSlug={article.slug} />
       <main className="grid grid-cols-1 gap-12 lg:grid-cols-12">
         <article className="space-y-12 lg:col-span-8">
           <ArticleHeader article={article} />

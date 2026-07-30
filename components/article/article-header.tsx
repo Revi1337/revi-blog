@@ -63,8 +63,8 @@ export function ArticleHeader({ article }: { article: Article }) {
             <Timer className="size-4 text-primary dark:text-primary-container" />
             <span>{article.readingTimeMinutes} min read</span>
           </div>
+          <VisitorStatsWidget variant="inline" articleSlug={article.slug} />
         </div>
-        <VisitorStatsWidget variant="mobile" articleSlug={article.slug} />
         {article.tags.length > 0 && (
           <div className="flex flex-wrap items-center gap-2">
             <span className="mr-1 font-label-caps text-[10px] opacity-70 dark:opacity-50">

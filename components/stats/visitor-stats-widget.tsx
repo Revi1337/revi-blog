@@ -7,6 +7,44 @@ import { AnimatePresence, m } from "motion/react"
 import { useVisitorStats } from "@/lib/stats/use-visitor-stats"
 import { cn } from "@/lib/utils"
 
+// 값이 바뀔 때 위/아래로 슬라이드 전환되는 숫자 — StatItem(캡션형)과 inline 렌더링(frontmatter형)이
+// 라벨 스타일은 다르게 가져가도 이 애니메이션 로직만큼은 그대로 공유한다.
+function AnimatedStatValue({ value }: { value: number | undefined }) {
+  const text = value !== undefined ? value.toLocaleString() : ""
+
+  return (
+    // width를 항상 현재 값의 실제 자릿수(콤마 포함)만큼 잡는다 — 안의 숫자는 애니메이션 중
+    // absolute로 빠지므로 부모의 자동 너비 계산에 관여하지 못해, 고정 min-w만 두면 4ch를
+    // 넘는 값(예: 10,000)이 overflow-hidden에 잘려나간다. 최소 4ch는 짧은 값(0~999)일 때도
+    // 자릿수가 늘어날 때(예: 0 → 127) 위젯 크기가 흔들리지 않게 하기 위한 하한선이다.
+    // overflow-hidden은 값이 바뀔 때 이전 숫자가 위로 슬라이드아웃, 새 숫자가 아래에서
+    // 슬라이드인하는 걸 이 칸 안에서만 보이게 잘라준다 — 방문 집계처럼 델타가 항상 1인
+    // 경우 숫자를 실제로 세어 올리는 카운트업은 두 정수 사이에 보여줄 중간값이 없어
+    // 애니메이션이 아니라 그냥 타이밍만 밀린 순간 교체로 보이므로, 대신 값 자체를 하나의
+    // 단위로 슬라이드 전환한다. key={value}가 바뀔 때만 AnimatePresence가 exit/enter를
+    // 트리거하므로 동일 값으로 리렌더링되는 경우엔 아무 애니메이션도 재생되지 않는다.
+    <span
+      className="relative inline-block h-5 overflow-hidden"
+      style={{ width: `${Math.max(text.length, 4)}ch` }}
+    >
+      <AnimatePresence initial={false}>
+        {value !== undefined && (
+          <m.span
+            key={value}
+            initial={{ y: 8, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: -8, opacity: 0 }}
+            transition={{ duration: 0.3, ease: "easeOut" }}
+            className="absolute inset-0"
+          >
+            {text}
+          </m.span>
+        )}
+      </AnimatePresence>
+    </span>
+  )
+}
+
 function StatItem({
   icon: Icon,
   label,
@@ -16,8 +54,6 @@ function StatItem({
   label: string
   value: number | undefined
 }) {
-  const text = value !== undefined ? value.toLocaleString() : ""
-
   return (
     <div className="flex h-5 items-center gap-1.5">
       <Icon className="size-4 text-primary dark:text-primary-container" />
@@ -27,35 +63,7 @@ function StatItem({
       <span className="translate-y-0.5 font-label-caps text-[10px] uppercase tracking-wide opacity-70 dark:opacity-50">
         {label}
       </span>
-      {/* width를 항상 현재 값의 실제 자릿수(콤마 포함)만큼 잡는다 — 안의 숫자는 애니메이션 중
-       * absolute로 빠지므로 부모의 자동 너비 계산에 관여하지 못해, 고정 min-w만 두면 4ch를
-       * 넘는 값(예: 10,000)이 overflow-hidden에 잘려나간다. 최소 4ch는 짧은 값(0~999)일 때도
-       * 자릿수가 늘어날 때(예: 0 → 127) 위젯 크기가 흔들리지 않게 하기 위한 하한선이다.
-       * overflow-hidden은 값이 바뀔 때 이전 숫자가 위로 슬라이드아웃, 새 숫자가 아래에서
-       * 슬라이드인하는 걸 이 칸 안에서만 보이게 잘라준다 — 방문 집계처럼 델타가 항상 1인
-       * 경우 숫자를 실제로 세어 올리는 카운트업은 두 정수 사이에 보여줄 중간값이 없어
-       * 애니메이션이 아니라 그냥 타이밍만 밀린 순간 교체로 보이므로, 대신 값 자체를 하나의
-       * 단위로 슬라이드 전환한다. key={value}가 바뀔 때만 AnimatePresence가 exit/enter를
-       * 트리거하므로 동일 값으로 리렌더링되는 경우엔 아무 애니메이션도 재생되지 않는다. */}
-      <span
-        className="relative inline-block h-5 overflow-hidden"
-        style={{ width: `${Math.max(text.length, 4)}ch` }}
-      >
-        <AnimatePresence initial={false}>
-          {value !== undefined && (
-            <m.span
-              key={value}
-              initial={{ y: 8, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              exit={{ y: -8, opacity: 0 }}
-              transition={{ duration: 0.3, ease: "easeOut" }}
-              className="absolute inset-0"
-            >
-              {text}
-            </m.span>
-          )}
-        </AnimatePresence>
-      </span>
+      <AnimatedStatValue value={value} />
     </div>
   )
 }
@@ -65,7 +73,7 @@ export function VisitorStatsWidget({
   articleSlug,
   hideOnWideViewport = true,
 }: {
-  variant: "desktop" | "mobile"
+  variant: "desktop" | "mobile" | "inline"
   articleSlug?: string
   // mobile variant를 1600px 이상에서도 그대로 노출하고 싶은 페이지(예: 북마크)를 위한 탈출구.
   // 기본값 true는 desktop variant(고정 사이드바)와 짝을 이루는 기존 페이지들의 동작을 유지한다.
@@ -77,14 +85,41 @@ export function VisitorStatsWidget({
   // "-"나 스켈레톤 없이 곧바로 최종 숫자로 나타난다.
   const isLoaded = stats !== undefined
 
-  const items = [
-    { icon: Users, label: "Total", value: stats?.total },
-    { icon: TrendingUp, label: "Today", value: stats?.today },
-    { icon: History, label: "Yesterday", value: stats?.yesterday },
-    ...(articleSlug
-      ? [{ icon: Eye, label: "Views", value: stats && "views" in stats ? stats.views : undefined }]
-      : []),
-  ]
+  // 아티클 상세는 "이 글의 조회수"만 관심사이므로 Views 하나만 보여준다 — Total/Today/Yesterday는
+  // 사이트 전체 지표라 홈/북마크에서만 의미가 있다.
+  const items = articleSlug
+    ? [{ icon: Eye, label: "Views", value: stats && "views" in stats ? stats.views : undefined }]
+    : [
+        { icon: Users, label: "Total", value: stats?.total },
+        { icon: TrendingUp, label: "Today", value: stats?.today },
+        { icon: History, label: "Yesterday", value: stats?.yesterday },
+      ]
+
+  // 아티클 상세의 날짜/수정일/읽는시간 메타 줄에 "|" 구분자로 이어붙이기 위한 variant — StatItem의
+  // 캡션형 스타일(작은 대문자 라벨) 대신, 그 줄의 다른 항목들(날짜, 읽는시간)과 동일하게 아이콘 +
+  // 숫자로만 렌더링해 시각적으로 한 줄처럼 이어지게 한다. 숫자 애니메이션만 AnimatedStatValue로
+  // 그대로 공유. 데이터가 도착하기 전엔 항목 자체를 opacity로 숨겨 빈 항목이 먼저 깜빡이지 않게 한다.
+  if (variant === "inline") {
+    return (
+      <>
+        {items.map((item) => (
+          <div
+            key={item.label}
+            className={cn(
+              "flex items-center gap-4 transition-opacity duration-300",
+              isLoaded ? "opacity-100" : "opacity-0"
+            )}
+          >
+            <span className="text-outline-variant dark:text-outline-variant/40">|</span>
+            <div className="flex items-center gap-1.5">
+              <item.icon className="size-4 text-primary dark:text-primary-container" />
+              <AnimatedStatValue value={item.value} />
+            </div>
+          </div>
+        ))}
+      </>
+    )
+  }
 
   if (variant === "mobile") {
     return (
