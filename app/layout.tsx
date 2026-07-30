@@ -9,6 +9,7 @@ import { Footer } from "@/components/layout/footer"
 import { RouteScrollReset } from "@/components/layout/route-scroll-reset"
 import { MotionProvider } from "@/components/motion-provider"
 import { searchIndex } from "@/lib/data/search"
+import { DEFAULT_WEBSITE_OG_IMAGE } from "@/lib/data/types"
 import { SITE_URL, SITE_NAME, SITE_DESCRIPTION } from "@/lib/site-config"
 
 import "./globals.css"
@@ -61,6 +62,7 @@ export const metadata: Metadata = {
     description: SITE_DESCRIPTION,
     siteName: SITE_NAME,
     url: SITE_URL,
+    images: [DEFAULT_WEBSITE_OG_IMAGE],
   },
   twitter: {
     card: "summary_large_image",

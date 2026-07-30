@@ -80,8 +80,10 @@ export const DEFAULT_THUMBNAIL_LIGHT = "/images/default-thumbnail-light.svg"
 
 /** OG 이미지 전용 폴백 — 크롤러(카카오톡/페이스북 등)가 SVG og:image를 못 읽는 경우가 많아
  * PNG를 별도로 둔다. OG 메타데이터는 방문자의 테마 쿠키를 알 수 없는 시점(빌드/요청 시)에
- * 생성되므로 dark/light 분기 없이 이 이미지 하나로 고정한다 */
-export const DEFAULT_OG_IMAGE = "/images/default-thumbnail.png"
+ * 생성되므로 dark/light 분기 없이 고정 이미지를 쓴다. type(website/article)별로 톤이 달라
+ * 홈·북마크(website)와 아티클(article) 폴백을 따로 둔다 */
+export const DEFAULT_WEBSITE_OG_IMAGE = "/images/og-revi.png"
+export const DEFAULT_ARTICLE_OG_IMAGE = "/images/default-thumbnail-light.png"
 
 /** 썸네일이 없는 글에 쓸 폴백을 현재 테마에 맞게 한 곳에서 고른다 — 각 컴포넌트가
  * `isDark ? A : B` 삼항식을 따로 들고 있으면 폴백 페어가 하나 늘어날 때마다 소비처 전부를

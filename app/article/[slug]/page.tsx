@@ -2,7 +2,7 @@ import type { Metadata } from "next"
 import { notFound } from "next/navigation"
 
 import { articles, getArticleBySlug } from "@/lib/data/articles"
-import { DEFAULT_OG_IMAGE } from "@/lib/data/types"
+import { DEFAULT_ARTICLE_OG_IMAGE } from "@/lib/data/types"
 import { SITE_URL, SITE_NAME, SITE_DESCRIPTION } from "@/lib/site-config"
 import { ArticleHeader } from "@/components/article/article-header"
 import { TocSidebar } from "@/components/article/toc-sidebar"
@@ -40,7 +40,7 @@ export async function generateMetadata({
       description,
       siteName: SITE_NAME,
       url: `${SITE_URL}/article/${article.slug}`,
-      images: [article.thumbnail ?? DEFAULT_OG_IMAGE],
+      images: [article.thumbnail ?? DEFAULT_ARTICLE_OG_IMAGE],
     },
   }
 }
