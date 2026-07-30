@@ -4,6 +4,7 @@ import * as motion from "motion/react-client"
 import { getBookmarkCategories } from "@/lib/data/bookmarks"
 import { BookmarkCategorySection } from "@/components/bookmark/bookmark-category-section"
 import { VisitorStatsWidget } from "@/components/stats/visitor-stats-widget"
+import { TrackVisit } from "@/components/stats/track-visit"
 import { SITE_URL, SITE_NAME } from "@/lib/site-config"
 import { DEFAULT_WEBSITE_OG_IMAGE } from "@/lib/data/types"
 
@@ -33,6 +34,7 @@ export default function BookmarkPage() {
 
   return (
     <div className="mx-auto max-w-[1200px] px-gutter pb-section-gap">
+      <TrackVisit />
       <VisitorStatsWidget variant="desktop" />
 
       <div className="mb-8">
