@@ -75,8 +75,9 @@ export function HeroIntro({ hero }: { hero: HeroContent }) {
         <Image
           src="/images/hero.png"
           alt={hero.name}
-          width={1024}
-          height={1024}
+          width={280}
+          height={280}
+          sizes="(min-width: 768px) 280px, 160px"
           priority
           className="size-40 object-contain md:h-[280px] md:w-[280px]"
         />
