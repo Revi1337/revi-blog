@@ -14,7 +14,7 @@ interface MobileNavMenuProps {
 }
 
 /**
- * md 미만에서 숨겨지는 데스크톱 nav 링크(Home/Feeds/Bookmark)를 대체하는 모바일 전용 드롭다운.
+ * md 미만에서 숨겨지는 데스크톱 nav 링크(Home/Bookmark)를 대체하는 모바일 전용 드롭다운.
  * cmdk 기반 SearchModal과 달리 커맨드 팔레트가 아니라 단순 메뉴라 포커스 트랩은 없다. 바깥 클릭은
  * 투명 backdrop이 가로채 닫기만 하고 아래 콘텐츠로 전파되지 않게 막는다 — document pointerdown
  * 리스너만으로 닫으면 클릭 자체는 그대로 통과해 배경의 카드/링크가 같이 클릭돼버린다.
