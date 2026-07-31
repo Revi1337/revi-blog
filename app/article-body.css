@@ -99,6 +99,26 @@
   font-weight: var(--text-body-md--font-weight);
   color: var(--color-on-surface-variant);
 }
+/* 본문/리스트(Reference 등) 안의 인라인 링크 — Tailwind preflight가 기본 밑줄/색상을 지워서
+   본문 텍스트와 구분이 안 됐다. 다른 곳(heading-anchor)과 같은 포인트 컬러(--color-primary)를
+   쓰고, 밑줄은 항상 보이게 해서(hover 전용이 아니라) 클릭 가능하다는 걸 텍스트만 봐도 알 수 있게 한다. */
+.article-body a {
+  color: var(--color-primary);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  text-decoration-color: color-mix(in srgb, var(--color-primary) 40%, transparent);
+  transition: text-decoration-color 0.15s ease-out;
+}
+.article-body a:hover {
+  text-decoration-color: var(--color-primary);
+}
+.dark .article-body a {
+  color: var(--color-primary-fixed);
+  text-decoration-color: color-mix(in srgb, var(--color-primary-fixed) 40%, transparent);
+}
+.dark .article-body a:hover {
+  text-decoration-color: var(--color-primary-fixed);
+}
 .article-body ul {
   margin-top: 1.5rem;
   margin-bottom: 1.5rem;
