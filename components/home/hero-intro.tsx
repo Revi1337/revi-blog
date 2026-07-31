@@ -79,6 +79,7 @@ export function HeroIntro({ hero }: { hero: HeroContent }) {
           height={280}
           sizes="(min-width: 768px) 280px, 160px"
           priority
+          fetchPriority="high"
           className="size-40 object-contain md:h-[280px] md:w-[280px]"
         />
       </motion.div>
