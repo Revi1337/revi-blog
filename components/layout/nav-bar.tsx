@@ -1,6 +1,6 @@
 "use client"
 
-import { useCallback, useState } from "react"
+import { useCallback, useLayoutEffect, useRef, useState } from "react"
 import dynamic from "next/dynamic"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
@@ -32,8 +32,32 @@ export function NavBar({ searchIndex }: NavBarProps) {
   }, [])
   useSearchShortcut(openSearch)
 
+  const navRef = useRef<HTMLElement>(null)
+
+  // article-body heading의 scroll-margin-top과 TocSidebar 스크롤스파이가 참조하는
+  // --header-offset을 이 nav의 실제 렌더링 높이로 항상 최신화한다 — 고정값을 여기저기
+  // 흩어 두면 헤더 레이아웃이 바뀔 때마다 매번 수동으로 맞춰야 하는 문제(11a66d9에서 실제로
+  // 발생)가 재발하므로, 유일한 진실 소스인 이 엘리먼트 자신의 높이를 직접 측정해 공유한다.
+  // useLayoutEffect로 페인트 전에 반영해 다른 컴포넌트가 낡은 값을 읽는 순간을 없앤다.
+  useLayoutEffect(() => {
+    const nav = navRef.current
+    if (!nav) return
+
+    const setHeaderOffset = () => {
+      document.documentElement.style.setProperty("--header-offset", `${nav.getBoundingClientRect().height}px`)
+    }
+
+    setHeaderOffset()
+    const observer = new ResizeObserver(setHeaderOffset)
+    observer.observe(nav)
+    return () => observer.disconnect()
+  }, [])
+
   return (
-    <nav className="fixed top-0 z-50 w-full border-b border-outline-variant bg-background/70 backdrop-blur-md transition-all duration-200 ease-in-out">
+    <nav
+      ref={navRef}
+      className="fixed top-0 z-50 w-full border-b border-outline-variant bg-background/70 backdrop-blur-md transition-all duration-200 ease-in-out"
+    >
       <div className="mx-auto flex max-w-[1200px] items-center justify-between px-gutter py-4">
         <Link
           href="/"

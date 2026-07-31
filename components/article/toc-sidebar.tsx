@@ -8,8 +8,9 @@ import type { TocItem } from "@/lib/data/types"
 import { cn } from "@/lib/utils"
 import { isPlainLeftClick, scrollToHeadingInstant } from "@/components/article/heading-scroll"
 
-// app/globals.css의 --header-offset과 반드시 같은 값을 가리켜야 한다 — 하나만 바뀌면
-// 앵커 스크롤 정지 위치와 스크롤스파이 활성 판정 기준이 어긋난다.
+// nav-bar.tsx가 실측한 헤더 높이로 런타임에 덮어쓰는 CSS 변수를 읽는다 — getComputedStyle
+// 파싱이 실패하는 극히 예외적인 경우(변수 자체가 없는 등)에 대한 최후 폴백일 뿐, 정상 동작에서는
+// 항상 --header-offset의 실측값을 그대로 따른다.
 const DEFAULT_HEADER_OFFSET = 96
 
 // 앵커 스크롤이 scroll-margin-top 목표 지점에 서브픽셀 단위로 근소하게 못 미치고
@@ -138,11 +139,15 @@ export function TocSidebar({
 
     if (headings.length === 0) return
 
-    const headerOffset = readHeaderOffset()
     let cancelled = false
     let ticking = false
 
     const updateActiveHeading = () => {
+      // 매 호출마다 새로 읽는다 — 리사이즈 등으로 nav-bar.tsx가 --header-offset을 다시 쓰면
+      // (예: 반응형으로 헤더 높이 자체가 바뀌는 경우) effect 시작 시점에 캐싱해둔 값이 낡아버리므로,
+      // 스크롤/리사이즈 시점의 최신 실측값을 항상 사용해야 한다.
+      const headerOffset = readHeaderOffset()
+
       // 접힌 콜아웃(<details> 미오픈) 안의 헤딩은 offsetParent가 null이라 제외된다.
       const visibleHeadings = headings.filter((heading) => heading.offsetParent !== null)
       if (visibleHeadings.length === 0) return

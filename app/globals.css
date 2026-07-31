@@ -218,8 +218,10 @@
   --spacing-gutter: 24px;
   --spacing-section-gap: 80px;
 
-  /* 고정 nav 높이 — article-body heading의 scroll-margin-top과 TocSidebar의
-     스크롤스파이 판정 기준(HEADER_OFFSET)이 이 값 하나만 참조하도록 공유한다. */
+  /* NavBar(nav-bar.tsx)가 마운트 시 자신의 실제 렌더링 높이를 측정해 이 값을 즉시 덮어쓴다 —
+     여기 적힌 96px는 하이드레이션 전 SSR 페인트 동안만 잠깐 쓰이는 부트스트랩 기본값이고, 실제
+     헤더 높이와 다를 수 있다. article-body heading의 scroll-margin-top과 TocSidebar의
+     스크롤스파이 판정 기준은 항상 이 변수를 통해 실측된 최신 값을 읽으므로 별도로 맞출 필요가 없다. */
   --header-offset: 96px;
 
   /* 모서리 반경 — dark/light 간 미세 불일치(spec Assumptions)를 통일 */
