@@ -18,6 +18,16 @@ export function HeroIntro({ hero }: { hero: HeroContent }) {
         >
           <Terminal className="size-4" />
           WHOAMI: {hero.name}
+          {/* 모바일 전용 미니 아바타 — 아래 큰 히어로 이미지가 모바일에서는 텍스트 밑에 그냥
+           * 쌓이면서 실제 콘텐츠(Entry Stream)까지 스크롤을 늘리기만 해서, md 미만에서는 그
+           * 이미지를 통째로 숨기고 대신 이 자리에 작은 원형 아바타로만 개성을 남긴다. */}
+          <Image
+            src="/images/hero.png"
+            alt=""
+            width={21}
+            height={21}
+            className="size-[21px] shrink-0 rounded-full object-cover md:hidden"
+          />
         </motion.p>
 
         <motion.h1
@@ -70,17 +80,21 @@ export function HeroIntro({ hero }: { hero: HeroContent }) {
         initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, delay: 0.15 }}
-        className="shrink-0 self-start md:self-auto"
+        className="hidden shrink-0 self-start md:block md:self-auto"
       >
+        {/* md 미만에서는 위 WHOAMI 줄의 미니 아바타가 이 자리를 대신하므로 렌더링 자체를 숨긴다
+         * (모바일에서 스크롤만 늘리던 큰 이미지 제거). priority는 데스크톱에서 여전히 이 이미지가
+         * LCP 요소라 유지한다 — 다만 preload 힌트는 뷰포트를 가리지 않고 항상 나가므로, 모바일도
+         * hidden으로 화면엔 안 그려지지만 이 이미지를 내려받긴 한다(작은 절충). */}
         <Image
           src="/images/hero.png"
           alt={hero.name}
           width={280}
           height={280}
-          sizes="(min-width: 768px) 280px, 160px"
+          sizes="280px"
           priority
           fetchPriority="high"
-          className="size-40 object-contain md:h-[280px] md:w-[280px]"
+          className="object-contain md:h-[280px] md:w-[280px]"
         />
       </motion.div>
     </div>
