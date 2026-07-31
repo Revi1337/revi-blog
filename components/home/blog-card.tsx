@@ -33,12 +33,16 @@ export function BlogCard({
           {/* sizes 없이 fill만 쓰면 Next가 실제 표시 크기(그리드 열 폭)와 무관하게 항상 최대
            * 해상도(deviceSizes 최대값, 3840px)로 원격 썸네일을 요청한다 — R2에서 매번 그만큼
            * 리사이징/전송해야 해서 카드마다 로딩이 끝나는 시점이 들쭉날쭉해 보였다. 그리드
-           * 브레이크포인트(1열/2열/3열)에 맞는 sizes를 주면 실제 필요한 크기만 받아온다. */}
+           * 브레이크포인트(1열/2열/3열)에 맞는 sizes를 주면 실제 필요한 크기만 받아온다.
+           * 3열 구간(lg, ≥1024px)은 뷰포트가 아니라 부모 컨테이너(max-w-[1200px])가 카드 폭을
+           * 캡핑한다 — "33vw"만 쓰면 뷰포트가 1200px를 넘는 순간부터 실제 카드 폭(24px 패딩
+           * ×2 + 24px 갭×2를 뺀 (1200-48-48)/3 = 368px)보다 큰 후보를 계속 요청하게 되므로,
+           * 컨테이너가 캡핑되는 지점(1200px) 이후엔 그 실측값으로 고정한다. */}
           <Image
             src={src}
             alt=""
             fill
-            sizes="(max-width: 767px) 100vw, (max-width: 1023px) 50vw, 33vw"
+            sizes="(max-width: 767px) 100vw, (max-width: 1023px) 50vw, (max-width: 1200px) 33vw, 368px"
             priority={priority}
             className="object-cover"
           />
