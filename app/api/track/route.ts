@@ -2,11 +2,8 @@ import { NextResponse } from "next/server"
 
 import { getArticleBySlug } from "@/lib/data/articles"
 import { isBotUserAgent } from "@/lib/stats/bot-detection"
-import { redis } from "@/lib/stats/redis"
 import { getKstDateString } from "@/lib/stats/get-stats"
-
-const DAILY_VISIT_TTL_SECONDS = 60 * 60 * 24
-const PAGEVIEW_COOLDOWN_SECONDS = 60
+import { recordVisit } from "@/lib/stats/track"
 
 function getClientIp(request: Request): string | null {
   return request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? null
@@ -43,36 +40,20 @@ export async function POST(request: Request) {
     // 사이트 전역 방문 집계(slug 없음)는 body가 비어도 정상 요청이므로 무시하고 계속 진행한다
   }
 
+  // dedup(사이트 방문 집계)은 slug 유효성과 무관하게 항상 수행하고, 쿨다운+조회수 증가만
+  // 실제 존재하는 글일 때로 한정한다 — 존재하지 않는 slug라도 사이트 방문 자체는 유효하다.
+  // 조회수는 원래부터 dedup 없이 볼 때마다 증가하는 지표지만, 이 라우트는 클라이언트에서
+  // 직접 호출 가능해 fetch 반복 호출로 스팸할 수 있다 — IP+slug당 짧은 쿨다운으로 그 스팸만
+  // 막고, 실제 재방문(쿨다운 이후)은 그대로 정상 카운트되게 한다.
+  const validSlug = slug !== undefined && getArticleBySlug(slug) ? slug : undefined
+
   const ip = getClientIp(request)
   if (ip) {
-    const today = getKstDateString()
-    const dedupKey = `visited:${today}:${ip}`
-    const alreadyVisited = await redis.get(dedupKey)
-
-    if (!alreadyVisited) {
-      await Promise.all([
-        redis.set(dedupKey, "1", { ex: DAILY_VISIT_TTL_SECONDS }),
-        redis.incr("visits:total"),
-        redis.incr(`visits:daily:${today}`),
-      ])
-    }
+    await recordVisit(ip, getKstDateString(), validSlug)
   }
 
-  if (slug) {
-    if (!getArticleBySlug(slug)) {
-      return NextResponse.json({ ok: false, error: "unknown slug" }, { status: 404 })
-    }
-
-    // 조회수는 원래부터 dedup 없이 볼 때마다 증가하는 지표지만, 이 라우트는 클라이언트에서
-    // 직접 호출 가능해 fetch 반복 호출로 스팸할 수 있다 — IP+slug당 짧은 쿨다운으로 그 스팸만
-    // 막고, 실제 재방문(쿨다운 이후)은 그대로 정상 카운트되게 한다.
-    if (ip) {
-      const cooldownKey = `track-cooldown:${ip}:${slug}`
-      const acquired = await redis.set(cooldownKey, "1", { ex: PAGEVIEW_COOLDOWN_SECONDS, nx: true })
-      if (acquired === "OK") {
-        await redis.incr(`pageviews:${slug}`)
-      }
-    }
+  if (slug && !validSlug) {
+    return NextResponse.json({ ok: false, error: "unknown slug" }, { status: 404 })
   }
 
   return NextResponse.json({ ok: true })
