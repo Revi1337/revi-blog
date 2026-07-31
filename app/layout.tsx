@@ -76,6 +76,9 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
   },
+  verification: {
+    google: "pVqcO9F2o2vERPP0_14xhPTiC_sCUt03sMq0USSr_xc",
+  },
 }
 
 // 다크모드가 기본값이므로 서버는 항상 "dark" 클래스로 렌더링한다 — 라이트 모드 사용자는 아래
