@@ -23,11 +23,13 @@ export async function getGlobalStats(): Promise<GlobalStats> {
   const today = getKstDateString()
   const yesterday = getKstYesterdayDateString()
 
-  const [total, todayCount, yesterdayCount] = await Promise.all([
-    redis.get<number>("visits:total"),
-    redis.get<number>(`visits:daily:${today}`),
-    redis.get<number>(`visits:daily:${yesterday}`),
-  ])
+  // 별개의 GET 3개 대신 MGET 하나로 묶는다 — Upstash는 커맨드 단위로 과금/집계되므로
+  // 같은 라운드트립에서 조회 가능한 키를 따로 보낼 이유가 없다.
+  const [total, todayCount, yesterdayCount] = await redis.mget<[number | null, number | null, number | null]>(
+    "visits:total",
+    `visits:daily:${today}`,
+    `visits:daily:${yesterday}`
+  )
 
   return {
     total: total ?? 0,
