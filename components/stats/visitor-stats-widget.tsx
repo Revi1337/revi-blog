@@ -25,34 +25,55 @@ function AnimatedStatValue({ value }: { value: number | undefined }) {
   const text = value !== undefined ? formatStatValue(value) : ""
 
   return (
-    // width를 항상 현재 값의 실제 자릿수(콤마 포함)만큼 잡는다 — 안의 숫자는 애니메이션 중
-    // absolute로 빠지므로 부모의 자동 너비 계산에 관여하지 못해, 고정 min-w만 두면 4ch를
-    // 넘는 값(예: 10,000)이 overflow-hidden에 잘려나간다. 최소 4ch는 짧은 값(0~999)일 때도
-    // 자릿수가 늘어날 때(예: 0 → 127) 위젯 크기가 흔들리지 않게 하기 위한 하한선이다.
-    // overflow-hidden은 값이 바뀔 때 이전 숫자가 위로 슬라이드아웃, 새 숫자가 아래에서
-    // 슬라이드인하는 걸 이 칸 안에서만 보이게 잘라준다 — 방문 집계처럼 델타가 항상 1인
-    // 경우 숫자를 실제로 세어 올리는 카운트업은 두 정수 사이에 보여줄 중간값이 없어
-    // 애니메이션이 아니라 그냥 타이밍만 밀린 순간 교체로 보이므로, 대신 값 자체를 하나의
-    // 단위로 슬라이드 전환한다. key={value}가 바뀔 때만 AnimatePresence가 exit/enter를
-    // 트리거하므로 동일 값으로 리렌더링되는 경우엔 아무 애니메이션도 재생되지 않는다.
-    <span
-      className="relative inline-block h-5 overflow-hidden"
-      style={{ width: `${Math.max(text.length, 4)}ch` }}
-    >
-      <AnimatePresence initial={false}>
-        {value !== undefined && (
-          <m.span
-            key={value}
-            initial={{ y: 8, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            exit={{ y: -8, opacity: 0 }}
-            transition={{ duration: 0.3, ease: "easeOut" }}
-            className="absolute inset-0"
-          >
-            {text}
-          </m.span>
-        )}
-      </AnimatePresence>
+    // 바깥 wrapper는 hover 감지 + 툴팁 포지셔닝 기준점 역할만 한다 — 슬라이드 애니메이션용
+    // overflow-hidden은 안쪽 span에만 남겨둔다. 툴팁을 안쪽 span의 자식으로 넣으면 그
+    // overflow-hidden에 같이 잘려 안 보이게 되므로, 반드시 이 바깥 span의 형제로 둬야 한다.
+    // h-5로 높이를 명시해야 auto 높이(line-height 기반 strut)로 안쪽 h-5(20px)보다 부풀지
+    // 않는다 — height는 line-height와 무관하게 박스 크기를 강제하므로 이것만으로 충분하다.
+    // leading-none은 절대 추가하면 안 된다: line-height는 상속 속성이라 이 wrapper에 걸면
+    // 안쪽 애니메이션 텍스트(.absolute.inset-0)의 line-height까지 덮어써(예: 20px → 14px)
+    // 그 텍스트가 20px 박스 안에서 세로로 놓이는 위치 자체가 바뀌어버린다 — 그래서 wrapper
+    // 박스의 기하학적 중심은 라벨/아이콘과 일치해도 실제 숫자 잉크는 아래로 치우쳐 보였다.
+    <span className="group relative inline-block h-5">
+      {/* width를 항상 현재 값의 실제 자릿수(콤마 포함)만큼 잡는다 — 안의 숫자는 애니메이션 중
+       * absolute로 빠지므로 부모의 자동 너비 계산에 관여하지 못해, 고정 min-w만 두면 4ch를
+       * 넘는 값(예: 10,000)이 overflow-hidden에 잘려나간다. 최소 4ch는 짧은 값(0~999)일 때도
+       * 자릿수가 늘어날 때(예: 0 → 127) 위젯 크기가 흔들리지 않게 하기 위한 하한선이다.
+       * overflow-hidden은 값이 바뀔 때 이전 숫자가 위로 슬라이드아웃, 새 숫자가 아래에서
+       * 슬라이드인하는 걸 이 칸 안에서만 보이게 잘라준다 — 방문 집계처럼 델타가 항상 1인
+       * 경우 숫자를 실제로 세어 올리는 카운트업은 두 정수 사이에 보여줄 중간값이 없어
+       * 애니메이션이 아니라 그냥 타이밍만 밀린 순간 교체로 보이므로, 대신 값 자체를 하나의
+       * 단위로 슬라이드 전환한다. key={value}가 바뀔 때만 AnimatePresence가 exit/enter를
+       * 트리거하므로 동일 값으로 리렌더링되는 경우엔 아무 애니메이션도 재생되지 않는다. */}
+      <span
+        className="relative inline-block h-5 overflow-hidden"
+        style={{ width: `${Math.max(text.length, 4)}ch` }}
+      >
+        <AnimatePresence initial={false}>
+          {value !== undefined && (
+            <m.span
+              key={value}
+              initial={{ y: 8, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              exit={{ y: -8, opacity: 0 }}
+              transition={{ duration: 0.3, ease: "easeOut" }}
+              className="absolute inset-0"
+            >
+              {text}
+            </m.span>
+          )}
+        </AnimatePresence>
+      </span>
+      {/* K/M으로 축약된 값일 때만 정확한 원래 숫자를 보여준다 — 축약 안 된 값은 이미 화면에
+       * 정확한 숫자가 보이므로 툴팁이 중복 정보다. absolute + top-full이라 문서 흐름에서
+       * 빠져 기존 레이아웃(위젯 폭·행 높이)에는 전혀 영향을 주지 않는다. */}
+      {value !== undefined && value >= 10 * THOUSAND && (
+        <span
+          className="pointer-events-none absolute top-full left-1/2 z-10 mt-1 -translate-x-1/2 whitespace-nowrap rounded border border-outline-variant bg-surface-container px-1.5 py-0.5 font-code-sm text-[10px] text-on-surface-variant opacity-0 shadow-sm transition-opacity duration-150 group-hover:opacity-100 dark:border-outline-variant/20"
+        >
+          {value.toLocaleString()}
+        </span>
+      )}
     </span>
   )
 }
