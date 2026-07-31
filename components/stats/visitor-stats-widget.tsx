@@ -94,7 +94,7 @@ function StatItem({
       {/* JetBrains Mono/SUIT 조합은 대문자 전용 텍스트(디센더 없음)의 ascent 여유가 커서,
        * 아이콘·숫자와 같은 flex 행에서 items-center로 정렬해도 라벨 텍스트의 잉크(실제 획)가
        * 시각적으로 위로 치우쳐 보인다 — translate-y로 그 폰트 메트릭 오차만큼 보정한다. */}
-      <span className="translate-y-0.5 font-label-caps text-[10px] uppercase tracking-wide opacity-70 dark:opacity-50">
+      <span className="translate-y-px font-label-caps text-[10px] uppercase tracking-wide opacity-70 dark:opacity-50">
         {label}
       </span>
       <AnimatedStatValue value={value} />
