@@ -116,14 +116,18 @@ function StatItem({
   icon: Icon,
   label,
   value,
+  hideIcon,
 }: {
   icon: ComponentType<{ className?: string }>
   label: string
   value: number | undefined
+  hideIcon?: boolean
 }) {
   return (
     <div className="flex h-5 items-center gap-1.5">
-      <Icon className="size-4 text-primary dark:text-primary-container" />
+      {/* 좁은 뷰포트에서 이 항목이 개행되면(hideIcon) 아이콘을 아예 렌더링하지 않는다 — 라벨과
+       * 값만 남겨 줄바꿈된 항목이 차지하는 폭을 줄인다. */}
+      {!hideIcon && <Icon className="size-4 text-primary dark:text-primary-container" />}
       {/* JetBrains Mono/SUIT 조합은 대문자 전용 텍스트(디센더 없음)의 ascent 여유가 커서,
        * 아이콘·숫자와 같은 flex 행에서 items-center로 정렬해도 라벨 텍스트의 잉크(실제 획)가
        * 시각적으로 위로 치우쳐 보인다 — translate-y로 그 폰트 메트릭 오차만큼 보정한다. */}
@@ -172,6 +176,101 @@ function InlineStatsRow({
   )
 }
 
+// 홈/북마크의 캡션형(mobile) variant 전용 — 뷰포트가 좁아질수록 "아이콘 숨김 → 구분자 숨김 →
+// 개행" 순으로 3단계에 걸쳐 정보를 줄인다. 각 단계가 한 줄에 들어가는지를 미리 측정하기 위해
+// 화면엔 안 보이는 두 가지 구성(①아이콘+구분자 모두 있음, ②아이콘만 없음)을 각각 줄바꿈 없이
+// 렌더링해두고, scrollWidth가 clientWidth를 넘는지(내용이 자기 폭 안에 다 안 들어가는지)로
+// "이 구성이면 한 줄에 들어가는가"를 판단한다.
+//
+// 측정용 DOM과 실제로 보이는 DOM을 반드시 분리해야 한다 — 예전에 화면에 보이는 행 자체에 직접
+// ref를 달아 측정했더니, 실제 아이폰 폭에서 UI가 초당 수십 번 깜빡이는 무한 루프가 발생했다:
+// 개행 감지 → 아이콘 숨김 → 항목 폭이 줄어 한 줄에 다시 들어감(컨테이너 높이 감소) → 그 높이
+// 변화를 ResizeObserver가 다시 감지 → 이번엔 아이콘 없이 측정하니 "개행 안 됨" → 아이콘 다시
+// 보임 → 폭이 늘어나 재개행 → ResizeObserver 재발동 → ...(반복). 즉 아이콘을 껐다 켰다 하는
+// 그 DOM을 동시에 측정 기준으로 삼으면 자기 자신이 만든 레이아웃 변화를 자기가 다시 감지하는
+// 되먹임 구조가 생긴다. 그래서 각 구성을 항상 고정된 형태로 유지하는 화면에 안 보이는
+// 사본(측정 전용)에만 ref/ResizeObserver를 걸고, 실제로 보이는 행은 그 측정 결과(hideIcon/
+// hideSeparator)를 구독만 할 뿐 자신의 DOM 변화가 측정에 영향을 주지 않게 완전히 분리했다.
+function useCollapseStage() {
+  const fullRef = useRef<HTMLDivElement>(null)
+  const noIconRef = useRef<HTMLDivElement>(null)
+  const [hideIcon, setHideIcon] = useState(false)
+  const [hideSeparator, setHideSeparator] = useState(false)
+
+  useLayoutEffect(() => {
+    const overflows = (el: HTMLDivElement | null) => !!el && el.scrollWidth > el.clientWidth + 1
+
+    const update = () => {
+      const nextHideIcon = overflows(fullRef.current)
+      const nextHideSeparator = nextHideIcon && overflows(noIconRef.current)
+      setHideIcon((prev) => (prev === nextHideIcon ? prev : nextHideIcon))
+      setHideSeparator((prev) => (prev === nextHideSeparator ? prev : nextHideSeparator))
+    }
+
+    update()
+    const observer = new ResizeObserver(update)
+    if (fullRef.current) observer.observe(fullRef.current)
+    return () => observer.disconnect()
+  }, [])
+
+  return { fullRef, noIconRef, hideIcon, hideSeparator }
+}
+
+function MobileStatsRow({
+  items,
+  isLoaded,
+}: {
+  items: { icon: ComponentType<{ className?: string }>; label: string; value: number | undefined }[]
+  isLoaded: boolean
+}) {
+  const { fullRef, noIconRef, hideIcon, hideSeparator } = useCollapseStage()
+
+  return (
+    <div className="relative">
+      <div
+        ref={fullRef}
+        aria-hidden
+        className="invisible absolute inset-x-0 top-0 flex items-center gap-4 overflow-hidden font-code-sm text-sm"
+      >
+        {items.map((item, index) => (
+          <div key={item.label} className="flex shrink-0 items-center gap-4">
+            {index > 0 && <span>|</span>}
+            <StatItem {...item} />
+          </div>
+        ))}
+      </div>
+      <div
+        ref={noIconRef}
+        aria-hidden
+        className="invisible absolute inset-x-0 top-0 flex items-center gap-4 overflow-hidden font-code-sm text-sm"
+      >
+        {items.map((item, index) => (
+          <div key={item.label} className="flex shrink-0 items-center gap-4">
+            {index > 0 && <span>|</span>}
+            <StatItem {...item} hideIcon />
+          </div>
+        ))}
+      </div>
+
+      <div
+        className={cn(
+          "flex flex-wrap items-center gap-4 font-code-sm text-sm text-on-surface transition-opacity duration-300",
+          isLoaded ? "opacity-100" : "opacity-0"
+        )}
+      >
+        {items.map((item, index) => (
+          <div key={item.label} className="flex items-center gap-4">
+            {index > 0 && !hideSeparator && (
+              <span className="text-outline-variant dark:text-outline-variant/40">|</span>
+            )}
+            <StatItem {...item} hideIcon={hideIcon} />
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
 export function VisitorStatsWidget({
   variant,
   articleSlug,
@@ -203,21 +302,5 @@ export function VisitorStatsWidget({
     return <InlineStatsRow items={items} isLoaded={isLoaded} />
   }
 
-  return (
-    <div
-      className={cn(
-        "flex flex-wrap items-center gap-4 font-code-sm text-sm text-on-surface transition-opacity duration-300",
-        isLoaded ? "opacity-100" : "opacity-0"
-      )}
-    >
-      {items.map((item, index) => (
-        <div key={item.label} className="flex items-center gap-4">
-          {index > 0 && (
-            <span className="text-outline-variant dark:text-outline-variant/40">|</span>
-          )}
-          <StatItem {...item} />
-        </div>
-      ))}
-    </div>
-  )
+  return <MobileStatsRow items={items} isLoaded={isLoaded} />
 }
