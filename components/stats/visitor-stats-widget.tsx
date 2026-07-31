@@ -7,10 +7,22 @@ import { AnimatePresence, m } from "motion/react"
 import { useVisitorStats } from "@/lib/stats/use-visitor-stats"
 import { cn } from "@/lib/utils"
 
+const THOUSAND = 1_000
+const MILLION = 1_000_000
+
+// 10,000부터 K 단위, 100만부터 M 단위로 축약 표기한다(예: 12,000 → "12K+", 2,300,000 → "2M+")
+// — 1,000~9,999는 굳이 축약할 만큼 길지 않아 K 단위 시작점을 10,000으로 둔다. "+"는 정확한
+// 값이 아니라 이 이상이라는 뜻이므로 소수점 없이 정수로 버림한다.
+function formatStatValue(value: number): string {
+  if (value >= MILLION) return `${Math.floor(value / MILLION)}M+`
+  if (value >= 10 * THOUSAND) return `${Math.floor(value / THOUSAND)}K+`
+  return value.toLocaleString()
+}
+
 // 값이 바뀔 때 위/아래로 슬라이드 전환되는 숫자 — StatItem(캡션형)과 inline 렌더링(frontmatter형)이
 // 라벨 스타일은 다르게 가져가도 이 애니메이션 로직만큼은 그대로 공유한다.
 function AnimatedStatValue({ value }: { value: number | undefined }) {
-  const text = value !== undefined ? value.toLocaleString() : ""
+  const text = value !== undefined ? formatStatValue(value) : ""
 
   return (
     // width를 항상 현재 값의 실제 자릿수(콤마 포함)만큼 잡는다 — 안의 숫자는 애니메이션 중
