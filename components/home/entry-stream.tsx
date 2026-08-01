@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react"
 import { useSearchParams } from "next/navigation"
+import { m } from "motion/react"
 
 import type { BlogCardData } from "@/lib/data/types"
 import { createTagIndex } from "@/lib/data/tag-match"
@@ -132,7 +133,12 @@ export function EntryStream({ cards }: { cards: BlogCardData[] }) {
     <>
       <div ref={topRef} aria-hidden className="scroll-mt-24" />
 
-      <div className="mb-stack-lg flex items-end justify-between border-l-4 border-primary pl-4 dark:border-primary-fixed">
+      <m.div
+        initial={{ opacity: 0, y: 8 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="mb-stack-lg flex items-end justify-between border-l-4 border-primary pl-4 dark:border-primary-fixed"
+      >
         <h3 className="font-headline-lg text-headline-lg text-on-surface">
           Entry Stream
         </h3>
@@ -158,7 +164,7 @@ export function EntryStream({ cards }: { cards: BlogCardData[] }) {
             "All"
           )}
         </span>
-      </div>
+      </m.div>
 
       <QuickSearchButtons
         presets={quickSearchPresets}

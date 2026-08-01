@@ -1,3 +1,7 @@
+"use client"
+
+import { m } from "motion/react"
+
 import type { QuickSearchPreset } from "@/lib/data/quick-search-presets"
 
 export function QuickSearchButtons({
@@ -10,7 +14,12 @@ export function QuickSearchButtons({
   onSelect: (id: string) => void
 }) {
   return (
-    <div className="mb-stack-lg flex flex-wrap gap-2">
+    <m.div
+      initial={{ opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4, delay: 0.1 }}
+      className="mb-stack-lg flex flex-wrap gap-2"
+    >
       {presets.map((preset) => {
         const isActive = preset.id === activePresetId
         return (
@@ -30,6 +39,6 @@ export function QuickSearchButtons({
           </button>
         )
       })}
-    </div>
+    </m.div>
   )
 }
