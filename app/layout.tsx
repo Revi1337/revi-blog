@@ -1,9 +1,9 @@
-import type { Metadata } from "next"
+import type { Metadata, Viewport } from "next"
 import { Inter, JetBrains_Mono } from "next/font/google"
 import localFont from "next/font/local"
 
 import { ThemeProvider } from "@/components/theme/theme-context"
-import { THEME_COOKIE_KEY } from "@/components/theme/theme-constants"
+import { THEME_COLORS, THEME_COOKIE_KEY } from "@/components/theme/theme-constants"
 import { NavBar } from "@/components/layout/nav-bar"
 import { Footer } from "@/components/layout/footer"
 import { RouteScrollReset } from "@/components/layout/route-scroll-reset"
@@ -84,6 +84,13 @@ export const metadata: Metadata = {
   },
 }
 
+// iOS Safari가 상단/하단 툴바를 이 색으로 물들여 페이지 배경과 매끄럽게 이어붙인다. 서버는
+// 항상 "dark" 클래스로 렌더링하므로 기본값도 dark 배경색 — light 사용자는 아래 인라인
+// 스크립트가 hydration 전에 content를 고쳐쓰고, 이후 수동 토글 시엔 theme-context.tsx가 갱신한다.
+export const viewport: Viewport = {
+  themeColor: THEME_COLORS.dark,
+}
+
 // 다크모드가 기본값이므로 서버는 항상 "dark" 클래스로 렌더링한다 — 라이트 모드 사용자는 아래
 // 인라인 스크립트가 hydration 전에 쿠키를 읽어 "dark"를 제거해준다. 예전에는 이 판단을 서버에서
 // cookies()로 미리 읽어 렌더링했는데, 그러면 쿠키를 참조한다는 이유만으로 Next가 이 레이아웃 아래
@@ -94,7 +101,7 @@ export const metadata: Metadata = {
 // 프로덕션에서 실측). 테마 판단을 클라이언트(쿠키를 읽는 인라인 스크립트)로 옮기면 cookies()가
 // 완전히 사라져 이 라우트들이 다시 정적으로 빌드되고, prefetch도 진짜 함수 호출이 아닌 CDN 캐시
 // 히트가 된다.
-const THEME_INIT_SCRIPT = `(function(){try{var m=document.cookie.match(/(?:^|; )${THEME_COOKIE_KEY}=([^;]*)/);if(m&&decodeURIComponent(m[1])==="light"){document.documentElement.classList.remove("dark")}}catch(e){}})()`
+const THEME_INIT_SCRIPT = `(function(){try{var m=document.cookie.match(/(?:^|; )${THEME_COOKIE_KEY}=([^;]*)/);if(m&&decodeURIComponent(m[1])==="light"){document.documentElement.classList.remove("dark");var t=document.querySelector('meta[name="theme-color"]');if(t)t.setAttribute("content","${THEME_COLORS.light}")}}catch(e){}})()`
 
 export default function RootLayout({
   children,
