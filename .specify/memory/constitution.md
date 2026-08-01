@@ -1,23 +1,28 @@
 <!--
 Sync Impact Report
-- Version change: 1.1.3 → 1.2.0
+- Version change: 1.2.0 → 2.0.0
 - Modified principles:
-  - I. Feature-Level Verification (NON-NEGOTIABLE) — expanded with a NON-NEGOTIABLE sub-rule:
-    `content/articles/**` edits are cached by a top-level `await loadArticles()` in
-    `lib/data/articles.ts` and are invisible to Turbopack/webpack's file watcher (markdown is read via
-    `fs.readFileSync`, not imported), so Fast Refresh never picks them up. A `next dev` restart (or
-    `npm run build`) is now explicitly required before any `content/articles/**` change can be
-    considered verified — a plain browser refresh confirms stale cached output, not the edit.
-- Added principles: none
+  - II. Visual Consistency Across Dark/Light — REMOVED (see below)
+  - III. Mandatory vercel-react-best-practices Compliance (NON-NEGOTIABLE) — renumbered to II
+    (content unchanged, only its internal cross-reference from Technology Constraints was updated)
+- Removed principles:
+  - II. Visual Consistency Across Dark/Light — the `core/*.html` dark/light mockup pair this principle
+    gated has not been the project's source of truth for a long time: real implementation work happens
+    entirely in `app/`/`components/` (144 commits touching those paths vs. 7 ever touching `core/`, the
+    last of which was 2026-07-21, ten days stale against the live app at the time of this amendment).
+    `core/*.html` is retained only as a frozen historical design reference from project bootstrap, not a
+    file pair that future changes are obligated to keep in sync. The corresponding "## Editing rule"
+    section was already removed from AGENTS.md in the same effort; this amendment brings the
+    constitution's gate in line with that decision.
 - Added sections: none
 - Removed sections: none
 - Templates checked for consistency:
   - .specify/templates/plan-template.md ✅ (Constitution Check reads this file dynamically; no
     hardcoded principle text to update)
-  - .specify/templates/spec-template.md ✅ (no content-loading-related references)
-  - .specify/templates/tasks-template.md ✅ (no constitution-specific references to update)
-  - AGENTS.md ✅ (new "⚠️ IMPORTANT: content/articles/** changes require a next dev restart" section
-    added in the same change, same rationale)
+  - .specify/templates/spec-template.md ✅ (no dark/light or core/*.html references)
+  - .specify/templates/tasks-template.md ✅ (no dark/light or core/*.html references)
+  - AGENTS.md ✅ (matching "## Editing rule" section already removed in a prior change)
+  - No other command/skill files reference "Visual Consistency" or the dark/light pairing rule.
 - Deferred items: none
 -->
 
@@ -51,19 +56,7 @@ instance of this: it was discovered mid-session when a markdown fix appeared unv
 process that had cached the pre-fix content, and it is called out explicitly here because it silently
 defeats Principle I's browser-verification step in a way that produces false-positive confidence.
 
-### II. Visual Consistency Across Dark/Light
-Any change to a `core/*.html` screen (layout, copy, spacing, links, or anything else) MUST be applied
-to its dark/light counterpart in the same change — a screen MUST NOT exist in only one theme.
-Typography is limited to four font families: Inter (body text), JetBrains Mono (labels/code/meta),
-SUIT (Hangul-only fallback for both, since Inter/JetBrains Mono are Latin-only subsets), and
-Pretendard (headings only — mixing Inter+SUIT in one heading produces mismatched visual weight at the
-same numeric font-weight, so headings use Pretendard alone instead of that pair). No other font family
-may be introduced.
-
-Rationale: the dark/light pair is the product itself, not a cosmetic variant. Shipping one theme
-updated and the other stale is equivalent to shipping a half-broken product.
-
-### III. Mandatory vercel-react-best-practices Compliance (NON-NEGOTIABLE)
+### II. Mandatory vercel-react-best-practices Compliance (NON-NEGOTIABLE)
 Before writing, reviewing, or refactoring any React/Next.js code, the rule files under
 `.agents/skills/vercel-react-best-practices/rules/` MUST actually be opened and consulted — general
 React/Next.js knowledge is not a substitute. Before a React/Next.js feature is considered done, its
@@ -77,16 +70,18 @@ alone did not make it happen; this principle exists so `speckit-plan`/`speckit-a
 the audit as a gate failure, not a style preference.
 
 ## Technology Constraints
-This project is moving from static `core/*.html` mockups to a Next.js/React implementation. Prefer the
-framework's own primitives over custom implementations that route around them. See Principle III for
-the mandatory vercel-react-best-practices audit this implies.
+The project's live implementation is Next.js/React under `app/`/`components/`. The static `core/*.html`
+screens from project bootstrap are a frozen historical design reference, not a maintained artifact —
+they are not required to track subsequent implementation changes. Prefer the framework's own primitives
+over custom implementations that route around them. See Principle II for the mandatory
+vercel-react-best-practices audit this implies.
 
 ## Development Workflow
 Development follows spec-kit (Spec-Driven Development): `speckit-specify` → `speckit-plan` →
 `speckit-tasks` → `speckit-implement`, repeated per feature. This constitution's principles —
-particularly Feature-Level Verification and Visual Consistency — are the gates `speckit-plan` checks
-against under "Constitution Check" and that `speckit-tasks` must turn into concrete tasks. Commits
-follow the `commit` skill's convention (Korean subject/body, `-` bullets, no footer).
+particularly Feature-Level Verification — are the gates `speckit-plan` checks against under
+"Constitution Check" and that `speckit-tasks` must turn into concrete tasks. Commits follow the
+`commit` skill's convention (Korean subject/body, `-` bullets, no footer).
 
 Day-to-day conventions that don't need a plan-time gate (font details, editing habits, which skill to
 invoke when) live in `AGENTS.md`, not here. This file holds only what must be checked for every feature.
@@ -100,4 +95,4 @@ guidance, PATCH for wording/clarification only — and (2) re-check `.specify/te
 compliance with these principles before proceeding past Phase 0; violations must be justified in the
 plan's Complexity Tracking section or the plan must be revised.
 
-**Version**: 1.2.0 | **Ratified**: 2026-07-17 | **Last Amended**: 2026-07-29
+**Version**: 2.0.0 | **Ratified**: 2026-07-17 | **Last Amended**: 2026-08-01
