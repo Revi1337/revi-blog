@@ -1,7 +1,6 @@
 "use client"
 
-import { useEffect, useMemo, useRef, useState } from "react"
-import { useSearchParams } from "next/navigation"
+import { useMemo, useRef, useSyncExternalStore } from "react"
 import { m } from "motion/react"
 
 import type { BlogCardData } from "@/lib/data/types"
@@ -31,32 +30,47 @@ function readUrlState(search: string): EntryStreamUrlState {
   }
 }
 
+// history.replaceState는 popstate를 발생시키지 않으므로, replace() 직후 useSyncExternalStore
+// 구독자들에게 값이 바뀌었음을 직접 알리기 위한 로컬 커스텀 이벤트.
+const URL_CHANGE_EVENT = "entry-stream-url-change"
+
+function subscribeToLocationSearch(callback: () => void) {
+  window.addEventListener("popstate", callback)
+  window.addEventListener(URL_CHANGE_EVENT, callback)
+  return () => {
+    window.removeEventListener("popstate", callback)
+    window.removeEventListener(URL_CHANGE_EVENT, callback)
+  }
+}
+
+const getLocationSearch = () => window.location.search
+const getServerLocationSearch = () => ""
+
 /** page/preset/tag를 URL에 쓰고 읽는 걸 Next 라우터(router.replace) 대신 history.replaceState +
- * popstate로 직접 처리한다. 루트 레이아웃이 theme 쿠키를 읽으려고 cookies()를 쓰는 탓에 이 라우트
- * 전체가 dynamic 렌더링 대상이 되고, 그 결과 router.replace는 검색 파라미터만 바뀌어도 매번 서버에
- * RSC 페이로드를 새로 요청한다 — 로컬 dev 서버는 항상 warm하고 왕복이 사실상 0ms라 안 느껴지지만,
- * Vercel 서버리스 프로덕션에서는 실제 네트워크 왕복(+ 콜드스타트)이 클릭마다 끼어들어 눈에 띄게
- * 느려진다(실측: DataStructure 프리셋 클릭 시 `GET /?preset=...&_rsc=...` 요청 발생). 필터링/페이지
- * 분할은 이미 클라이언트에서 cards를 슬라이싱해 끝내고 있어 이 요청은 애초에 새로 가져올 데이터가
- * 없으므로, URL 동기화를 순수 클라이언트에서 끝내 서버 왕복 자체를 없앤다.
+ * useSyncExternalStore로 직접 처리한다. 루트 레이아웃이 theme 쿠키를 읽으려고 cookies()를 쓰는 탓에
+ * 이 라우트 전체가 dynamic 렌더링 대상이 되고, 그 결과 router.replace는 검색 파라미터만 바뀌어도
+ * 매번 서버에 RSC 페이로드를 새로 요청한다 — 로컬 dev 서버는 항상 warm하고 왕복이 사실상 0ms라 안
+ * 느껴지지만, Vercel 서버리스 프로덕션에서는 실제 네트워크 왕복(+ 콜드스타트)이 클릭마다 끼어들어
+ * 눈에 띄게 느려진다(실측: DataStructure 프리셋 클릭 시 `GET /?preset=...&_rsc=...` 요청 발생).
+ * 필터링/페이지 분할은 이미 클라이언트에서 cards를 슬라이싱해 끝내고 있어 이 요청은 애초에 새로
+ * 가져올 데이터가 없으므로, URL 동기화를 순수 클라이언트에서 끝내 서버 왕복 자체를 없앤다.
  *
- * 브라우저 뒤/앞으로가기는 history.replaceState를 거치지 않는 진짜 popstate이므로,
- * window.location.search를 직접 읽어 로컬 state를 재동기화해 "뒤로가기는 떠나기 전 페이지/필터로
- * 돌아온다"는 2aada84의 목표를 그대로 유지한다.
+ * next/navigation의 useSearchParams() 대신 useSyncExternalStore로 window.location.search를 직접
+ * 구독한다. useSearchParams()는 정적 프리렌더 라우트에서 Suspense boundary를 강제로 CSR-only
+ * 취급해 fallback(스켈레톤)이 빌드된 정적 HTML에 그대로 구워지게 만든다 — 로컬 dev는 매 요청을
+ * 그 자리에서 SSR하니 실제 search params를 이미 갖고 있어 안 보이지만, 프로덕션은 빌드 타임에
+ * fallback이 박제된 정적 HTML을 그대로 서빙해 새로고침마다 스켈레톤이 잠깐 보였다 사라진다.
+ * useSyncExternalStore는 getServerSnapshot(빈 문자열, 필터 없음)으로 SSR·첫 hydration 렌더를
+ * 맞춰 mismatch 없이 정적 생성을 그대로 유지하면서, 커밋 직후 실제 getSnapshot 값으로 자동
+ * 전환한다(React 내장 동작이라 setState-in-effect 없이 처리됨).
  */
 function useEntryStreamUrlState() {
-  const searchParams = useSearchParams()
-  const [state, setState] = useState<EntryStreamUrlState>(() => ({
-    tag: searchParams.get("tag"),
-    presetId: searchParams.get("preset"),
-    rawPage: searchParams.get("page"),
-  }))
-
-  useEffect(() => {
-    const onPopState = () => setState(readUrlState(window.location.search))
-    window.addEventListener("popstate", onPopState)
-    return () => window.removeEventListener("popstate", onPopState)
-  }, [])
+  const search = useSyncExternalStore(
+    subscribeToLocationSearch,
+    getLocationSearch,
+    getServerLocationSearch,
+  )
+  const state = useMemo(() => readUrlState(search), [search])
 
   const replace = (query: string) => {
     window.history.replaceState(
@@ -64,7 +78,7 @@ function useEntryStreamUrlState() {
       "",
       `${window.location.pathname}${query}`,
     )
-    setState(readUrlState(query.startsWith("?") ? query.slice(1) : ""))
+    window.dispatchEvent(new Event(URL_CHANGE_EVENT))
   }
 
   return { ...state, replace }
