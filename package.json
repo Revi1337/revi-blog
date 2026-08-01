@@ -6,7 +6,9 @@
     "dev": "next dev -p 3999",
     "build": "next build",
     "start": "next start -p 3999",
-    "lint": "eslint"
+    "lint": "eslint",
+    "redis:up": "docker compose up -d",
+    "redis:down": "docker compose down"
   },
   "dependencies": {
     "@giscus/react": "^3.1.0",
