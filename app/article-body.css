@@ -317,11 +317,6 @@
 .toc-nav::-webkit-scrollbar {
   display: none; /* Chrome/Safari/최신 Edge */
 }
-/* 모바일 TOC(<details>/<summary>) 기본 화살표 마커 제거 — list-none은 Firefox의
-   list-item 마커를 지우고, ::-webkit-details-marker는 Chrome/Safari용 별도 제거가 필요하다 */
-.toc-summary::-webkit-details-marker {
-  display: none;
-}
 /* 라인 넘버 — CSS counter로 생성한 ::before 콘텐츠라 실제 텍스트 노드가 아니며,
    대부분의 브라우저에서 기본적으로 선택되지 않는다. user-select: none으로 드래그 선택도 명시적으로 차단한다. */
 .article-body [data-rehype-pretty-code-figure] code {

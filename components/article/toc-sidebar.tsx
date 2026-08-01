@@ -1,7 +1,8 @@
 "use client"
 
 import * as React from "react"
-import { ListTree } from "lucide-react"
+import { createPortal } from "react-dom"
+import { ListTree, X } from "lucide-react"
 import { AnimatePresence, m } from "motion/react"
 
 import type { TocItem } from "@/lib/data/types"
@@ -76,8 +77,21 @@ export function TocSidebar({
   variant?: "desktop" | "mobile"
 }) {
   const [activeId, setActiveId] = React.useState<string | undefined>(undefined)
+  const [open, setOpen] = React.useState(false)
   const itemRefs = React.useRef(new Map<string, HTMLAnchorElement>())
   const navRef = React.useRef<HTMLElement | null>(null)
+
+  // 모바일 드로어가 열려있는 동안만 Esc로 닫는다 — mobile-nav-menu.tsx와 동일한 컨벤션.
+  React.useEffect(() => {
+    if (variant !== "mobile" || !open) return
+
+    function handleKeyDown(event: KeyboardEvent) {
+      if (event.key === "Escape") setOpen(false)
+    }
+
+    document.addEventListener("keydown", handleKeyDown)
+    return () => document.removeEventListener("keydown", handleKeyDown)
+  }, [variant, open])
 
   // 새로고침·뒤로가기 시 URL hash와 무관하게 "마지막으로 보던 스크롤 위치"로 복원한다 —
   // 브라우저 기본 스크롤 복원(scrollRestoration: 'auto')이 정확히 이 동작을 제공하지만,
@@ -235,6 +249,7 @@ export function TocSidebar({
               event.preventDefault()
               setActiveId(item.id)
               scrollToHeadingInstant(item.id)
+              setOpen(false)
             }}
             aria-current={isActive ? "location" : undefined}
             className={cn(
@@ -279,13 +294,34 @@ export function TocSidebar({
 
   if (variant === "mobile") {
     return (
-      <details className="group rounded border border-outline-variant/20 bg-surface-container-lowest p-5 lg:hidden">
-        <summary className="toc-summary mb-4 flex cursor-pointer list-none items-center gap-2 text-primary dark:text-primary-container">
-          <ListTree className="size-4" />
-          <h4 className="font-label-caps text-xs tracking-widest">Table Of Contents</h4>
-        </summary>
-        {nav}
-      </details>
+      <div className="fixed top-[calc(var(--header-offset)+1rem)] right-gutter z-40 lg:hidden">
+        <button
+          type="button"
+          onClick={() => setOpen((prev) => !prev)}
+          aria-label={open ? "Close table of contents" : "Open table of contents"}
+          aria-expanded={open}
+          className="flex size-10 items-center justify-center rounded-full border border-outline-variant/20 bg-surface-container-lowest text-primary shadow-lg transition-colors hover:bg-surface-container-highest dark:text-primary-container"
+        >
+          {open ? <X className="size-4" aria-hidden="true" /> : <ListTree className="size-4" aria-hidden="true" />}
+        </button>
+
+        {open
+          ? createPortal(
+              <div aria-hidden="true" onClick={() => setOpen(false)} className="fixed inset-0 z-30" />,
+              document.body
+            )
+          : null}
+
+        {open ? (
+          <div className="absolute top-[calc(100%+0.5rem)] right-0 w-72 rounded border border-outline-variant/20 bg-surface-container-lowest p-5 shadow-xl">
+            <div className="mb-4 flex items-center gap-2 text-primary dark:text-primary-container">
+              <ListTree className="size-4" />
+              <h4 className="font-label-caps text-xs tracking-widest">Table Of Contents</h4>
+            </div>
+            {nav}
+          </div>
+        ) : null}
+      </div>
     )
   }
 
