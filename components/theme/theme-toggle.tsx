@@ -16,6 +16,7 @@ export function ThemeToggle() {
       type="button"
       onClick={toggleTheme}
       aria-label={isDark ? "라이트 모드로 전환" : "다크 모드로 전환"}
+      suppressHydrationWarning
       className="flex h-8 w-8 items-center justify-center rounded text-on-surface-variant transition-colors hover:bg-surface-container-highest/50 hover:text-primary dark:hover:text-primary-fixed"
     >
       <svg
@@ -24,7 +25,10 @@ export function ThemeToggle() {
         aria-hidden="true"
         className="h-[18px] w-[18px]"
       >
-        <path d={isDark ? LIGHT_MODE_PATH : DARK_MODE_PATH} />
+        {/* 서버는 항상 다크 기준으로 렌더링하고(theme-context.tsx 참고) 실제 라이트/다크 여부는
+         * hydration 시점에 클라이언트에서 확정되므로, 라이트 모드 사용자는 아이콘 경로가 한 번
+         * 바뀌는 hydration mismatch가 발생한다 — 콘솔 경고만 억제하는 용도. */}
+        <path d={isDark ? LIGHT_MODE_PATH : DARK_MODE_PATH} suppressHydrationWarning />
       </svg>
     </button>
   )
