@@ -18,7 +18,7 @@ thumbnail: https://pub-8c61ed96347b483a91c17765cea907da.r2.dev/images/2026-08-02
 
 ![Pasted image 20231231142636](https://pub-8c61ed96347b483a91c17765cea907da.r2.dev/images/2026-08-02/Pasted-image-20231231142636.png)
 
-### __init__.py 생성
+### \_\_init\_\_.py 생성
 
 이제 `__init__.py` 파일을 생성합니다. 생성하지 않으면 파이썬 패키지로 인식하지 않기때문에 꼭 생성해야 합니다.
 
