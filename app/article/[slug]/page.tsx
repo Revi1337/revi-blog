@@ -10,6 +10,7 @@ import { TrackVisit } from "@/components/stats/track-visit"
 import { ArticleNav } from "@/components/article/article-nav"
 import { CodeCopyHandler } from "@/components/article/code-copy-handler"
 import { ImageLightboxHandler } from "@/components/article/image-lightbox-handler"
+import { MermaidDiagramHandler } from "@/components/article/mermaid-diagram-handler"
 import { ImageLoadingIndicatorHandler } from "@/components/article/image-loading-indicator-handler"
 import { HeadingAnchorScrollHandler } from "@/components/article/heading-anchor-scroll-handler"
 import { ArticleComments } from "@/components/article/article-comments"
@@ -92,6 +93,7 @@ export default async function ArticleDetailPage({
           <div className="article-body space-y-0" dangerouslySetInnerHTML={{ __html: article.bodyHtml }} />
           <CodeCopyHandler />
           <ImageLightboxHandler images={article.images} />
+          <MermaidDiagramHandler />
           <ImageLoadingIndicatorHandler hasImages={article.images.length > 0} />
           <HeadingAnchorScrollHandler />
 

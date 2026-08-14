@@ -308,6 +308,167 @@
 .article-body [data-rehype-pretty-code-figure] pre::-webkit-scrollbar-thumb:hover {
   background-color: var(--color-outline);
 }
+/* Mermaid 다이어그램 — mermaid-diagram-handler.tsx가 mermaid.render()로 얻은 SVG를 이 컨테이너에
+   주입한다. 색상 자체는 mermaid.initialize({ theme })가 다크/라이트에 맞춰 SVG 안에 직접 굽기
+   때문에, 여기서는 코드 블록과 같은 레이아웃(figure 안 여백/스크롤)만 맞춘다(FR-012: 본문 폭보다
+   넓은 다이어그램도 레이아웃이 깨지면 안 됨). */
+.article-body [data-rehype-pretty-code-figure] [data-mermaid-diagram] {
+  display: flex;
+  justify-content: center;
+  overflow-x: auto;
+  padding: 1.5rem 1.25rem;
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-outline-variant) transparent;
+}
+.article-body [data-rehype-pretty-code-figure] [data-mermaid-diagram] svg {
+  max-width: 100%;
+  height: auto;
+}
+/* mermaid.initialize({ themeVariables: { edgeLabelBackground } })는 .edgeLabel의 배경만 지우고,
+   엣지 라벨(예: "Yes"/"No") 텍스트를 감싸는 .labelBkg div는 건드리지 못한다 — mermaid가 이 클래스
+   배경색을 테마 변수와 무관하게 항상 rgba(0,0,0,0.5)로 굽기 때문에, 라이트 테마에서 특히 텍스트가
+   반투명 검은 박스로 하이라이트된 것처럼 보인다. mermaid의 embedded <style>은 `#mermaid-<id>
+   .labelBkg`로 ID 선택자를 써서 우리 클래스 선택자보다 명시도가 높으므로 !important로 덮어쓴다. */
+.article-body [data-rehype-pretty-code-figure] [data-mermaid-diagram] .labelBkg,
+.mermaid-lightbox-canvas .labelBkg {
+  background-color: transparent !important;
+}
+/* 다이어그램 확대 버튼 — mermaid-diagram-handler.tsx가 렌더링 성공한 블록에만 vanilla DOM으로
+   삽입한다(rehype-code-copy-button.ts가 빌드타임에 심는 복사 버튼과 달리 런타임 삽입).
+   복사 버튼 바로 왼쪽에 나란히 배치한다. */
+.article-body [data-rehype-pretty-code-figure] .mermaid-expand-button {
+  position: absolute;
+  top: 0;
+  right: 2.125rem;
+  height: 2rem;
+  width: 1.75rem;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: transparent;
+  padding: 0;
+  color: color-mix(in srgb, var(--color-on-surface-variant) 60%, transparent);
+  cursor: pointer;
+}
+.article-body [data-rehype-pretty-code-figure] .mermaid-expand-button:hover {
+  color: var(--color-on-surface);
+}
+.article-body [data-rehype-pretty-code-figure] .mermaid-expand-icon {
+  width: 0.85rem;
+  height: 0.85rem;
+}
+/* Mermaid 확대 보기 모달(components/mermaid/mermaid-lightbox-modal.tsx) — 실제 React 컴포넌트라
+   .article-body 스코프 밖(article-body div의 형제)에 렌더링되므로 전역 선택자를 쓴다. 기존 이미지
+   라이트박스(PhotoSwipe)와 pan/zoom 엔진은 다르지만(research.md), 배경 스크림 불투명도는 그
+   설정(bgOpacity: 0.85)에 시각적으로 맞췄다. */
+.mermaid-lightbox-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4vh 4vw;
+  background-color: color-mix(in srgb, black 85%, transparent);
+}
+.mermaid-lightbox-panel {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  max-width: 1200px;
+  border-radius: 0.5rem;
+  background-color: var(--color-surface-container-lowest);
+  overflow: hidden;
+}
+.mermaid-lightbox-canvas {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+.mermaid-lightbox-canvas svg {
+  width: 100%;
+  height: 100%;
+}
+.mermaid-lightbox-close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  z-index: 2;
+  display: flex;
+  height: 2.5rem;
+  width: 2.5rem;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 9999px;
+  background-color: color-mix(in srgb, var(--color-surface-container-lowest) 70%, transparent);
+  color: var(--color-on-surface);
+  cursor: pointer;
+}
+.mermaid-lightbox-close:hover {
+  background-color: var(--color-surface-container-low);
+}
+/* 상하좌우 이동 버튼을 3x3 그리드 십자 모양으로, 리셋 버튼을 그 정중앙에 배치한다. 돋보기 +/-는
+   같은 컨트롤 클러스터 아래 별도 줄로 둔다. */
+.mermaid-lightbox-controls {
+  position: absolute;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: repeat(3, 2.25rem);
+  grid-template-rows: repeat(3, 2.25rem) 2.25rem;
+  gap: 0.375rem;
+}
+.mermaid-lightbox-controls button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 0.375rem;
+  background-color: color-mix(in srgb, var(--color-surface-container-lowest) 70%, transparent);
+  color: var(--color-on-surface);
+  cursor: pointer;
+}
+.mermaid-lightbox-controls button:hover {
+  background-color: var(--color-surface-container-low);
+}
+.mermaid-lightbox-pan-up {
+  grid-column: 2;
+  grid-row: 1;
+}
+.mermaid-lightbox-pan-left {
+  grid-column: 1;
+  grid-row: 2;
+}
+.mermaid-lightbox-reset {
+  grid-column: 2;
+  grid-row: 2;
+}
+.mermaid-lightbox-pan-right {
+  grid-column: 3;
+  grid-row: 2;
+}
+.mermaid-lightbox-pan-down {
+  grid-column: 2;
+  grid-row: 3;
+}
+.mermaid-lightbox-zoom-out {
+  grid-column: 1;
+  grid-row: 4;
+}
+.mermaid-lightbox-zoom-in {
+  grid-column: 3;
+  grid-row: 4;
+}
+.mermaid-lightbox-icon {
+  width: 1.1rem;
+  height: 1.1rem;
+}
 /* TOC 사이드바(components/article/toc-sidebar.tsx) 세로 스크롤 — html과 동일하게 스크롤바 UI만 숨기고
    스크롤(휠/키보드/터치) 동작은 그대로 유지한다 */
 .toc-nav {
