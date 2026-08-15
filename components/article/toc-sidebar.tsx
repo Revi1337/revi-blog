@@ -150,6 +150,15 @@ export function TocSidebar({
     let resizeObserver: ResizeObserver | undefined
     let stopCorrecting = () => {}
     if (savedScroll !== null) {
+      // 다이어그램이 렌더링되며 문서가 자라는 동안, 브라우저의 기본 scroll anchoring(화면
+      // 위쪽 콘텐츠 크기가 바뀌면 보던 지점이 시야에서 안 벗어나게 scrollY를 자동으로 슬쩍
+      // 보정하는 기능)이 우리 ResizeObserver 보정과 동시에 같은 scrollY를 건드려 "저장 위치에서
+      // 점점 멀어지다가(브라우저) 한 번에 되돌아오는(우리)" 이중 움직임을 만든다(실측 확인). 이
+      // 구간에서만 anchoring을 꺼서 최종 위치로의 점프가 한 번만 일어나게 한다 — behavior:
+      // "instant" 자체(애니메이션 없는 즉시 이동 선택)와는 무관하고, 이 보정 구간 밖(사용자가
+      // 이미 읽고 있는 동안 뒤늦게 로드되는 이미지 등)의 anchoring은 그대로 유지된다.
+      document.documentElement.style.overflowAnchor = "none"
+
       resizeObserver = new ResizeObserver(() => {
         window.clearTimeout(resizeDebounceTimer)
         // 리사이즈 관찰 직후 바로 보정하지 않고 짧게 기다린다 — 애니메이션(예: 350ms 펼쳐짐)이
@@ -166,6 +175,7 @@ export function TocSidebar({
       resizeObserver.observe(document.documentElement)
 
       stopCorrecting = () => {
+        document.documentElement.style.overflowAnchor = ""
         resizeObserver?.disconnect()
         window.clearTimeout(resizeDebounceTimer)
         window.clearTimeout(resizeGiveUpTimer)
@@ -194,6 +204,11 @@ export function TocSidebar({
     document.addEventListener("visibilitychange", persistScroll)
 
     return () => {
+      // stopCorrecting이 아직 한 번도 안 불린 채(사용자 입력·6초 타임아웃 이전에) 컴포넌트가
+      // 언마운트될 수 있다(예: SPA 전환으로 다른 글로 이동) — document.documentElement는 클라이언트
+      // 사이드 네비게이션 동안 재사용되므로, 여기서 명시적으로 되돌리지 않으면 "none"이 다음
+      // 페이지까지 새어나간다.
+      document.documentElement.style.overflowAnchor = ""
       window.removeEventListener("load", restore)
       window.removeEventListener("scroll", onScroll)
       window.removeEventListener("pagehide", persistScroll)
