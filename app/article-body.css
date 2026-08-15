@@ -342,21 +342,32 @@
   max-width: 100%;
   height: auto;
 }
-/* Markmap 마인드맵 — SVG가 고정 크기(width:100%, height 값 고정)의 "뷰포트"라는 점은 Mermaid/
-   PlantUML과 다르지만, 본문 인라인에서는 드래그(팬)·휠(줌)을 markmap-diagram-handler.tsx에서
-   비활성화했다(`zoom: false, pan: false` — 사용자 피드백: 뷰가 바뀔 수 있으면 확대 모달에만
-   있는 리셋 버튼이 인라인에도 필요해지고, Mermaid/PlantUML의 완전 정적인 프리뷰와도 일관성이
-   깨짐). 가지 클릭 접기/펼치기만 인라인에 남고, 팬/줌은 확대 보기 모달에서만 지원한다. 그래도
-   overflow는 hidden으로 클리핑한다 — 깊은 트리가 뷰포트보다 커지는 경우 스크롤바 대신 잘려
-   보이는 쪽이 macOS 컨테이너 프레임과 더 자연스럽다. 배경/테두리 없이 macOS 컨테이너에 직접
-   얹히는 것은 Mermaid/PlantUML과 동일(FR-003, 013 research.md "이중 레이어" 교훈 재적용). */
+/* Markmap 마인드맵 — SVG 높이는 여기서 고정하지 않는다. 모든 마인드맵이 콘텐츠 양과 무관하게
+   똑같은 고정 높이를 쓰면 3노드짜리 트리도 20노드짜리 트리도 같은 크기 박스에 눌려 보이는
+   문제가 있었다(사용자 피드백, 실제 콘텐츠로 실측). 대신 markmap-diagram-handler.tsx가 렌더링
+   직후 콘텐츠의 실제 바운딩 박스(`instance.state.rect`)를 읽어 본문 폭에 맞춰 필요한 높이를
+   역산하고, `svg.style.height`로 인스턴스마다 직접 반영한다(MARKMAP_MIN_HEIGHT~
+   MARKMAP_MAX_HEIGHT로 clamp — 극단적으로 작거나 큰 트리에 대한 안전장치).
+   본문 인라인에서는 드래그(팬)·휠(줌)을 markmap-diagram-handler.tsx에서 비활성화했다(`zoom:
+   false, pan: false` — 사용자 피드백: 뷰가 바뀔 수 있으면 확대 모달에만 있는 리셋 버튼이
+   인라인에도 필요해지고, Mermaid/PlantUML의 완전 정적인 프리뷰와도 일관성이 깨짐). 가지 클릭
+   접기/펼치기만 인라인에 남고, 팬/줌은 확대 보기 모달에서만 지원한다. overflow는 hidden으로
+   둔다 — 상한(MARKMAP_MAX_HEIGHT)에 걸린 경우는 handler가 fit()으로 축소해 넣으므로 실제로는
+   클리핑이 거의 발생하지 않지만, 그래도 마지막 안전장치로 남긴다. 배경/테두리 없이 macOS
+   컨테이너에 직접 얹히는 것은 Mermaid/PlantUML과 동일(FR-003, 013 research.md "이중 레이어"
+   교훈 재적용). 위아래 padding은 Mermaid/PlantUML 컨테이너([data-mermaid-diagram]/
+   [data-plantuml-diagram])와 동일한 값을 쓴다 — 예전엔 420px 고정이라 남는 공간이 넉넉해서
+   패딩 없이도 안 티났지만, 콘텐츠 기준 높이로 바뀌면서 패딩이 없으면 타이틀바/하단 테두리에
+   콘텐츠가 거의 맞닿아 보이는 문제가 실측으로 발견됐다(사용자 피드백). 이 패딩만큼 폭도 줄어들어
+   markmap-diagram-handler.tsx의 높이 역산 계산(`svg.getBoundingClientRect().width` 기준)에
+   자동으로 반영된다 — 별도 보정 불필요. */
 .article-body [data-rehype-pretty-code-figure] [data-markmap-diagram] {
   overflow: hidden;
+  padding: 1.5rem 1.25rem;
 }
 .article-body [data-rehype-pretty-code-figure] [data-markmap-diagram] svg {
   display: block;
   width: 100%;
-  height: 420px;
 }
 /* markmap-view의 내장 CSS(.markmap-dark .markmap)가 다크 모드 텍스트/코드/원형 마커 색을 이미
    제공한다(node_modules/markmap-view/dist/index.js의 globalCSS 실측 — --markmap-text-color가

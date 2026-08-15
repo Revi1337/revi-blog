@@ -361,6 +361,46 @@ Mermaid/PlantUML과의 일관성 및 페이지 스크롤 하이재킹 문제로 
       재사용할 가치가 있으므로 **삭제하지 않고 유지**한다(`show_on_homepage: false`로 이미 홈
       노출은 차단됨). quickstart.md 8절의 삭제 절차를 이 방침으로 대체 기술한다.
       (T004에서 quickstart.md 8절을 이미 "유지" 방침으로 갱신 완료 — 별도 추가 작업 없음.)
+- [X] T023 **후속 수정(요구사항 변경, 실사용 중 사용자 피드백)** — `markmap-diagram-handler.tsx`의
+      인라인 컨테이너 높이를 고정 420px에서 콘텐츠 기준 계산으로 변경. **착수 전
+      vercel-react-best-practices 규칙 재확인 완료(rerender-dependencies — 이번 변경은 effect
+      의존성 배열을 건드리지 않아 위반 없음).**
+      T009 체크포인트 이후, 실제 콘텐츠(`_diagram.md`)로 다시 살펴보니 노드 3개짜리 "마인드맵2"와
+      노드 10개 이상인 다른 마인드맵이 콘텐츠 양과 무관하게 완전히 동일한 420px 박스를 써서 작은
+      트리는 대부분 빈 공간, 큰 트리는 상대적으로 눌려 보이는 문제가 지적됨. `_diagram.md`에
+      "넓은 트리(잎 15개)"·"단일 노드"(임시, 실측 후 제거) 검증 섹션을 추가해 라이브
+      스크린샷으로 상한/하한 값을 실측 확정(상한 800px, 하한 120px — research.md "인라인
+      컨테이너 높이를 콘텐츠 기준으로 계산" Decision 참고). `renderBlock()`을
+      `Markmap.create()`(fire-and-forget) 대신 `new Markmap()` + `await setData()` +
+      `instance.state.rect`로 높이 역산 + clamp + `svg.style.height` 반영 + `await fit()` 순서로
+      재작성(비동기 함수로 전환, 호출부 `for` 루프에 `await` 추가).
+      **1차 라이브 검증 후 2차 정정**: 스케일 상한으로 `maxInitialScale`(기본 2)을 그대로 썼더니
+      폭이 좁고 세로로 긴 "넓은 트리"가 최대 2배까지 확대되어 다른 마인드맵보다 글자가 눈에 띄게
+      커 보이는 문제와, 컨테이너에 위아래 padding이 전혀 없어(예전 420px 고정 시절엔 여유
+      공간이 넉넉해 안 보였던 문제) 콘텐츠가 타이틀바/하단 테두리에 거의 맞닿는 문제가 모두
+      라이브 스크린샷으로 발견됨. 스케일 상한을 1(원본 크기, Mermaid/PlantUML의
+      `max-width:100%; height:auto`와 동일하게 축소만 허용)로 낮추고, `article-body.css`의
+      `[data-markmap-diagram]` 컨테이너에 Mermaid/PlantUML과 동일한 `padding: 1.5rem 1.25rem`을
+      추가.
+      (`npx tsc --noEmit` 통과. `npm run build` 통과(2회, 최종 정정 반영 후). `npm run
+      dev`(로컬 기본 모드)로 `playwright-cli` 실제 브라우저 검증: 4개 마인드맵 컨테이너 높이가
+      각각 213px(마인드맵)/120px(마인드맵2, 하한 clamp)/155px(깊은 트리)/779px(넓은 트리, 상한
+      800px 안쪽)로 콘텐츠 비례 확인 → padding 추가 후 201.7/120/147/389px로 재확인(넓은 트리는
+      스케일 상한 1로 정정되며 거의 절반으로 줄어듦, 텍스트 크기 육안 확인 결과 다른 마인드맵과
+      동일). 4개 섹션 전부 스크린샷으로 위아래 여백 확인. 가지 클릭 접기(13→9개 노드, `<g
+      class="markmap-node">` 개수로 실측)·재클릭 펼치기(9→13개) 정상 동작 및 접었다 펴도 컨테이너
+      높이(250px, 고정)가 그대로임을 확인("확장 기준" 1회 고정 검증). 드래그 제스처 전후 SVG
+      `transform` 완전 동일(팬 여전히 비활성) 및 휠 스크롤 시 페이지 `scrollY`만 변하고
+      `transform`은 불변(줌 여전히 비활성) 재확인 — 이번 변경이 T011의 팬/줌 비활성화를 깨지
+      않았음을 검증. 다크→라이트 테마 토글 스크린샷 확인. 쿠키로 다크 모드 강제한 새 접속(첫
+      로딩) 스크린샷에서 텍스트가 토글 없이 바로 보임 확인 — 경쟁 상태 수정(T006 후속) 회귀
+      없음. 확대 보기 모달: 열기/줌인(scale 1.62→2.03)/리셋(정확히 1.62로 복귀)/닫기 전부 정상,
+      이 태스크가 손대지 않은 `markmap-lightbox-modal.tsx`/`open-markmap-lightbox.ts`가 실제로
+      영향받지 않았음을 확인. 콘솔 에러는 giscus 404(무관)와 PlantUML 의도된 400(기존 동작)뿐,
+      markmap 관련 신규 에러 없음. 검증용으로 추가했던 "단일 노드" 섹션은 실측 완료 후
+      `_diagram.md`에서 제거, "넓은 트리" 섹션만 영구 보존. spec.md Edge Cases(FR-015 인접,
+      width/height 서술 분리)·data-model.md(`containerHeight` 필드 신설)·research.md(신규 Decision
+      섹션)·quickstart.md(0절 섹션 목록, 2절 검증 항목)를 이 변경에 맞춰 갱신.)
 
 ---
 

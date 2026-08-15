@@ -14,6 +14,14 @@ type MarkmapInstance = InstanceType<MarkmapCtor>
  * 동일한 이유 — spec.md FR-011). */
 const EXPAND_ICON_HTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mermaid-expand-icon" aria-hidden="true"><polyline points="15 3 21 3 21 9"></polyline><polyline points="9 21 3 21 3 15"></polyline><line x1="21" y1="3" x2="14" y2="10"></line><line x1="3" y1="21" x2="10" y2="14"></line></svg>`
 
+/** 인라인 컨테이너 높이를 콘텐츠 기준으로 계산한 뒤 이 범위로 clamp한다(사용자 피드백 — 모든
+ * 마인드맵이 콘텐츠 양과 무관하게 동일한 고정 420px였던 문제). 하한은 노드가 1~2개뿐인 극단적으로
+ * 작은 트리가 타이틀바만 있는 것처럼 보이지 않게 하는 안전장치, 상한은 형제 노드가 많은 넓은
+ * 트리가 본문 스크롤을 과도하게 늘리지 않게 하는 안전장치 — 둘 다 실제 브라우저 렌더링으로 실측해
+ * 정한 값이다(research.md). */
+const MARKMAP_MIN_HEIGHT = 120
+const MARKMAP_MAX_HEIGHT = 800
+
 /** markmap-view는 렌더링 결과 SVG에 `.markmap` 클래스를 직접 붙이고, 다크 모드 색상은
  * `.markmap-dark .markmap`(조상-후손 선택자)로 이미 내장돼 있다(실측 확인,
  * node_modules/markmap-view/dist/index.js의 globalCSS) — Mermaid/PlantUML과 달리 테마 전환 시
@@ -57,7 +65,7 @@ export function MarkmapDiagramHandler() {
         // 이전 렌더에서 이미 파싱/렌더링 오류로 판정된 블록은 다시 시도하지 않는다 — 소스가
         // 그대로인 한 결과도 항상 실패이므로(Mermaid/PlantUML과 동일 관례, data-model.md).
         if (pre.dataset.markmapError === "true") continue
-        const instance = renderBlock(transformer, Markmap, pre, isDarkRef.current)
+        const instance = await renderBlock(transformer, Markmap, pre, isDarkRef.current)
         if (instance) instances.push(instance)
         if (cancelled) return
       }
@@ -102,12 +110,12 @@ export function MarkmapDiagramHandler() {
   return <MarkmapLightboxModal source={lightboxSource} onClose={() => setLightboxSource(null)} />
 }
 
-function renderBlock(
+async function renderBlock(
   transformer: Transformer,
   Markmap: MarkmapCtor,
   pre: HTMLPreElement,
   isDark: boolean
-): MarkmapInstance | null {
+): Promise<MarkmapInstance | null> {
   const figure = pre.closest<HTMLElement>("[data-rehype-pretty-code-figure]")
   if (!figure) return null
   if (figure.querySelector("[data-markmap-diagram]")) return null
@@ -135,7 +143,39 @@ function renderBlock(
     // 남는다(FR-004는 유지, FR-005의 인라인 팬/줌 요구만 철회 — 확대 보기 모달에서는 그대로 지원).
     // 이제 독자가 인라인에서 직접 조작할 뷰 상태 자체가 없으므로, 가지를 접고 펼칠 때마다 뷰를
     // 다시 프레이밍해주는 autoFit을 켜도 무방하다(오히려 접은 뒤 어색한 여백 없이 다시 잘 맞춰줌).
-    const instance = Markmap.create(svg, { zoom: false, pan: false, autoFit: true }, root)
+    //
+    // 컨테이너 높이를 콘텐츠 기준으로 정하려면 `Markmap.create()`의 fire-and-forget
+    // `setData().then(fit)` 대신 직접 순서를 제어해야 한다 — `setData()`가 끝난 시점에
+    // `instance.state.rect`(콘텐츠 바운딩 박스)가 이미 계산되어 있고, 이를 읽어 높이를 정한
+    // 뒤에야 그 높이를 기준으로 `fit()`을 호출할 수 있다(node_modules 실측 — `fit()`은
+    // `state.rect`를 읽기만 할 뿐 계산하지 않는다).
+    const instance = new Markmap(svg, { zoom: false, pan: false, autoFit: true })
+    await instance.setData(root)
+
+    // 너비는 본문 폭(article-body.css의 svg { width: 100% })에 이미 고정되어 있으므로, 그 너비에
+    // 맞출 때 필요한 스케일을 구해 높이를 역산한다 — 폭 기준으로만 스케일을 구하는 이유는 아직
+    // 높이가 정해지지 않았기 때문이다(닭과 달걀 문제: 높이를 구하려면 스케일이 필요하고, 스케일
+    // 공식은 원래 폭/높이 둘 다 필요하다). 스케일 상한은 `maxInitialScale`이 아니라 1(원본 크기)로
+    // 둔다 — Mermaid/PlantUML이 `max-width:100%; height:auto`로 축소만 하고 확대는 하지 않는 것과
+    // 같은 원칙이다. `maxInitialScale`(기본 2)을 그대로 쓰면 "넓은 트리"처럼 세로로는 길지만
+    // 가로 폭이 좁은 콘텐츠가 남는 폭을 채우려고 최대 2배까지 확대되어, 다른 마인드맵보다 글자가
+    // 눈에 띄게 커 보이는 문제가 실측으로 발견됐다(사용자 피드백). 이렇게 구한 값을
+    // MARKMAP_MIN_HEIGHT~MARKMAP_MAX_HEIGHT로 clamp한 뒤 실제 높이로 반영하고, 그 다음 `fit()`을
+    // 다시 호출해 최종 (너비, 높이) 둘 다를 기준으로 스케일/중심을 재계산한다 — 이 두 번째 fit()이
+    // 상한/하한에 걸린 경우를 자동으로 바로잡아준다: 상한에 걸리면(콘텐츠가 넘칠 정도로 큼)
+    // 텍스트가 잘리지 않고 더 작게 축소되어 전부 들어오고, 하한에 걸리면(콘텐츠가 극히 작음) 남는
+    // 높이만큼 위아래 여백이 생긴다.
+    const { x1, y1, x2, y2 } = instance.state.rect
+    const contentWidth = x2 - x1
+    const contentHeight = y2 - y1
+    const { width: containerWidth } = svg.getBoundingClientRect()
+    const { fitRatio, maxInitialScale } = instance.options
+    const naturalScale = Math.min((containerWidth / contentWidth) * fitRatio, maxInitialScale, 1)
+    const naturalHeight = contentHeight * naturalScale
+    const height = Math.min(Math.max(naturalHeight, MARKMAP_MIN_HEIGHT), MARKMAP_MAX_HEIGHT)
+    svg.style.height = `${height}px`
+    await instance.fit()
+
     ensureExpandButton(figure)
     return instance
   } catch {
