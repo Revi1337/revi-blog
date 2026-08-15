@@ -107,6 +107,13 @@ export function TocSidebar({
 
     const restore = () => {
       if (savedScroll !== null) {
+        // 다이어그램이 아직 안 그려져 문서가 저장된 위치보다 짧으면, scrollTo가 그 위치까지
+        // 못 가고 현재 문서 끝(Footer가 보이는 지점)으로 clamp된다 — 그 뒤 ResizeObserver
+        // 보정으로 원래 자리로 다시 튀어 오르면서 "Footer가 잠깐 올라왔다 훅 내려가는" 깜빡임이
+        // 생겼다(사용자 재현 — 마지막 헤딩 근처에서 새로고침). 아직 도달 불가능한 위치라면 아예
+        // 스크롤하지 않고 ResizeObserver가 문서가 다 자란 뒤 한 번에 정확한 위치로 보내게 둔다.
+        const maxScroll = document.documentElement.scrollHeight - window.innerHeight
+        if (savedScroll > maxScroll) return
         // 새로고침 복원은 사용자가 의도한 이동이 아니라 "원래 있던 자리로 되돌아가는 것"이라
         // 애니메이션 없이 즉시 이동한다. behavior: "auto"는 CSSOM 스펙상 html의
         // scroll-behavior: smooth를 그대로 따르므로(override가 아님) 반드시 "instant"를 써야 한다.
@@ -122,6 +129,54 @@ export function TocSidebar({
     restore()
     // 이미지/폰트 로딩으로 뒤늦게 레이아웃이 밀리는 경우를 대비해 완전 로드 후 한 번 더 보정한다.
     window.addEventListener("load", restore)
+
+    // Mermaid/PlantUML/Markmap 다이어그램은 window.onload로도 못 잡는다 — 동적 import·파싱(+
+    // PlantUML은 네트워크 요청, 게다가 macOS 콘텐츠 영역이 펼쳐지는 애니메이션까지 350ms) 이
+    // 전부 끝나야 최종 높이가 확정되는데, 이 시점은 onload보다 한참 뒤일 수 있다. 그래서 새로고침
+    // 복원 위치가 다이어그램이 있는 아티클에서 종종 어긋났다(사용자 피드백). 문서 높이가 바뀔
+    // 때마다 계속 재보정하다가, 사용자가 실제로 입력하면 멈춘다.
+    //
+    // "사용자가 직접 스크롤했는지"를 scroll 이벤트로 판단하려 했다가(우리 scrollTo도 scroll
+    // 이벤트를 만들어서 isCorrecting 플래그로 구분) 실측에서 수렴하지 않는 걸 확인했다 —
+    // 다이어그램이 연속으로 리사이즈되는 동안 브라우저 자체 scroll anchoring(레이아웃이 위에서
+    // 바뀌면 보던 콘텐츠가 시야에서 안 벗어나게 브라우저가 알아서 scrollY를 보정하는 기능)까지
+    // 겹치면서 scroll 이벤트가 우리 예상보다 훨씬 자주, 여러 원인으로 발생해 플래그 기반 구분이
+    // 무너졌다(재현: scrollY가 저장값에서 계속 멀어지며 수렴 안 함). 그래서 scroll 이벤트 자체가
+    // 아니라 "이 이벤트를 우리가 절대 스스로 발생시키지 않는" 실제 입력 장치 이벤트(휠/터치/
+    // 키보드)로 기준을 바꿨다 — 이러면 우리 scrollTo나 scroll anchoring이 몇 번을 스크롤시키든
+    // 재보정을 막지 않고, 사용자가 진짜 손을 대는 순간에만 멈춘다.
+    let resizeDebounceTimer: number | undefined
+    let resizeGiveUpTimer: number | undefined
+    let resizeObserver: ResizeObserver | undefined
+    let stopCorrecting = () => {}
+    if (savedScroll !== null) {
+      resizeObserver = new ResizeObserver(() => {
+        window.clearTimeout(resizeDebounceTimer)
+        // 리사이즈 관찰 직후 바로 보정하지 않고 짧게 기다린다 — 애니메이션(예: 350ms 펼쳐짐)이
+        // 진행되는 동안 매 프레임마다 scrollTo를 부르지 않고, 그 애니메이션이 멈춘 뒤 한 번만
+        // 보정한다.
+        resizeDebounceTimer = window.setTimeout(() => {
+          // restore()와 동일한 이유 — 아직 문서가 savedScroll까지 다 안 자랐으면 이번엔
+          // 건드리지 않고 다음 리사이즈(다른 다이어그램이 마저 펼쳐질 때) 때 다시 판단한다.
+          const maxScroll = document.documentElement.scrollHeight - window.innerHeight
+          if (savedScroll > maxScroll) return
+          window.scrollTo({ top: savedScroll, behavior: "instant" })
+        }, 80)
+      })
+      resizeObserver.observe(document.documentElement)
+
+      stopCorrecting = () => {
+        resizeObserver?.disconnect()
+        window.clearTimeout(resizeDebounceTimer)
+        window.clearTimeout(resizeGiveUpTimer)
+      }
+      window.addEventListener("wheel", stopCorrecting, { passive: true, once: true })
+      window.addEventListener("touchstart", stopCorrecting, { passive: true, once: true })
+      window.addEventListener("keydown", stopCorrecting, { once: true })
+
+      // 안전장치 — 이 시점 이후로는 다이어그램이 남아있어도 재보정을 멈춘다(무한정 감시하지 않음).
+      resizeGiveUpTimer = window.setTimeout(stopCorrecting, 6000)
+    }
 
     let ticking = false
     const persistScroll = () => writeSavedScroll(scrollKey, window.scrollY)
@@ -143,6 +198,12 @@ export function TocSidebar({
       window.removeEventListener("scroll", onScroll)
       window.removeEventListener("pagehide", persistScroll)
       document.removeEventListener("visibilitychange", persistScroll)
+      window.removeEventListener("wheel", stopCorrecting)
+      window.removeEventListener("touchstart", stopCorrecting)
+      window.removeEventListener("keydown", stopCorrecting)
+      resizeObserver?.disconnect()
+      window.clearTimeout(resizeDebounceTimer)
+      window.clearTimeout(resizeGiveUpTimer)
     }
   }, [variant])
 

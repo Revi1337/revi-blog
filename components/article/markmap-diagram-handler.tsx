@@ -4,6 +4,7 @@ import * as React from "react"
 
 import { useTheme } from "@/components/theme/theme-context"
 import { MarkmapLightboxModal } from "@/components/markmap/markmap-lightbox-modal"
+import { animateDiagramReveal } from "@/lib/diagram/animate-reveal"
 
 type Transformer = InstanceType<typeof import("markmap-lib")["Transformer"]>
 type MarkmapCtor = typeof import("markmap-view")["Markmap"]
@@ -195,6 +196,9 @@ async function renderBlock(
     svg.style.height = `${height}px`
     await instance.fit()
 
+    // Mermaid/PlantUML과 달리 markmap 컨테이너는 테마 전환 시 재생성되지 않으므로(내장 CSS 변수
+    // 토글만으로 충분, 위 주석 참고) 여기서는 항상 최초 삽입이다 — isConnected 분기가 필요 없다.
+    animateDiagramReveal(container)
     ensureExpandButton(figure)
     return instance
   } catch {

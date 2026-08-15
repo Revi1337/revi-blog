@@ -320,6 +320,12 @@
 .article-body [data-rehype-pretty-code-figure] pre[data-language="markmap"] {
   display: none;
 }
+/* 다이어그램 컨테이너가 삽입되는 순간의 등장 연출은 여기(CSS 애니메이션)가 아니라
+   lib/diagram/animate-reveal.ts가 담당한다 — 처음엔 macOS 콘텐츠 영역이 접혀 타이틀바만 보이다가
+   실제 콘텐츠 높이만큼 펼쳐지는 연출로, `height: auto`로의 트랜지션이 CSS만으로는 불가능해(auto는
+   애니메이션 대상이 될 수 없다) 실제 높이를 JS로 측정해 트랜지션해야 한다(사용자 피드백 — 단순
+   opacity 페이드인은 "빈 박스에서 훅 나타난다"는 인상이 여전히 남는다는 지적으로 이 방식으로
+   교체됨). `prefers-reduced-motion`도 그 파일에서 함께 처리한다. */
 /* Mermaid 다이어그램 — mermaid-diagram-handler.tsx가 mermaid.render()로 얻은 SVG를 이 컨테이너에
    주입한다. 색상 자체는 mermaid.initialize({ theme })가 다크/라이트에 맞춰 SVG 안에 직접 굽기
    때문에, 여기서는 코드 블록과 같은 레이아웃(figure 안 여백/스크롤)만 맞춘다(FR-012: 본문 폭보다

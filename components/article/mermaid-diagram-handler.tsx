@@ -4,6 +4,7 @@ import * as React from "react"
 
 import { useTheme } from "@/components/theme/theme-context"
 import { MermaidLightboxModal } from "@/components/mermaid/mermaid-lightbox-modal"
+import { animateDiagramReveal } from "@/lib/diagram/animate-reveal"
 
 type Mermaid = typeof import("mermaid")["default"]
 
@@ -107,8 +108,12 @@ async function renderBlock(mermaid: Mermaid, pre: HTMLPreElement) {
     container.dataset.mermaidDiagram = ""
     container.dataset.mermaidSource = source
     container.innerHTML = svg
-    if (!container.isConnected) figure.insertBefore(container, pre)
+    // 테마 전환 시 재렌더링에서는(이미 연결된 컨테이너 재사용) 등장 연출을 다시 재생하지 않는다 —
+    // 최초 삽입 때만 macOS 콘텐츠 영역이 펼쳐지는 게 자연스럽고, 토글마다 매번 펼쳐지면 산만하다.
+    const isFirstInsert = !container.isConnected
+    if (isFirstInsert) figure.insertBefore(container, pre)
     pre.style.display = "none"
+    if (isFirstInsert) animateDiagramReveal(container)
     ensureExpandButton(figure)
   } catch {
     container.remove()
