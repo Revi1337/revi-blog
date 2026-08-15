@@ -409,9 +409,17 @@
   height: 0.85rem;
 }
 /* Mermaid 확대 보기 모달(components/mermaid/mermaid-lightbox-modal.tsx) — 실제 React 컴포넌트라
-   .article-body 스코프 밖(article-body div의 형제)에 렌더링되므로 전역 선택자를 쓴다. 기존 이미지
-   라이트박스(PhotoSwipe)와 pan/zoom 엔진은 다르지만(research.md), 배경 스크림 불투명도는 그
-   설정(bgOpacity: 0.85)에 시각적으로 맞췄다. */
+   .article-body 스코프 밖(article-body div의 형제)에 렌더링되므로 전역 선택자를 쓴다.
+   Mermaid/PlantUML(같은 컴포넌트 재사용)/Markmap 세 확대 보기 모두에서 배경이 뷰포트 전체를
+   덮지 못하고 하단이 잘려 보이는 버그가 있었다 — 이 모달이 portal 없이 `<article
+   className="space-y-12 ...">`의 평범한 자식으로 렌더링되는데, Tailwind의 `space-y-12`가 형제
+   요소 사이에 `margin-bottom: 3rem`(48px)을 붙인다. `position: fixed`는 레이아웃 흐름에서
+   빠지지만 margin은 여전히 박스 모델에 반영되므로, `top:0; bottom:0`(inset:0)과 결합해 실제
+   렌더링 높이가 뷰포트보다 48px 작아졌다(실측: 720px 뷰포트에서 672px로 렌더링).
+   `margin: 0`으로 명시적으로 초기화해 조상 컨테이너의 spacing 유틸리티가 새어 들어오지 않게
+   막는다. 배경 불투명도는 이 블로그의 다른 모달(검색 커맨드 팔레트, search-modal.tsx의
+   `overlayClassName="... bg-black/40"`)과 동일한 40%로 맞춘다 — 같은 "모달 스크림"이라는
+   패턴인데 서로 다른 불투명도를 쓰면 일관성이 깨진다는 지적에 따름(사용자 피드백). */
 .mermaid-lightbox-backdrop {
   position: fixed;
   inset: 0;
@@ -419,8 +427,9 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  margin: 0;
   padding: 4vh 4vw;
-  background-color: color-mix(in srgb, black 85%, transparent);
+  background-color: color-mix(in srgb, black 40%, transparent);
 }
 .mermaid-lightbox-panel {
   position: relative;
