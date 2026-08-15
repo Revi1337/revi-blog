@@ -40,7 +40,15 @@ export function MarkmapDiagramHandler() {
   // 생성 시점에 직접 반영해 이 경쟁 상태를 없앤다.
   const isDarkRef = React.useRef(isDark)
 
-  React.useEffect(() => {
+  // 마운트 로직 자체는 비동기(동적 import)라 useEffect/useLayoutEffect 어느 쪽이든 타이밍이
+  // 동일하지만, cleanup은 useLayoutEffect를 써야 한다 — useEffect의 cleanup은 React가 paint 이후
+  // 비동기로("passive effect") 실행하는데, 클라이언트 라우팅으로 이 페이지를 빠르게 벗어나면(특히
+  // 가지 클릭 직후처럼 d3-zoom transition이 막 예약된 직후) d3-timer의 다음 프레임 tick이 React의
+  // cleanup보다 먼저 실행돼 아래 svg.interrupt()가 너무 늦게 호출되는 경쟁 상태가 실측으로
+  // 확인됐다(실사용 중 발견, playwright로 재현 — home 이동 시 SVGLength 에러). useLayoutEffect의
+  // cleanup은 커밋과 동기적으로 실행되어 다음 애니메이션 프레임보다 항상 먼저 실행되므로 이 경쟁을
+  // 근본적으로 없앤다.
+  React.useLayoutEffect(() => {
     const blocks = document.querySelectorAll<HTMLPreElement>('pre[data-language="markmap"]')
     if (blocks.length === 0) return
 
@@ -73,7 +81,18 @@ export function MarkmapDiagramHandler() {
 
     return () => {
       cancelled = true
-      instances.forEach((instance) => instance.destroy())
+      // d3-zoom의 transition 기반 API(fit() 내부의 zoom.transform 등)는 d3-timer 큐에 예약되어
+      // 다음 tick에 실행된다 — 클라이언트 라우팅으로 이 페이지를 빠르게 벗어나면(예: 마운트/가지
+      // 접기 직후 곧바로 다른 페이지로 이동) 예약된 tick이 destroy()로도 취소되지 않고 그대로
+      // 실행되는데, 그 시점에 SVG가 이미 DOM에서 분리되어 있으면 d3-zoom이 gesture의 extent를
+      // 구하려고 SVG의 width 속성(백분율 SVGLength)을 읽다가 `NotSupportedError: Could not
+      // resolve relative length`를 던진다(실사용 중 발견 — playwright로 재현, home으로 이동
+      // 시 콘솔 에러 확인). `svg.interrupt()`로 예약/진행 중인 transition을 먼저 취소해야 이
+      // 예약된 콜백 자체가 실행되지 않는다.
+      instances.forEach((instance) => {
+        instance.svg.interrupt()
+        instance.destroy()
+      })
     }
   }, [])
 
