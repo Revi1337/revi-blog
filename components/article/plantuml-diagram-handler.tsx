@@ -29,6 +29,16 @@ export function PlantumlDiagramHandler() {
   const { isDark } = useTheme()
   const [lightboxSvg, setLightboxSvg] = React.useState<string | null>(null)
 
+  // 다크/라이트 각각 다른 encoded 값을 쓰므로(스킨이 섞인 소스 자체가 다름), 이 값 자체가
+  // 테마별로 고유한 캐시 키가 된다 — 같은 방문 세션에서 이미 본 적 있는 테마로 다시 토글하면
+  // PlantUML 공개 서버에 재요청하지 않고 이 캐시에서 즉시 꺼내 쓴다(사용자 실측 — 정상
+  // 다이어그램도 150~540ms, 렌더링 실패 판정은 1.8~2.3초까지 걸려 테마 토글마다 체감 지연이
+  // 있었음). 값이 string이면 성공한 최종 SVG 마크업(패치까지 끝난 것), null이면 이미 실패로
+  // 판정된 적 있는 encoded 값 — 두 경우 다 재요청을 건너뛴다. ref라 리렌더를 유발하지 않고,
+  // 이 컴포넌트 인스턴스(= 이 아티클 방문) 생명주기에만 묶인다 — 모듈 전역으로 두면 SPA
+  // 세션 내내 다른 글의 다이어그램까지 무한정 쌓이므로 일부러 그렇게 하지 않는다.
+  const cacheRef = React.useRef<Map<string, string | null>>(new Map())
+
   React.useEffect(() => {
     const blocks = document.querySelectorAll<HTMLPreElement>('pre[data-language="plantuml"]')
     if (blocks.length === 0) return
@@ -38,7 +48,9 @@ export function PlantumlDiagramHandler() {
     // 블록마다 fetch가 서로 독립적이므로(공유 렌더 상태에 의존하는 mermaid.render()와 달리)
     // 순차 await 대신 Promise.all로 병렬 요청한다 — 다이어그램이 여럿인 페이지에서 불필요한
     // 워터폴을 만들지 않는다(vercel-react-best-practices의 async-parallel).
-    void Promise.all(Array.from(blocks).map((pre) => renderBlock(pre, isDark, cancelledRef)))
+    void Promise.all(
+      Array.from(blocks).map((pre) => renderBlock(pre, isDark, cancelledRef, cacheRef.current))
+    )
 
     return () => {
       cancelledRef.current = true
@@ -86,17 +98,32 @@ function buildLightboxSvgMarkup(svgElement: SVGSVGElement): string {
  * 이 속성은 PlantUML이 요청을 다이어그램으로 인식했을 때만 존재한다
  * (research.md "렌더링 실패 판별 기준", contracts/plantuml-rendering-contract.md #3).
  *
- * 다크/라이트는 rehype-plantuml.ts가 미리 인코딩해둔 서로 다른 값(스킨이 다르므로 소스 자체가
- * 다름)을 쓰므로, 테마가 바뀔 때마다 재요청한다 — Mermaid처럼 "이미 성공한 블록은 건너뛴다"는
- * 캐싱을 하지 않는다. 실패도 테마마다 다시 시도한다(같은 스킨 안에서 재시도하는 게 아니라 아예
- * 다른 요청이므로 Mermaid의 "재시도 안 함" 정책과 모순되지 않음). */
-async function renderBlock(pre: HTMLPreElement, isDark: boolean, cancelledRef: { current: boolean }) {
+ * encoded 값(다크/라이트별로 다름) 단위로 캐시를 먼저 확인한다 — 히트하면 네트워크 요청 자체를
+ * 건너뛰고 캐시된 결과(성공 시 SVG 마크업, 실패 시 null)를 그대로 재적용한다. 캐시 미스일 때만
+ * 아래에서 실제로 fetch한다. */
+async function renderBlock(
+  pre: HTMLPreElement,
+  isDark: boolean,
+  cancelledRef: { current: boolean },
+  cache: Map<string, string | null>
+) {
   const figure = pre.closest<HTMLElement>("[data-rehype-pretty-code-figure]")
   const encoded = isDark ? pre.dataset.plantumlEncodedDark : pre.dataset.plantumlEncodedLight
   if (!figure || !encoded) return
 
   const container =
     figure.querySelector<HTMLElement>("[data-plantuml-diagram]") ?? document.createElement("div")
+
+  const cached = cache.get(encoded)
+  if (cached !== undefined) {
+    if (cached === null) {
+      applyFailureState(pre, figure)
+      container.remove()
+    } else {
+      applySuccessState(pre, figure, container, cached)
+    }
+    return
+  }
 
   try {
     const response = await fetch(`${PLANTUML_SERVER_BASE}/${encoded}`)
@@ -112,26 +139,41 @@ async function renderBlock(pre: HTMLPreElement, isDark: boolean, cancelledRef: {
     }
     patchHardcodedDarkColor(svgRoot, isDark ? PLANTUML_DARK_BORDER : PLANTUML_LIGHT_BORDER)
 
+    // fetch가 이미 끝난 이상, 이 effect 실행이 그사이 취소됐어도(예: 토글을 연달아 눌러 다음
+    // 테마로 곧바로 넘어감) 결과 자체는 여전히 유효하다 — DOM은 안 건드리되 캐시에는 남겨서
+    // 나중에 이 encoded 값으로 다시 돌아왔을 때 재사용한다.
+    const svgMarkup = svgRoot.outerHTML
+    cache.set(encoded, svgMarkup)
     if (cancelledRef.current) return
-    container.dataset.plantumlDiagram = ""
-    container.innerHTML = svgRoot.outerHTML
-    // 테마 전환 시 재렌더링에서는(이미 연결된 컨테이너 재사용) 등장 연출을 다시 재생하지 않는다 —
-    // 최초 삽입 때만 macOS 콘텐츠 영역이 펼쳐지는 게 자연스럽고, 토글마다 매번 펼쳐지면 산만하다.
-    const isFirstInsert = !container.isConnected
-    if (isFirstInsert) figure.insertBefore(container, pre)
-    pre.style.display = "none"
-    if (isFirstInsert) animateDiagramReveal(container)
-    ensureExpandButton(figure)
+    applySuccessState(pre, figure, container, svgMarkup)
   } catch {
+    cache.set(encoded, null)
+    if (cancelledRef.current) return
+    applyFailureState(pre, figure)
     container.remove()
-    // 기본 상태는 article-body.css가 pre[data-language="plantuml"]를 display:none으로 숨겨둔다
-    // (첫 페인트 시 원본 코드가 잠깐 보였다 사라지는 깜빡임 방지) — 렌더링이 실패하면 그 기본값을
-    // "block"으로 명시적으로 덮어써야 원본이 다시 보인다("" 로는 CSS 규칙이 그대로 이겨 계속
-    // 숨겨진 채로 남는다).
-    pre.style.display = "block"
-    pre.dataset.plantumlError = "true"
-    figure.querySelector("[data-plantuml-expand-button]")?.remove()
   }
+}
+
+function applySuccessState(pre: HTMLPreElement, figure: HTMLElement, container: HTMLElement, svgMarkup: string) {
+  container.dataset.plantumlDiagram = ""
+  container.innerHTML = svgMarkup
+  // 테마 전환 시 재렌더링에서는(이미 연결된 컨테이너 재사용) 등장 연출을 다시 재생하지 않는다 —
+  // 최초 삽입 때만 macOS 콘텐츠 영역이 펼쳐지는 게 자연스럽고, 토글마다 매번 펼쳐지면 산만하다.
+  const isFirstInsert = !container.isConnected
+  if (isFirstInsert) figure.insertBefore(container, pre)
+  pre.style.display = "none"
+  if (isFirstInsert) animateDiagramReveal(container)
+  ensureExpandButton(figure)
+}
+
+function applyFailureState(pre: HTMLPreElement, figure: HTMLElement) {
+  // 기본 상태는 article-body.css가 pre[data-language="plantuml"]를 display:none으로 숨겨둔다
+  // (첫 페인트 시 원본 코드가 잠깐 보였다 사라지는 깜빡임 방지) — 렌더링이 실패하면 그 기본값을
+  // "block"으로 명시적으로 덮어써야 원본이 다시 보인다("" 로는 CSS 규칙이 그대로 이겨 계속
+  // 숨겨진 채로 남는다).
+  pre.style.display = "block"
+  pre.dataset.plantumlError = "true"
+  figure.querySelector("[data-plantuml-expand-button]")?.remove()
 }
 
 /** 상태 다이어그램 종료(◎) 표시의 안쪽 작은 점은 어떤 skinparam 조합으로도 닿지 않는 PlantUML
