@@ -165,13 +165,16 @@ contracts/markmap-rendering-contract.md, quickstart.md
 
 ---
 
-## Phase 4: User Story 2 - 독자가 본문에서 곧바로 마인드맵을 조작한다 (Priority: P2)
+## Phase 4: User Story 2 - 독자가 본문에서 곧바로 마인드맵의 가지를 접고 펼친다 (Priority: P2)
 
-**Goal**: 확대 보기 창을 열지 않고도 본문에 렌더링된 마인드맵에서 곧바로 가지를 접고 펼치거나
-확대/축소·이동할 수 있다(Markmap 고유의 핵심 차별 가치).
+**Goal**: 확대 보기 창을 열지 않고도 본문에 렌더링된 마인드맵에서 곧바로 가지를 접고 펼칠 수
+있다(Markmap 고유의 핵심 차별 가치). **[amended, T011 후속 수정]** 인라인 확대/축소·이동은
+Mermaid/PlantUML과의 일관성 및 페이지 스크롤 하이재킹 문제로 제외하고 확대 보기 창(Phase 5)
+전용으로 남겼다.
 
-**Independent Test**: 확대 보기 창을 열지 않은 채로 가지 클릭 접기/펼치기, 휠 줌, 드래그 이동을
-각각 시도해 의도대로 동작하는지 확인하는 것으로 완결 검증 가능.
+**Independent Test**: 확대 보기 창을 열지 않은 채로 가지 클릭 접기/펼치기가 의도대로 동작하는지,
+그리고 드래그/휠이 다이어그램에 반응하지 않고 페이지 스크롤이 정상 동작하는지 확인하는 것으로
+완결 검증 가능.
 
 ### Implementation for User Story 2
 
@@ -205,8 +208,26 @@ contracts/markmap-rendering-contract.md, quickstart.md
       시 `scale`이 변함을 확인(줌 동작 자체는 정상 작동, 합성 이벤트라 배율 크기는 실측
       참고용). 새로고침 후 13개 노드 전체 펼침 상태로 복귀 확인(상태 미저장, spec.md
       Assumptions와 일치). markmap 관련 신규 콘솔 에러 없음.)
+      **후속 수정(요구사항 변경, 실사용 중 사용자 피드백)**: 위 체크포인트 통과 이후, 실제
+      아티클을 읽다가 페이지를 스크롤하는 도중 커서가 마인드맵 위를 지나가면 페이지 스크롤이
+      멈추고 다이어그램이 대신 팬/줌되는 스크롤 하이재킹 문제가 발견됨. Mermaid/PlantUML macOS
+      프리뷰는 완전히 정적인데 Markmap만 인라인에서 뷰가 바뀌는 게 (1) 확대 모달에만 있는
+      리셋 버튼을 인라인에도 필요하게 만들고 (2) 다른 두 다이어그램과 일관성이 없다는 지적에
+      따라, `Markmap.create()` 옵션을 `{ zoom: false, pan: false, autoFit: true }`로 변경해
+      인라인 드래그(팬)·휠(줌)·더블클릭·핀치 줌을 전부 비활성화(`markmap-view` 소스 실측 —
+      `options.zoom`/`options.pan`이 각각 `svg.on(".zoom", null)`/`svg.on("wheel", null)`로
+      이어짐, research.md "인라인 팬/줌 비활성화" Decision). 가지 접기/펼치기(`handleClick`)는
+      이 옵션과 무관한 별도 리스너라 영향받지 않고 유지. 이제 인라인에 사용자가 조작할 뷰 상태가
+      없으므로 `autoFit: true`도 다시 켬(접은 뒤 뷰가 자동 재조정됨). spec.md FR-005/User
+      Story 2/SC-003/Assumptions와 data-model.md·contracts를 이 변경에 맞춰 갱신. 재검증:
+      휠 스크롤 시 페이지가 정상 스크롤되고 다이어그램 `transform`은 불변(이전엔 팬됨), 드래그
+      시도 전후 `transform` 완전 동일(이전엔 팬됨), 노드 클릭 접기/펼치기는 13→9→13개로 여전히
+      정상 동작, `autoFit`으로 접은 뒤 뷰가 자동 재중심됨을 스크린샷으로 확인. 확대 보기 모달은
+      변경 대상이 아니므로(고정 오버레이라 스크롤 충돌 없음) 손대지 않았고, 팬 버튼 클릭 시
+      `transform` 변경을 재확인해 회귀 없음을 검증. `npm run build` 통과.
 
-**Checkpoint**: User Story 1 + 2가 각각 독립적으로 동작
+**Checkpoint**: User Story 1 + 2가 각각 독립적으로 동작(인라인 인터랙션 범위가 가지 접기/펼치기로
+좁혀짐 — [amended])
 
 ---
 

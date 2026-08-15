@@ -16,9 +16,10 @@
 |---|---|---|
 | `source` | `pre[data-language="markmap"]`의 `textContent` | Markmap 원본 마크다운 아웃라인. Shiki에 `markmap` 문법이 없어 하이라이트 없이 평문으로 남으므로 원본과 항상 정확히 일치 |
 | `container` | `pre[data-language="markmap"]`를 감싸는 `figure[data-rehype-pretty-code-figure]` | 렌더링된 SVG를 삽입할 기준 위치. `pre` 자체는 숨김 처리(삭제 아님)해 복사 버튼이 계속 `textContent`를 읽을 수 있게 유지 |
-| `instance` | `markmap-view`의 `Markmap.create(svgEl, options, root)` 반환값 | **컴포넌트가 계속 참조를 들고 있어야 하는 살아있는 객체** — d3-zoom과 노드 클릭 토글 핸들러가 이 인스턴스를 통해 SVG에 바인딩되어 있다. 참조를 버려도 DOM 리스너 자체는 SVG 노드가 살아있는 한 계속 동작하지만(브라우저 GC는 DOM에서 참조 가능한 리스너를 수거하지 않음), 테마 전환 시 재렌더링 여부 판단 등에 필요해 유지한다 |
+| `instance` | `markmap-view`의 `Markmap.create(svgEl, { zoom: false, pan: false, autoFit: true }, root)` 반환값 | **컴포넌트가 계속 참조를 들고 있어야 하는 살아있는 객체** — 노드 클릭 토글 핸들러가 이 인스턴스를 통해 SVG에 바인딩되어 있다. `zoom: false, pan: false`로 d3-zoom의 드래그(팬)·휠(줌)·더블클릭·핀치 줌은 인라인에서 전부 비활성화되어 있다([amended] — Mermaid/PlantUML macOS 프리뷰와의 인터랙션 일관성, 페이지 스크롤 하이재킹 문제로 변경, spec.md FR-005). 참조를 버려도 DOM 리스너 자체는 SVG 노드가 살아있는 한 계속 동작하지만(브라우저 GC는 DOM에서 참조 가능한 리스너를 수거하지 않음), 언마운트 시 `destroy()` 정리와 테마 전환 시 재렌더링 여부 판단 등에 필요해 유지한다 |
 | `renderState` | `"pending" \| "rendered" \| "error"` | 컴포넌트 로컬 상태(전역 저장 안 함). `error`면 `pre`를 숨기지 않고 그대로 노출(FR-012, Mermaid/PlantUML과 동일 관례) |
-| `foldState` (노드별) | `markmap-view` 인스턴스 내부 상태 | 이 기능이 별도로 관리하지 않는다 — 독자가 가지를 접고 펼치는 조작(FR-004)은 `markmap-view`가 자체적으로 SVG 데이터 속성/내부 상태로 추적한다. 페이지를 벗어나거나 새로고침하면 인스턴스 자체가 사라지므로 자동으로 초기화된다(spec.md Assumptions) |
+| `foldState` (노드별) | `markmap-view` 인스턴스 내부 상태 | 이 기능이 별도로 관리하지 않는다 — 독자가 가지를 접고 펼치는 조작(FR-004)은 `markmap-view`가 자체적으로 SVG 데이터 속성/내부 상태로 추적한다. 페이지를 벗어나거나 새로고침하면 인스턴스 자체가 사라지므로 자동으로 초기화된다(spec.md Assumptions). `zoom:false, pan:false`와 무관한 별도 클릭 리스너(`handleClick`)로 동작해 인라인 팬/줌 비활성화의 영향을 받지 않는다 |
+| `pan`/`zoom` (뷰 상태) | N/A | 인라인에는 존재하지 않는다 — 본문 마인드맵은 뷰(위치/배율)를 조작할 수 없으므로 이 상태 자체가 없다([amended], spec.md FR-005). 확대/축소·이동은 `MarkmapLightboxState`(아래)에서만 상태로 존재한다 |
 
 ### MarkmapLightboxState — 확대 보기 창
 
@@ -60,4 +61,4 @@ MarkmapLightboxState.isOpen:
 테마 반영 방식" 확정) — `markmap-view`가 내장한 `.markmap-dark .markmap` CSS 변수 오버라이드를
 쓰므로, `MarkmapDiagramHandler`는 `[data-markmap-diagram]` 컨테이너에 `markmap-dark` 클래스만
 토글한다. `instance`(살아있는 Markmap 인스턴스)나 `foldState`는 전혀 건드리지 않으므로, 테마
-전환이 본문에서 조작 중이던 접기/펼치기·팬/줌 상태를 초기화하지 않는다.
+전환이 본문에서 조작 중이던 접기/펼치기 상태를 초기화하지 않는다.

@@ -77,8 +77,9 @@ PlantUML 회귀 방지가 최우선 — research.md Decision).
 *GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
 
 - **Principle I (Feature-Level Verification, NON-NEGOTIABLE)**: PASS — `npm run build` 후
-  `playwright-cli`로 마인드맵 렌더링/인라인 접기·펼치기·팬·줌/복사/확대 보기(모달 안 접기·펼치기
-  포함)를 실제 브라우저에서 구동해 검증한다(quickstart.md). 검증용 아티클은 013의
+  `playwright-cli`로 마인드맵 렌더링/인라인 접기·펼치기(팬·줌은 [amended]로 인라인 비활성화,
+  확대 보기 모달에서만 지원)/복사/확대 보기(모달 안 접기·펼치기 포함)를 실제 브라우저에서
+  구동해 검증한다(quickstart.md). 검증용 아티클은 013의
   `_plantuml-preview.md`를 `_diagram.md`로 리네임/확장해 재사용하며(tasks.md T003/T004), 리네임/
   수정할 때마다 `next dev` 재시작이 필요함을 quickstart.md에 명시했다. 서버는 반드시 일반
   `npm run dev`(인메모리 Redis 모드)로 띄워 방문자 통계가 `0`에서 시작한 상태로 검증한다.
@@ -122,10 +123,12 @@ components/article/
 ├── mermaid-diagram-handler.tsx     # 기존 — 변경 없음
 ├── plantuml-diagram-handler.tsx    # 기존 — 변경 없음
 └── markmap-diagram-handler.tsx     # 신규 — pre[data-language="markmap"] 탐색, markmap-lib
-                                     #        Transformer로 파싱, markmap-view Markmap.create()로
-                                     #        그 자리에 렌더링하고 인스턴스를 유지(FR-004/FR-005용
-                                     #        인라인 접기·펼치기·팬·줌은 markmap-view 기본 동작을
-                                     #        그대로 살려두는 것으로 충족 — 별도 버튼 UI 불필요).
+                                     #        Transformer로 파싱, markmap-view Markmap.create(svg,
+                                     #        { zoom: false, pan: false, autoFit: true }, root)로
+                                     #        그 자리에 렌더링하고 인스턴스를 유지(FR-004용 인라인
+                                     #        접기·펼치기는 markmap-view 기본 동작 그대로 충족 —
+                                     #        별도 버튼 UI 불필요. 팬·줌은 [amended]로 인라인
+                                     #        비활성화, 확대 보기 모달 전용).
                                      #        확대 버튼 클릭 시 원본 소스 텍스트를
                                      #        MarkmapLightboxModal에 전달
 

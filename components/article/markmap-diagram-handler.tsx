@@ -37,7 +37,8 @@ export function MarkmapDiagramHandler() {
     if (blocks.length === 0) return
 
     let cancelled = false
-    // 살아있는 인스턴스를 유지해야 본문 인라인 접기/펼치기·팬/줌이 동작한다(contracts #3) —
+    // 살아있는 인스턴스를 유지해야 본문 인라인 가지 접기/펼치기가 동작한다(contracts #3, 팬/줌은
+    // 인라인에서 비활성화되어 확대 보기 모달 전용이다 — 아래 renderBlock 참고) —
     // 동시에 페이지 이탈(언마운트) 시 markmap-view가 내부적으로 붙이는 ResizeObserver 등을
     // destroy()로 정리하지 않으면, 이 블로그는 클라이언트 라우팅 SPA라 다른 아티클로 이동해도
     // JS 런타임이 계속 살아있어 연결이 끊긴 SVG를 계속 관찰하는 옵저버가 누적된다.
@@ -70,7 +71,7 @@ export function MarkmapDiagramHandler() {
 
   // 테마 전환은 재렌더링이 아니라 markmap-view의 내장 CSS 변수 오버라이드(.markmap-dark)를
   // 토글하는 것만으로 충분하다(위 주석 근거) — 살아있는 인스턴스(§contracts #3)를 건드리지 않아
-  // 본문에서 조작 중이던 접기/펼치기·팬/줌 상태가 테마 전환으로 초기화되지 않는다.
+  // 본문에서 조작 중이던 접기/펼치기 상태가 테마 전환으로 초기화되지 않는다.
   React.useEffect(() => {
     isDarkRef.current = isDark
     const containers = document.querySelectorAll<HTMLElement>("[data-markmap-diagram]")
@@ -125,11 +126,16 @@ function renderBlock(
     figure.insertBefore(container, pre)
     pre.style.display = "none"
 
-    // autoFit을 켜지 않는다 — Markmap.create()는 초기 렌더 직후 어차피 한 번 fit()을 호출해
-    // 뷰포트에 맞춰준다(node_modules 실측). autoFit: true를 켜면 가지를 접고 펼칠 때마다
-    // (toggleNode → renderData → autoFit && fit()) 뷰가 매번 재중심·재조정되어, 독자가 본문에서
-    // 직접 조작한 팬/줌 위치가 클릭할 때마다 리셋되는 나쁜 UX가 된다(FR-004/FR-005 취지 위배).
-    const instance = Markmap.create(svg, undefined, root)
+    // 본문 인라인에서는 드래그(팬)·휠(줌)을 비활성화한다 — Mermaid/PlantUML macOS 프리뷰가
+    // 완전히 정적인 것과 달리 Markmap만 뷰가 바뀔 수 있으면, 확대 모달에만 있는 "원래대로" 리셋
+    // 버튼이 인라인에도 필요해지고 다른 두 다이어그램과 일관성도 깨진다(사용자 피드백). `zoom:
+    // false, pan: false`는 markmap-view 내부에서 `svg.on(".zoom", null)`/`svg.on("wheel", null)`로
+    // 이어져 드래그·휠·더블클릭·핀치 줌을 전부 한 번에 제거한다(node_modules 실측) — 가지 클릭
+    // 접기/펼치기(handleClick)는 이 zoom/pan 옵션과 무관한 별도 리스너라 영향받지 않고 그대로
+    // 남는다(FR-004는 유지, FR-005의 인라인 팬/줌 요구만 철회 — 확대 보기 모달에서는 그대로 지원).
+    // 이제 독자가 인라인에서 직접 조작할 뷰 상태 자체가 없으므로, 가지를 접고 펼칠 때마다 뷰를
+    // 다시 프레이밍해주는 autoFit을 켜도 무방하다(오히려 접은 뒤 어색한 여백 없이 다시 잘 맞춰줌).
+    const instance = Markmap.create(svg, { zoom: false, pan: false, autoFit: true }, root)
     ensureExpandButton(figure)
     return instance
   } catch {

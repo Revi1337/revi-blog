@@ -39,10 +39,14 @@
 성공 경로:
   1. figure 안에 SVG를 담을 새 컨테이너(예: <div data-markmap-diagram>)를 pre 앞에 삽입
   2. pre에 style="display:none" 부여 (요소 자체는 DOM에서 제거하지 않음)
-  3. Markmap.create()가 반환한 인스턴스를 그대로 둔다 — 이 인스턴스가 SVG에 바인딩한 d3-zoom/
-     노드 클릭 토글 핸들러가 본문 인라인 접기·펼치기(FR-004)와 팬·줌(FR-005)을 담당한다.
-     Mermaid/PlantUML처럼 "렌더링 결과 문자열만 innerHTML로 꽂고 참조를 버리는" 방식을 쓰면
-     인터랙션이 동작하지 않는다.
+  3. Markmap.create(svg, { zoom: false, pan: false, autoFit: true }, root)가 반환한 인스턴스를
+     그대로 둔다 — 이 인스턴스가 SVG에 바인딩한 노드 클릭 토글 핸들러가 본문 인라인 접기·
+     펼치기(FR-004)를 담당한다. `zoom: false, pan: false`는 드래그(팬)·휠(줌)·더블클릭·핀치
+     줌을 인라인에서 전부 비활성화한다([amended] — Mermaid/PlantUML macOS 프리뷰와의 인터랙션
+     일관성, 페이지 스크롤 하이재킹 문제로 spec.md FR-005가 뒤집힘, research.md 참고). 접기/
+     펼치기만은 이 옵션과 무관한 별도 리스너라 영향받지 않는다. Mermaid/PlantUML처럼 "렌더링
+     결과 문자열만 innerHTML로 꽂고 참조를 버리는" 방식을 쓰면 이 접기/펼치기 인터랙션조차
+     동작하지 않는다.
   4. 복사 버튼(rehype-code-copy-button.ts가 이미 삽입)은 그대로 유지 — CodeCopyHandler가 여전히
      figure.querySelector("pre")?.textContent를 읽으므로 별도 수정 불필요(FR-007)
   5. 확대 버튼을 새로 삽입(figure 안, 복사 버튼과 나란히)
