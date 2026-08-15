@@ -199,7 +199,11 @@ async function renderBlock(
     return instance
   } catch {
     container.remove()
-    pre.style.display = ""
+    // 기본 상태는 article-body.css가 pre[data-language="markmap"]를 display:none으로 숨겨둔다
+    // (첫 페인트 시 원본 코드가 잠깐 보였다 사라지는 깜빡임 방지) — 렌더링이 실패하면 그 기본값을
+    // "block"으로 명시적으로 덮어써야 원본이 다시 보인다("" 로는 CSS 규칙이 그대로 이겨 계속
+    // 숨겨진 채로 남는다).
+    pre.style.display = "block"
     pre.dataset.markmapError = "true"
     return null
   }

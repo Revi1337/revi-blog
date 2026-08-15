@@ -308,6 +308,18 @@
 .article-body [data-rehype-pretty-code-figure] pre::-webkit-scrollbar-thumb:hover {
   background-color: var(--color-outline);
 }
+/* Mermaid/PlantUML/Markmap 원본 코드펜스 — 세 핸들러(mermaid-diagram-handler.tsx 등) 모두 렌더링에
+   "성공"한 뒤에야 `pre.style.display = "none"`으로 숨기고, 그 전까지는 원본이 그대로 보인다.
+   렌더링 자체가 동적 import + 파싱 + (PlantUML은 네트워크 요청까지) 걸리는 클라이언트 전용
+   작업이라, 첫 페인트 시점에는 항상 원본 코드가 잠깐 보였다가 다이어그램으로 바뀌는 깜빡임이
+   있었다(사용자 피드백 — 세 종류 모두 동일 증상). 대신 처음부터 CSS로 숨겨두고, 렌더링이
+   실패했을 때만(각 핸들러의 catch 블록) `pre.style.display = "block"`으로 되돌려 원본을
+   드러낸다 — 성공 시에는 다이어그램 컨테이너가 별도로 삽입되므로 이 pre가 다시 보일 일이 없다. */
+.article-body [data-rehype-pretty-code-figure] pre[data-language="mermaid"],
+.article-body [data-rehype-pretty-code-figure] pre[data-language="plantuml"],
+.article-body [data-rehype-pretty-code-figure] pre[data-language="markmap"] {
+  display: none;
+}
 /* Mermaid 다이어그램 — mermaid-diagram-handler.tsx가 mermaid.render()로 얻은 SVG를 이 컨테이너에
    주입한다. 색상 자체는 mermaid.initialize({ theme })가 다크/라이트에 맞춰 SVG 안에 직접 굽기
    때문에, 여기서는 코드 블록과 같은 레이아웃(figure 안 여백/스크롤)만 맞춘다(FR-012: 본문 폭보다
