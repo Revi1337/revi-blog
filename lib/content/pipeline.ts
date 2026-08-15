@@ -17,6 +17,7 @@ import { remarkObsidianLinks } from "@/lib/content/plugins/remark-obsidian-links
 import { remarkImages } from "@/lib/content/plugins/remark-images"
 import { remarkPlainText } from "@/lib/content/plugins/remark-plain-text"
 import { rehypeCodeCopyButton } from "@/lib/content/plugins/rehype-code-copy-button"
+import { rehypeCodeLanguageLabel } from "@/lib/content/plugins/rehype-code-language-label"
 import { rehypeHeadingAnchor } from "@/lib/content/plugins/rehype-heading-anchor"
 import { rehypePlantuml } from "@/lib/content/plugins/rehype-plantuml"
 import type { TocItem, ArticleImage } from "@/lib/data/types"
@@ -48,6 +49,7 @@ const processor = unified()
   })
   .use(rehypePlantuml)
   .use(rehypeCodeCopyButton)
+  .use(rehypeCodeLanguageLabel)
   .use(rehypeKatex, { throwOnError: false, errorColor: "var(--color-error)" })
   .use(rehypeStringify, { allowDangerousHtml: true })
 
