@@ -80,6 +80,7 @@ export const metadata: Metadata = {
     google: "pVqcO9F2o2vERPP0_14xhPTiC_sCUt03sMq0USSr_xc",
     other: {
       "naver-site-verification": "511271574fd60ff41fe7eeb0125f2888685ddf4e",
+      "msvalidate.01": "80EDC70E6AFA9AFE8914716474BAAA9D",
     },
   },
 }
