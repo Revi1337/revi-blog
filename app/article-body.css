@@ -342,6 +342,26 @@
   max-width: 100%;
   height: auto;
 }
+/* Markmap 마인드맵 — Mermaid/PlantUML과 달리 SVG가 고정 크기(width:100%, height 값 고정)의
+   "뷰포트"이고, 그 안에서 markmap-view의 내장 pan/zoom으로 콘텐츠를 탐색한다(FR-004/FR-005 —
+   본문 인라인에서 접기/펼치기·확대/축소·이동이 가능해야 함). Mermaid/PlantUML은 SVG 자체가
+   내용 크기에 맞춰 커지므로 overflow-x:auto로 넘치는 부분을 스크롤하지만, Markmap은 뷰포트가
+   고정이고 내부 좌표계만 pan/zoom으로 움직이므로 overflow:hidden으로 클리핑한다(스크롤바가
+   보이면 안 됨 — 이동은 드래그/줌으로만 이뤄짐). 배경/테두리 없이 macOS 컨테이너에 직접 얹히는
+   것은 Mermaid/PlantUML과 동일(FR-003, 013 research.md "이중 레이어" 교훈 재적용). */
+.article-body [data-rehype-pretty-code-figure] [data-markmap-diagram] {
+  overflow: hidden;
+  cursor: grab;
+}
+.article-body [data-rehype-pretty-code-figure] [data-markmap-diagram] svg {
+  display: block;
+  width: 100%;
+  height: 420px;
+}
+/* markmap-view의 내장 CSS(.markmap-dark .markmap)가 다크 모드 텍스트/코드/원형 마커 색을 이미
+   제공한다(node_modules/markmap-view/dist/index.js의 globalCSS 실측 — --markmap-text-color가
+   #333(라이트)/#eee(다크)로 오버라이드됨). 이 프로젝트의 실제 배경색과의 명도 대비는 T009
+   체크포인트에서 브라우저로 직접 확인하고, 부족하면 이 규칙에 보강한다. */
 /* mermaid.initialize({ themeVariables: { edgeLabelBackground } })는 .edgeLabel의 배경만 지우고,
    엣지 라벨(예: "Yes"/"No") 텍스트를 감싸는 .labelBkg div는 건드리지 못한다 — mermaid가 이 클래스
    배경색을 테마 변수와 무관하게 항상 rgba(0,0,0,0.5)로 굽기 때문에, 라이트 테마에서 특히 텍스트가

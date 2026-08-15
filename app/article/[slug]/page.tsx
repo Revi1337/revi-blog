@@ -12,6 +12,7 @@ import { CodeCopyHandler } from "@/components/article/code-copy-handler"
 import { ImageLightboxHandler } from "@/components/article/image-lightbox-handler"
 import { MermaidDiagramHandler } from "@/components/article/mermaid-diagram-handler"
 import { PlantumlDiagramHandler } from "@/components/article/plantuml-diagram-handler"
+import { MarkmapDiagramHandler } from "@/components/article/markmap-diagram-handler"
 import { ImageLoadingIndicatorHandler } from "@/components/article/image-loading-indicator-handler"
 import { HeadingAnchorScrollHandler } from "@/components/article/heading-anchor-scroll-handler"
 import { ArticleComments } from "@/components/article/article-comments"
@@ -96,6 +97,7 @@ export default async function ArticleDetailPage({
           <ImageLightboxHandler images={article.images} />
           <MermaidDiagramHandler />
           <PlantumlDiagramHandler />
+          <MarkmapDiagramHandler />
           <ImageLoadingIndicatorHandler hasImages={article.images.length > 0} />
           <HeadingAnchorScrollHandler />
 
