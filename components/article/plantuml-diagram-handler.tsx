@@ -4,6 +4,7 @@ import * as React from "react"
 
 import { useTheme } from "@/components/theme/theme-context"
 import { MermaidLightboxModal } from "@/components/mermaid/mermaid-lightbox-modal"
+import { PLANTUML_LIGHT_BORDER, PLANTUML_DARK_BORDER } from "@/lib/content/plantuml-colors"
 
 const PLANTUML_SERVER_BASE = "https://www.plantuml.com/plantuml/svg"
 
@@ -108,10 +109,11 @@ async function renderBlock(pre: HTMLPreElement, isDark: boolean, cancelledRef: {
     if (svgRoot.tagName !== "svg" || !svgRoot.hasAttribute("data-diagram-type")) {
       throw new Error("PlantUML server did not recognize the diagram")
     }
+    patchHardcodedDarkColor(svgRoot, isDark ? PLANTUML_DARK_BORDER : PLANTUML_LIGHT_BORDER)
 
     if (cancelledRef.current) return
     container.dataset.plantumlDiagram = ""
-    container.innerHTML = svgText
+    container.innerHTML = svgRoot.outerHTML
     if (!container.isConnected) figure.insertBefore(container, pre)
     pre.style.display = "none"
     ensureExpandButton(figure)
@@ -121,6 +123,20 @@ async function renderBlock(pre: HTMLPreElement, isDark: boolean, cancelledRef: {
     pre.dataset.plantumlError = "true"
     figure.querySelector("[data-plantuml-expand-button]")?.remove()
   }
+}
+
+/** 상태 다이어그램 종료(◎) 표시의 안쪽 작은 점은 어떤 skinparam 조합으로도 닿지 않는 PlantUML
+ * 엔진 하드코딩 색 `#222`로 나온다(rehype-plantuml.ts 실측 기록). 서버에 보내는 텍스트로는
+ * 고칠 수 없으니, 받은 SVG를 DOM으로 파싱한 김에 남은 `#222`만 골라 우리 테두리색으로 바꾼다 —
+ * `fill="#222"` 속성과 `style="...stroke:#222..."` 인라인 스타일 둘 다 대상. 이 스킨에서
+ * `#222`는 이 하드코딩된 경우 외에는 등장하지 않으므로(실측 확인) 다른 요소를 잘못 건드릴
+ * 위험이 없다. */
+function patchHardcodedDarkColor(svgRoot: Element, border: string) {
+  svgRoot.querySelectorAll('[fill="#222"]').forEach((el) => el.setAttribute("fill", border))
+  svgRoot.querySelectorAll('[style*="#222"]').forEach((el) => {
+    const style = el.getAttribute("style")
+    if (style) el.setAttribute("style", style.replaceAll("#222", border))
+  })
 }
 
 function ensureExpandButton(figure: HTMLElement) {

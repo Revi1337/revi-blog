@@ -3,16 +3,16 @@ import { toString as hastToString } from "hast-util-to-string"
 import plantumlEncoder from "plantuml-encoder"
 import type { Root, Element } from "hast"
 
+import { PLANTUML_LIGHT_BORDER, PLANTUML_DARK_BORDER } from "@/lib/content/plantuml-colors"
+
 /** PlantUML 공개 서버는 렌더링 결과 SVG 루트에 항상 `background:#FFFFFF`를 직접 굽는다(다크 테마
  * 파라미터 없음). 독자가 작성한 원본 코드(복사 버튼이 돌려주는 텍스트)는 건드리지 않고, 서버에
- * 보낼 인코딩 대상 텍스트에만 이 skinparam을 앞에 끼워 넣어 배경을 투명하게 만든다.
- * `!theme <name>`은 텍스트/도형 채우기/선 색을 한 번에 일관되게 바꿔주는 PlantUML 내장 테마다
- * (개별 skinparam을 다이어그램 타입별로 일일이 지정하는 것보다 훨씬 안정적 — research.md 실측:
- * 기본 skinparam만 바꾼 버전은 화살표/생명선 같은 선 색이 그대로 어두워 다크 배경에서 거의 안 보임).
- * `cyborg-outline`은 `font-family`를 `'Verdana'`로 바꾸지만, 브라우저가 Verdana에 없는 글리프
- * (한글 등)는 시스템 폰트로 자동 대체하므로 한글 렌더링에 영향 없음(실측 확인 — 최초 우려는
- * 별도 확인용 HTML에 `<meta charset="utf-8">`을 빠뜨려 생긴 깨짐이었을 뿐, 실제 원인이 아니었음).
- * skinparam/`!theme` 줄은 `@start...` 첫 줄 바로 뒤에 삽입해야 한다(실측 확인). */
+ * 보낼 인코딩 대상 텍스트에만 이 skinparam을 앞에 끼워 넣어 배경을 투명하게 만든다 — 이건 어떤
+ * `!theme`을 쓰든(심지어 `_none_`이어도) 항상 필요하다. `!theme <name>`을 쓰면 텍스트/도형
+ * 채우기/선 색을 한 번에 일관되게 바꿀 수 있지만(개별 skinparam을 다이어그램 타입별로 일일이
+ * 지정하는 것보다 안정적), 사용자가 PlantUML 테마 갤러리(38종)를 직접 비교해보고 `_none_`(테마
+ * 없음)을 선택했다 — 아래 LIGHT_SKIN/DARK_SKIN 참고. skinparam/`!theme` 줄은 `@start...` 첫
+ * 줄 바로 뒤에 삽입해야 한다(실측 확인). */
 function withPlantumlSkin(source: string, skinLines: readonly string[]): string {
   const startTagMatch = /^([^\n]*@start\w+[^\n]*\n)/.exec(source)
   const insertion = skinLines.map((line) => `${line}\n`).join("")
@@ -20,11 +20,57 @@ function withPlantumlSkin(source: string, skinLines: readonly string[]): string 
   return source.slice(0, startTagMatch[0].length) + insertion + source.slice(startTagMatch[0].length)
 }
 
-/** cyborg-outline(다크)과 짝을 이루는 라이트 버전 — 둘 다 파란 계열 아웃라인 테마라 다크/라이트
- * 전환 시 같은 다이어그램처럼 느껴진다. plain/기본 렌더링은 사용자 확인 결과 다크 버전과 스타일이
- * 너무 달라(무채색 vs 파란 아웃라인) 테마 전환 시 "다른 다이어그램"처럼 보인다는 지적을 받고 교체. */
-const LIGHT_SKIN = ["!theme cerulean-outline", "skinparam backgroundColor transparent"] as const
-const DARK_SKIN = ["!theme cyborg-outline", "skinparam backgroundColor transparent"] as const
+/** 내장 `!theme`(38종, 갤러리로 직접 비교함)을 하나씩 시도했지만 다크 모드에서 텍스트가 고정
+ * 어두운 색이라 안 보이거나(`_none_`/`plain`/`lightgray`/`carbon-gray`), Mermaid와 톤이 전혀
+ * 안 맞는 문제(cyborg-outline 등)가 반복됐다. 대신 Mermaid가 실제로 쓰는 색을
+ * (`getComputedStyle`로 실측) 개별 skinparam으로 직접 지정한다 — Mermaid는 다크 박스
+ * `#1f2020`/테두리·선·텍스트 `#cccccc`, 라이트는 박스 `#ececff`/테두리·선 `#9370db`/텍스트
+ * `#333333`을 쓴다. PlantUML은 다이어그램 타입(시퀀스/클래스/유스케이스/액티비티/상태/컴포넌트)
+ * 마다 skinparam 키 이름이 달라 하나씩 나열해야 하지만, 대신 이 블로그가 실제로 쓰는 색과
+ * 픽셀 단위로 맞출 수 있다(named 테마로는 불가능했던 정밀도). */
+function buildMonochromeSkin(fill: string, border: string, text: string): readonly string[] {
+  return [
+    "skinparam backgroundColor transparent",
+    `skinparam DefaultFontColor ${text}`,
+    `skinparam ArrowColor ${border}`,
+    `skinparam ClassBackgroundColor ${fill}`,
+    `skinparam ClassBorderColor ${border}`,
+    `skinparam SequenceParticipantBackgroundColor ${fill}`,
+    `skinparam SequenceParticipantBorderColor ${border}`,
+    `skinparam SequenceLifeLineBorderColor ${border}`,
+    `skinparam SequenceActorBackgroundColor ${fill}`,
+    `skinparam SequenceActorBorderColor ${border}`,
+    `skinparam ActorBackgroundColor ${fill}`,
+    `skinparam ActorBorderColor ${border}`,
+    `skinparam UsecaseBackgroundColor ${fill}`,
+    `skinparam UsecaseBorderColor ${border}`,
+    `skinparam ActivityBackgroundColor ${fill}`,
+    `skinparam ActivityBorderColor ${border}`,
+    `skinparam ActivityDiamondBackgroundColor ${fill}`,
+    `skinparam ActivityDiamondBorderColor ${border}`,
+    `skinparam StateBackgroundColor ${fill}`,
+    `skinparam StateBorderColor ${border}`,
+    `skinparam ComponentBackgroundColor ${fill}`,
+    `skinparam ComponentBorderColor ${border}`,
+    `skinparam DatabaseBackgroundColor ${fill}`,
+    `skinparam DatabaseBorderColor ${border}`,
+    // package { ... } 컨테이너(예: "웹 서버")는 Component와 별개 키를 쓴다 — 안 넣으면 테두리가
+    // 기본값(#181818, 다크 모드에서 안 보임)으로 남는다(실측 확인).
+    `skinparam PackageBackgroundColor ${fill}`,
+    `skinparam PackageBorderColor ${border}`,
+    `skinparam PackageFontColor ${text}`,
+    // 상태 다이어그램의 시작(●)/종료(◎) 표시는 State가 아니라 Activity 네임스페이스 skinparam이
+    // 담당한다(실측 확인 — StateStartColor/StateEndColor는 존재하지 않음). 다만 ActivityEndColor는
+    // 바깥 링만 바꾸고 안쪽 점은 어떤 skinparam 조합으로도(activity 블록 형태, CircleColor 등
+    // 10가지 넘게 실측) 항상 #222로 고정된다 — PlantUML 엔진에 하드코딩된 값으로 보임. 이 안쪽
+    // 점은 plantuml-diagram-handler.tsx가 응답 SVG를 받은 뒤 문자열 치환으로 마저 고친다.
+    `skinparam ActivityStartColor ${border}`,
+    `skinparam ActivityEndColor ${border}`,
+  ]
+}
+
+const LIGHT_SKIN = buildMonochromeSkin("#ececff", PLANTUML_LIGHT_BORDER, "#333333")
+const DARK_SKIN = buildMonochromeSkin("#1f2020", PLANTUML_DARK_BORDER, PLANTUML_DARK_BORDER)
 
 /** ```plantuml 코드펜스의 원본 텍스트를 다크/라이트 각각의 skinparam을 끼워 넣은 뒤 PlantUML
  * 공개 서버 URL 인코딩(deflate + 전용 base64)으로 미리 변환해 `pre`에
