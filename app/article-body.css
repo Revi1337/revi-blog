@@ -324,6 +324,24 @@
   max-width: 100%;
   height: auto;
 }
+/* PlantUML 다이어그램 — plantuml-diagram-handler.tsx가 공개 서버에서 fetch한 SVG를 이 컨테이너에
+   주입한다. Mermaid 컨테이너([data-mermaid-diagram])와 레이아웃 규칙을 완전히 동일하게 맞춘다 —
+   배경/테두리/모서리를 여기서 따로 추가하면 이미 figure 자체가 갖고 있는 macOS 창 프레임 위에
+   또 하나의 박스가 얹힌 "이중 레이어"로 보여 Mermaid와의 UI 일관성(FR-007)이 깨진다. 흰 배경은
+   PlantUML 서버가 응답 SVG 루트에 직접 굽는 것(`style="background:#FFFFFF"`)이라 여기서 제거할
+   수 없고, 그 자체가 대비를 만들어주므로 컨테이너에서 별도로 감쌀 필요가 없다. */
+.article-body [data-rehype-pretty-code-figure] [data-plantuml-diagram] {
+  display: flex;
+  justify-content: center;
+  overflow-x: auto;
+  padding: 1.5rem 1.25rem;
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-outline-variant) transparent;
+}
+.article-body [data-rehype-pretty-code-figure] [data-plantuml-diagram] svg {
+  max-width: 100%;
+  height: auto;
+}
 /* mermaid.initialize({ themeVariables: { edgeLabelBackground } })는 .edgeLabel의 배경만 지우고,
    엣지 라벨(예: "Yes"/"No") 텍스트를 감싸는 .labelBkg div는 건드리지 못한다 — mermaid가 이 클래스
    배경색을 테마 변수와 무관하게 항상 rgba(0,0,0,0.5)로 굽기 때문에, 라이트 테마에서 특히 텍스트가

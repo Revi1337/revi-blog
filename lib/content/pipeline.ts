@@ -18,6 +18,7 @@ import { remarkImages } from "@/lib/content/plugins/remark-images"
 import { remarkPlainText } from "@/lib/content/plugins/remark-plain-text"
 import { rehypeCodeCopyButton } from "@/lib/content/plugins/rehype-code-copy-button"
 import { rehypeHeadingAnchor } from "@/lib/content/plugins/rehype-heading-anchor"
+import { rehypePlantuml } from "@/lib/content/plugins/rehype-plantuml"
 import type { TocItem, ArticleImage } from "@/lib/data/types"
 
 export interface RenderResult {
@@ -45,6 +46,7 @@ const processor = unified()
     theme: { dark: "github-dark-default", light: "github-light-default" },
     keepBackground: false,
   })
+  .use(rehypePlantuml)
   .use(rehypeCodeCopyButton)
   .use(rehypeKatex, { throwOnError: false, errorColor: "var(--color-error)" })
   .use(rehypeStringify, { allowDangerousHtml: true })
