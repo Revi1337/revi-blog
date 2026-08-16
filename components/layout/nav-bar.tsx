@@ -7,6 +7,7 @@ import { usePathname } from "next/navigation"
 
 import { navLinks } from "@/lib/data/nav"
 import { cn } from "@/lib/utils"
+import { useTheme } from "@/components/theme/theme-context"
 import { ThemeToggle } from "@/components/theme/theme-toggle"
 import { MobileNavMenu } from "@/components/layout/mobile-nav-menu"
 import { SearchTrigger } from "@/components/search/search-trigger"
@@ -33,6 +34,7 @@ export function NavBar({ searchIndex }: NavBarProps) {
   useSearchShortcut(openSearch)
 
   const navRef = useRef<HTMLElement>(null)
+  const { isBlurSuppressed } = useTheme()
 
   // article-body heading의 scroll-margin-top과 TocSidebar 스크롤스파이가 참조하는
   // --header-offset을 이 nav의 실제 렌더링 높이로 항상 최신화한다 — 고정값을 여기저기
@@ -56,11 +58,27 @@ export function NavBar({ searchIndex }: NavBarProps) {
   return (
     <nav
       ref={navRef}
-      // pt-[env(safe-area-inset-top)]: 이 padding이 nav 박스 안쪽이라 bg/backdrop-blur가
-      // 그 위까지 함께 칠해진다 — 노치 아래 safe area도 같은 글래스로 이어지고, 실제 로고/버튼
-      // 같은 콘텐츠는 그 padding만큼 자연히 밀려나 노치와 겹치지 않는다. viewport-fit=cover가
-      // app/layout.tsx에 없으면 이 env() 값이 항상 0이라 아무 효과가 없다.
-      className="fixed top-0 z-50 w-full border-b border-outline-variant bg-background/70 pt-[env(safe-area-inset-top)] backdrop-blur-md transition-all duration-200 ease-in-out"
+      // pt-[env(safe-area-inset-top)]: iOS Safari 일반 탭에서는 웹뷰가 노치 아래로 들어가지
+      // 않아 이 값이 0이지만(실기기 확인), 홈 화면에 추가해 standalone으로 실행하면 0이 아니게
+      // 되므로 그 경우 콘텐츠가 노치와 겹치지 않도록 남겨둔다.
+      //
+      // backdrop-blur는 테마 전환 순간에만 잠깐 끈다 — iOS Safari가 상단 상태바 색을 페이지
+      // 픽셀 샘플링으로 정하는데 backdrop-filter가 있으면 그 샘플링이 얼어붙기 때문이다.
+      // 자세한 근거는 theme-context.tsx의 toggleTheme 주석 참고.
+      //
+      // 블러를 끈 그 짧은 구간에는 transition도 함께 꺼야 한다. 색 전환이 200ms에 걸쳐
+      // 진행되면 블러가 없는 프레임(약 33ms)에서는 배경색이 아직 이전 테마에 가까운 상태라,
+      // Safari가 결국 옛 색을 샘플링해 우회가 무력화된다(실측으로 확인). 이 구간에서만
+      // transition-none을 줘 새 색이 즉시 확정되게 하면, 검증된 조건(= 새 색 + 블러 없음이
+      // 한 프레임에 함께 그려짐)이 그대로 재현된다. 복원 시점엔 색이 이미 최종값이라 다시
+      // 애니메이션되지 않는다. transition을 색 계열로 한정한 것도 같은 이유다 — transition-all
+      // 이면 backdrop-filter까지 200ms에 걸쳐 사라져 "블러 없는 프레임"이 만들어지지 않는다.
+      className={cn(
+        "fixed top-0 z-50 w-full border-b border-outline-variant bg-background/70 pt-[env(safe-area-inset-top)]",
+        isBlurSuppressed
+          ? "transition-none"
+          : "backdrop-blur-md transition-colors duration-200 ease-in-out"
+      )}
     >
       <div className="mx-auto flex max-w-[1200px] items-center justify-between px-gutter py-4">
         <Link

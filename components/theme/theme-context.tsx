@@ -1,11 +1,13 @@
 "use client"
 
-import { createContext, useContext, useState, type ReactNode } from "react"
+import { createContext, useContext, useRef, useState, type ReactNode } from "react"
 
 import { THEME_COOKIE_KEY, THEME_COLOR_DARK, THEME_COLOR_LIGHT } from "@/components/theme/theme-constants"
 
 interface ThemeContextValue {
   isDark: boolean
+  /** NavBar가 backdrop-blur를 잠시 꺼야 하는 구간인지 — 아래 toggleTheme 주석 참고 */
+  isBlurSuppressed: boolean
   toggleTheme: () => void
 }
 
@@ -30,23 +32,6 @@ function setThemeColorMeta(themeColor: string) {
   head.appendChild(meta)
 }
 
-/** 노치 뒤 safe area를 채우는 색(WebKit의 확장 배경)은 **레이아웃 시점에만** 다시 계산된다 —
- * 실기기에서 스크롤(재합성)로는 갱신되지 않고 회전/새로고침으로만 갱신되는 것을 확인했다.
- * 다크모드 토글은 class만 바꾸는 순수 스타일 변경이라 레이아웃을 유발하지 않으므로, 회전이
- * 하는 일(=실제 레이아웃 무효화)을 눈에 보이지 않는 크기로 재현해준다.
- *
- * 반드시 rAF로 프레임을 넘겨야 한다 — 같은 프레임 안에서 값을 넣었다 빼면 브라우저는 중간
- * 상태를 실제로 그린 적이 없어 사실상 no-op이 된다(예전 transform 시도가 실패한 이유).
- * 문서 요소(html)의 sub-pixel padding이라 화면상 이동은 0.01px로 감지되지 않는다. */
-function forceSafeAreaRelayout() {
-  const root = document.documentElement
-  // 검색 모달의 스크롤 잠금 등 다른 코드가 인라인 스타일을 쓸 수 있으므로 원래 값을 복원한다
-  const prev = root.style.paddingTop
-  root.style.paddingTop = prev ? `calc(${prev} + 0.01px)` : "0.01px"
-  requestAnimationFrame(() => {
-    root.style.paddingTop = prev
-  })
-}
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
   // layout.tsx의 인라인 스크립트가 hydration 전에 이미 <html>의 "dark" 클래스를 쿠키 기준으로
@@ -58,6 +43,17 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
       ? true
       : document.documentElement.classList.contains("dark"),
   )
+  const [isBlurSuppressed, setIsBlurSuppressed] = useState(false)
+
+  // iOS Safari는 상단 상태바(노치) 영역을 "페이지가 그린 픽셀을 샘플링"해서 칠하는데,
+  // 그 영역에 backdrop-filter가 걸려 있으면 샘플링이 얼어붙어 회전/새로고침 전까지 이전 색이
+  // 그대로 남는다. 실기기 진단으로 확정한 내용(불투명·반투명 무관, 오직 블러 유무가 갈림):
+  //     불투명+블러X → 갱신 O | 반투명+블러X → 갱신 O
+  //     불투명+블러O → 갱신 X | 반투명+블러O → 갱신 X
+  // 그래서 테마가 바뀌는 순간에만 NavBar의 블러를 잠깐 끄고, 블러 없는 프레임이 한 번 그려져
+  // Safari가 새 색을 다시 샘플링한 뒤 원래대로 되돌린다. 스크롤 위치가 맨 위면 헤더 뒤에
+  // 비칠 내용 자체가 없어 이 짧은 구간은 눈에 띄지 않는다.
+  const rafIdsRef = useRef<number[]>([])
 
   function toggleTheme() {
     const next = !isDark
@@ -65,13 +61,22 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     document.documentElement.classList.toggle("dark", next)
     document.cookie = `${THEME_COOKIE_KEY}=${next ? "dark" : "light"}; path=/; max-age=31536000`
     setThemeColorMeta(next ? THEME_COLOR_DARK : THEME_COLOR_LIGHT)
-    // theme-color/색상 CSS만으로는 노치 뒤 safe area가 갱신되지 않는다 — 그 색은 레이아웃
-    // 시점에만 재계산되므로 여기서 명시적으로 레이아웃을 한 번 무효화한다.
-    forceSafeAreaRelayout()
+
+    // 색 변경과 블러 해제를 같은 이벤트 핸들러에서 처리해야 한다 — React가 두 state를 한 번의
+    // 렌더로 묶어주므로 "새 색 + 블러 없음"이 한 프레임에 함께 그려진다. 되돌리는 건 반드시
+    // rAF 두 번을 거쳐야 한다(같은 프레임에서 껐다 켜면 블러 없는 프레임이 실제로 그려진 적이
+    // 없어 무의미해진다 — 예전 transform 시도가 실패한 이유가 정확히 이것이었다).
+    rafIdsRef.current.forEach(cancelAnimationFrame)
+    rafIdsRef.current = []
+    setIsBlurSuppressed(true)
+    const first = requestAnimationFrame(() => {
+      rafIdsRef.current.push(requestAnimationFrame(() => setIsBlurSuppressed(false)))
+    })
+    rafIdsRef.current.push(first)
   }
 
   return (
-    <ThemeContext.Provider value={{ isDark, toggleTheme }}>
+    <ThemeContext.Provider value={{ isDark, isBlurSuppressed, toggleTheme }}>
       {children}
     </ThemeContext.Provider>
   )
