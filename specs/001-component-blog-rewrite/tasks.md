@@ -37,7 +37,7 @@
 **⚠️ CRITICAL**: 이 phase가 끝나기 전엔 어떤 User Story도 시작할 수 없음
 
 - [X] T007 `core/*.html`에서 dark/light 색상 토큰을 추출해 CSS 변수로 `app/globals.css`에 정의
-- [X] T008 [P] 32px 그리드 배경 패턴 유틸리티를 `app/globals.css`에 정의 (FR-011, dark: 흰색 미세선 / light: 검정 미세선)
+- [X] T008 [P] 32px 그리드 배경 패턴 유틸리티를 `app/globals.css`에 정의 (FR-011, dark: 흰색 미세선 / light: 검정 미세선) — 2026-08-16 제거됨, `body`는 단색 배경만 사용
 - [X] T009 [P] `lib/utils.ts`에 `cn()` 헬퍼 구현 (shadcn 컨벤션)
 - [X] T010 [P] data-model.md 기반 타입 정의(Theme, NavLink, BlogCardData, Article, TocItem, MetricCard) in `lib/data/types.ts`
 - [X] T011 [P] 샘플 네비게이션 데이터 작성 in `lib/data/nav.ts`

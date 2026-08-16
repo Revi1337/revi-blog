@@ -67,9 +67,6 @@
   --color-tertiary-container: #cfe5ff;
   --color-tertiary-fixed: #cfe5ff;
   --color-tertiary-fixed-dim: #abcbe4;
-
-  /* grid 배경 패턴(FR-011) — light: 검정 미세 선 */
-  --grid-line-color: rgba(0, 0, 0, 0.04);
 }
 
 .dark {
@@ -124,9 +121,6 @@
   --color-tertiary-container: #d5e0f8;
   --color-tertiary-fixed: #d8e3fb;
   --color-tertiary-fixed-dim: #bcc7de;
-
-  /* grid 배경 패턴(FR-011) — dark: 흰색 미세 선 */
-  --grid-line-color: rgba(255, 255, 255, 0.04);
 }
 
 @theme inline {
@@ -291,11 +285,6 @@ html::-webkit-scrollbar {
 body {
   background-color: var(--color-background);
   color: var(--color-on-background);
-  /* 32px 그리드 배경 패턴(FR-011) */
-  background-image:
-    linear-gradient(to right, var(--grid-line-color) 1px, transparent 1px),
-    linear-gradient(to bottom, var(--grid-line-color) 1px, transparent 1px);
-  background-size: 32px 32px;
 }
 
 /* 아티클 상세 화면 전용 텍스트 선택 색상(spec Edge Cases) */
