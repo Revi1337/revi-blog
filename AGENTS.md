@@ -38,3 +38,19 @@ By default, verify changes with an npm build, then drive the app in a real brows
 `lib/data/articles.ts` loads all markdown via a **top-level `await loadArticles()`**, which runs once when the module is first evaluated and caches the parsed result (including the rendered HTML) for the life of the process. `loader.ts` reads `.md` files with `fs.readFileSync`, which is invisible to Turbopack/webpack's import-graph-based file watcher — so editing anything under `content/articles/` does **not** trigger Fast Refresh, unlike component/CSS changes.
 
 **A browser refresh alone will never show the change.** To verify any edit to `content/articles/**` (including nested dirs like `content/articles/algorithm/`), you must kill the running `next dev` process and start it again — only then does the top-level await re-run and re-render the markdown. This applies whether the edit is frontmatter, body text, or a plugin-affecting change (callouts, images, code fences, etc.).
+
+## iOS Safari: the notch/status-bar strip and `backdrop-filter`
+The NavBar is a glassmorphic `fixed` header (`bg-background/70` + `backdrop-blur-md`). On iPhone, the strip behind the status bar kept showing the **previous** theme's color after toggling dark/light — it only caught up on device rotation or a page reload.
+
+**Root cause: `backdrop-filter` freezes iOS Safari's top-color sampling.** Safari paints that strip by sampling the pixels the page draws at the top of the viewport. When the topmost element has `backdrop-filter`, that sampling goes stale and is not refreshed by a style-only change (a class toggle); only a relayout (rotation) or reload refreshes it.
+
+Three assumptions cost several failed attempts before a real device disproved them:
+- **`env(safe-area-inset-top)` is `0` in a normal Safari tab** — the web view does not extend under the notch (it is non-zero only in standalone/PWA mode). Any `pt-[env(safe-area-inset-top)]` on the header is therefore a no-op in the browser; it is kept only for the standalone case.
+- **Safari samples painted pixels, not `<meta name="theme-color">`** — a test page whose `theme-color` never changed still updated the strip correctly, so `theme-color`/`color-scheme` cannot drive this.
+- **Transparency is irrelevant.** Measured on-device: opaque+no-blur = OK, translucent+no-blur = OK, opaque+blur = broken, translucent+blur = broken. Only blur matters.
+
+**The fix** (`theme-context.tsx` + `nav-bar.tsx`): when the theme toggles, drop `backdrop-blur` for ~2 frames so one blur-free frame is painted, letting Safari re-sample, then restore it. Two details are load-bearing:
+- The color change and the blur removal must happen in the **same event handler** (React batches them into one render, so the new color and the missing blur are painted in the same frame), and the restore must go through **two nested `requestAnimationFrame`s** — toggling a value off and back on within one frame paints no intermediate state at all and is a no-op.
+- The header's transition must be **`transition-colors`, never `transition-all`**, and transitions must be **disabled entirely while the blur is suppressed**. With a 200ms color transition the blur-free frame (~33ms) still shows the *old* background color, so Safari re-samples the wrong value and the workaround silently does nothing.
+
+**Methodology note — this was diagnosed the wrong way for six rounds.** The failures all came from reasoning about iOS behavior from a machine with no iPhone, shipping a guess, and asking whether it worked. What finally settled it was building a throwaway diagnostic route that emulated the header under controlled variants (opaque/translucent × blur/no-blur, plus candidate workarounds) and having it exercised on the actual device, which isolated the single responsible property in one pass. **When a bug is device-specific and cannot be reproduced locally, build the diagnostic harness first instead of iterating on inferences.**
