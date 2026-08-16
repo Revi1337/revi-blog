@@ -6,6 +6,7 @@ import { useTheme } from "@/components/theme/theme-context"
 import { MermaidLightboxModal } from "@/components/mermaid/mermaid-lightbox-modal"
 import { PLANTUML_LIGHT_BORDER, PLANTUML_DARK_BORDER } from "@/lib/content/plantuml-colors"
 import { animateDiagramReveal } from "@/lib/diagram/animate-reveal"
+import { readPlantumlCache, writePlantumlCache, sweepExpiredPlantumlCache } from "@/lib/diagram/plantuml-cache"
 
 const PLANTUML_SERVER_BASE = "https://www.plantuml.com/plantuml/svg"
 
@@ -34,10 +35,21 @@ export function PlantumlDiagramHandler() {
   // PlantUML 공개 서버에 재요청하지 않고 이 캐시에서 즉시 꺼내 쓴다(사용자 실측 — 정상
   // 다이어그램도 150~540ms, 렌더링 실패 판정은 1.8~2.3초까지 걸려 테마 토글마다 체감 지연이
   // 있었음). 값이 string이면 성공한 최종 SVG 마크업(패치까지 끝난 것), null이면 이미 실패로
-  // 판정된 적 있는 encoded 값 — 두 경우 다 재요청을 건너뛴다. ref라 리렌더를 유발하지 않고,
-  // 이 컴포넌트 인스턴스(= 이 아티클 방문) 생명주기에만 묶인다 — 모듈 전역으로 두면 SPA
-  // 세션 내내 다른 글의 다이어그램까지 무한정 쌓이므로 일부러 그렇게 하지 않는다.
+  // 판정된 적 있는 encoded 값 — 두 경우 다 재요청을 건너뛴다.
+  //
+  // 이 Map은 컴포넌트 인스턴스(이 아티클 방문) 생명주기에만 묶인 "1차 캐시"다 — 같은 값을
+  // 반복 조회할 때마다 lib/diagram/plantuml-cache.ts의 localStorage 읽기(JSON.parse 포함)를
+  // 매번 다시 하지 않도록(vercel-react-best-practices의 js-cache-storage) 세션 안에서는 항상
+  // 이 Map을 먼저 본다. 실제로 새로고침에도 살아남는 "2차 캐시"는 localStorage 쪽이다 — 이
+  // Map은 그 결과를 그때그때 미러링해둘 뿐, 모듈 전역으로 두지 않는 이유(다른 글의 다이어그램까지
+  // 무한정 쌓임)는 이전과 동일하다.
   const cacheRef = React.useRef<Map<string, string | null>>(new Map())
+
+  // 페이지 방문마다 한 번만 — 오래돼서 다시는 안 쓰일 localStorage 캐시 항목을 정리한다
+  // (테마 토글마다 다시 훑을 필요는 없어서 별도 effect로 분리, deps 없음).
+  React.useEffect(() => {
+    sweepExpiredPlantumlCache()
+  }, [])
 
   React.useEffect(() => {
     const blocks = document.querySelectorAll<HTMLPreElement>('pre[data-language="plantuml"]')
@@ -100,7 +112,9 @@ function buildLightboxSvgMarkup(svgElement: SVGSVGElement): string {
  *
  * encoded 값(다크/라이트별로 다름) 단위로 캐시를 먼저 확인한다 — 히트하면 네트워크 요청 자체를
  * 건너뛰고 캐시된 결과(성공 시 SVG 마크업, 실패 시 null)를 그대로 재적용한다. 캐시 미스일 때만
- * 아래에서 실제로 fetch한다. */
+ * 아래에서 실제로 fetch한다. Map(세션 한정)에서 먼저 찾고, 없으면 localStorage(새로고침·재방문에도
+ * 유지)를 본다 — 이 순서 덕에 새로고침해도 이전에 본 적 있는 다이어그램은 네트워크 요청 없이
+ * 즉시 렌더링된다(lib/diagram/plantuml-cache.ts). */
 async function renderBlock(
   pre: HTMLPreElement,
   isDark: boolean,
@@ -114,8 +128,12 @@ async function renderBlock(
   const container =
     figure.querySelector<HTMLElement>("[data-plantuml-diagram]") ?? document.createElement("div")
 
-  const cached = cache.get(encoded)
+  const memoryHit = cache.get(encoded)
+  const cached = memoryHit !== undefined ? memoryHit : readPlantumlCache(encoded)
   if (cached !== undefined) {
+    // localStorage 히트는 이 Map에도 미러링해서, 같은 페이지 안에서 또 조회할 때(예: 다른
+    // 테마로 갔다가 돌아옴) localStorage를 다시 안 읽는다.
+    if (memoryHit === undefined) cache.set(encoded, cached)
     if (cached === null) {
       applyFailureState(pre, figure)
       container.remove()
@@ -144,10 +162,12 @@ async function renderBlock(
     // 나중에 이 encoded 값으로 다시 돌아왔을 때 재사용한다.
     const svgMarkup = svgRoot.outerHTML
     cache.set(encoded, svgMarkup)
+    writePlantumlCache(encoded, svgMarkup)
     if (cancelledRef.current) return
     applySuccessState(pre, figure, container, svgMarkup)
   } catch {
     cache.set(encoded, null)
+    writePlantumlCache(encoded, null)
     if (cancelledRef.current) return
     applyFailureState(pre, figure)
     container.remove()
