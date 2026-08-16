@@ -54,7 +54,10 @@ const pretendard = localFont({
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
-  title: SITE_NAME,
+  title: {
+    default: SITE_NAME,
+    template: `%s | ${SITE_NAME}`,
+  },
   description: SITE_DESCRIPTION,
   // revi-blog.vercel.app(Vercel 기본 도메인)이 CNAME 대상으로 계속 살아있어 커스텀 도메인과
   // 동일한 콘텐츠를 그대로 서빙함 — canonical로 SITE_URL을 명시해 두 호스트가 별개의 중복
@@ -71,6 +74,7 @@ export const metadata: Metadata = {
     description: SITE_DESCRIPTION,
     siteName: SITE_NAME,
     url: SITE_URL,
+    locale: "ko_KR",
     images: [DEFAULT_WEBSITE_OG_IMAGE],
   },
   twitter: {

@@ -48,6 +48,7 @@ export async function generateMetadata({
       description,
       siteName: SITE_NAME,
       url,
+      locale: "ko_KR",
       images: [article.thumbnail ?? DEFAULT_ARTICLE_OG_IMAGE],
       publishedTime: article.date,
       modifiedTime: article.updatedAt ?? article.date,
