@@ -21,11 +21,15 @@ const VARIANTS = [
   { id: "B", label: "B. 반투명 70% + 블러없음", alpha: true, blur: false },
   { id: "C", label: "C. 불투명 + 블러있음", alpha: false, blur: true },
   { id: "D", label: "D. 반투명 70% + 블러있음 (실제 nav와 동일)", alpha: true, blur: true },
+  // 아래 둘은 "글래스를 유지한 채" 우회가 가능한지 보는 후보안이다.
+  { id: "E", label: "E. D와 같지만, 색 전환 순간에만 블러를 2프레임 끔", alpha: true, blur: true },
+  { id: "F", label: "F. D와 같지만, 최상단 4px만 불투명·블러없는 띠", alpha: true, blur: true },
 ] as const
 
 export default function SafeAreaTestPage() {
   const [red, setRed] = useState(true)
   const [variantId, setVariantId] = useState<string>("A")
+  const [blurOff, setBlurOff] = useState(false)
   const probeRef = useRef<HTMLDivElement>(null)
   const [inset, setInset] = useState<number | null>(null)
 
@@ -36,6 +40,19 @@ export default function SafeAreaTestPage() {
   const variant = VARIANTS.find((v) => v.id === variantId) ?? VARIANTS[0]
   const base = red ? "255, 0, 0" : "0, 200, 0"
   const bg = variant.alpha ? `rgba(${base}, 0.7)` : `rgb(${base})`
+  const blurActive = variant.blur && !blurOff
+
+  // E안: 색이 바뀌는 순간에만 블러를 잠깐 끈다 — 블러가 없는 프레임에서 Safari가 상단 색을
+  // 다시 샘플링하게 만든 뒤 원래대로 되돌리는 방식. rAF 두 번을 거쳐야 실제로 블러 없는
+  // 프레임이 한 번 그려진다(같은 프레임에서 껐다 켜면 그린 적이 없어 무의미).
+  function handleToggleColor() {
+    setRed((v) => !v)
+    if (variant.id !== "E") return
+    setBlurOff(true)
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => setBlurOff(false))
+    })
+  }
 
   return (
     <>
@@ -55,7 +72,7 @@ export default function SafeAreaTestPage() {
           zIndex: 100,
           paddingTop: "env(safe-area-inset-top)",
           backgroundColor: bg,
-          ...(variant.blur
+          ...(blurActive
             ? { backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)" }
             : {}),
         }}
@@ -64,6 +81,23 @@ export default function SafeAreaTestPage() {
           {variant.id} / {red ? "빨강" : "초록"}
         </div>
       </header>
+
+      {/* F안: 최상단 4px만 블러 없는 불투명 띠로 덮는다 — Safari가 샘플링하는 최상단 영역에서만
+       * backdrop-filter를 치워, 글래스 헤더는 그대로 두고 색 갱신만 되살릴 수 있는지 본다. */}
+      {variant.id === "F" && (
+        <div
+          aria-hidden
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            height: "4px",
+            zIndex: 101,
+            backgroundColor: `rgb(${base})`,
+          }}
+        />
+      )}
 
       <div
         style={{
@@ -76,7 +110,7 @@ export default function SafeAreaTestPage() {
       >
         <button
           type="button"
-          onClick={() => setRed((v) => !v)}
+          onClick={handleToggleColor}
           style={{
             width: "100%",
             padding: "22px",
