@@ -30,6 +30,24 @@ function setThemeColorMeta(themeColor: string) {
   head.appendChild(meta)
 }
 
+/** 노치 뒤 safe area를 채우는 색(WebKit의 확장 배경)은 **레이아웃 시점에만** 다시 계산된다 —
+ * 실기기에서 스크롤(재합성)로는 갱신되지 않고 회전/새로고침으로만 갱신되는 것을 확인했다.
+ * 다크모드 토글은 class만 바꾸는 순수 스타일 변경이라 레이아웃을 유발하지 않으므로, 회전이
+ * 하는 일(=실제 레이아웃 무효화)을 눈에 보이지 않는 크기로 재현해준다.
+ *
+ * 반드시 rAF로 프레임을 넘겨야 한다 — 같은 프레임 안에서 값을 넣었다 빼면 브라우저는 중간
+ * 상태를 실제로 그린 적이 없어 사실상 no-op이 된다(예전 transform 시도가 실패한 이유).
+ * 문서 요소(html)의 sub-pixel padding이라 화면상 이동은 0.01px로 감지되지 않는다. */
+function forceSafeAreaRelayout() {
+  const root = document.documentElement
+  // 검색 모달의 스크롤 잠금 등 다른 코드가 인라인 스타일을 쓸 수 있으므로 원래 값을 복원한다
+  const prev = root.style.paddingTop
+  root.style.paddingTop = prev ? `calc(${prev} + 0.01px)` : "0.01px"
+  requestAnimationFrame(() => {
+    root.style.paddingTop = prev
+  })
+}
+
 export function ThemeProvider({ children }: { children: ReactNode }) {
   // layout.tsx의 인라인 스크립트가 hydration 전에 이미 <html>의 "dark" 클래스를 쿠키 기준으로
   // 맞춰놨으므로, 그 결과를 그대로 읽어 초기 상태로 삼는다 — 서버는 항상 "dark"로 렌더링하지만
@@ -46,9 +64,10 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     setIsDark(next)
     document.documentElement.classList.toggle("dark", next)
     document.cookie = `${THEME_COOKIE_KEY}=${next ? "dark" : "light"}; path=/; max-age=31536000`
-    // 노치 뒤 safe area 색은 CSS가 아니라 theme-color meta로 결정되므로 함께 갱신한다 —
-    // 자세한 배경은 setThemeColorMeta 주석 참고.
     setThemeColorMeta(next ? THEME_COLOR_DARK : THEME_COLOR_LIGHT)
+    // theme-color/색상 CSS만으로는 노치 뒤 safe area가 갱신되지 않는다 — 그 색은 레이아웃
+    // 시점에만 재계산되므로 여기서 명시적으로 레이아웃을 한 번 무효화한다.
+    forceSafeAreaRelayout()
   }
 
   return (
