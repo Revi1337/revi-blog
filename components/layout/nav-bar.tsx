@@ -7,6 +7,7 @@ import { usePathname } from "next/navigation"
 
 import { navLinks } from "@/lib/data/nav"
 import { cn } from "@/lib/utils"
+import { useTheme } from "@/components/theme/theme-context"
 import { ThemeToggle } from "@/components/theme/theme-toggle"
 import { MobileNavMenu } from "@/components/layout/mobile-nav-menu"
 import { SearchTrigger } from "@/components/search/search-trigger"
@@ -33,6 +34,7 @@ export function NavBar({ searchIndex }: NavBarProps) {
   useSearchShortcut(openSearch)
 
   const navRef = useRef<HTMLElement>(null)
+  const { isDark } = useTheme()
 
   // article-body heading의 scroll-margin-top과 TocSidebar 스크롤스파이가 참조하는
   // --header-offset을 이 nav의 실제 렌더링 높이로 항상 최신화한다 — 고정값을 여기저기
@@ -56,12 +58,34 @@ export function NavBar({ searchIndex }: NavBarProps) {
   return (
     <nav
       ref={navRef}
-      // pt-[env(safe-area-inset-top)]: 이 padding이 nav 박스 안쪽이라 bg/backdrop-blur가
-      // 그 위까지 함께 칠해진다 — 노치 아래 safe area도 같은 글래스로 이어지고, 실제 로고/버튼
+      // pt-[env(safe-area-inset-top)]: 이 padding이 nav 박스 안쪽이라 아래 배경 레이어가 그
+      // 위까지 함께 칠해진다 — 노치 아래 safe area도 같은 글래스로 이어지고, 실제 로고/버튼
       // 같은 콘텐츠는 그 padding만큼 자연히 밀려나 노치와 겹치지 않는다. viewport-fit=cover가
       // app/layout.tsx에 없으면 이 env() 값이 항상 0이라 아무 효과가 없다.
-      className="fixed top-0 z-50 w-full border-b border-outline-variant bg-background/70 pt-[env(safe-area-inset-top)] backdrop-blur-md transition-all duration-200 ease-in-out"
+      className="fixed top-0 z-50 w-full border-b border-outline-variant pt-[env(safe-area-inset-top)] transition-all duration-200 ease-in-out"
     >
+      {/* 배경(반투명)+블러 전용 레이어 — nav 본체에 직접 걸지 않고 분리한 이유는 오직 하나,
+       * 테마가 바뀔 때 key로 이 노드를 통째로 remount하기 위해서다.
+       *
+       * iOS Safari는 backdrop-filter가 걸린 fixed 요소를 별도 합성 레이어로 올리는데, 노치
+       * 뒤 safe area에 해당하는 부분은 "색만 바뀌는" 변경(다크모드 토글처럼 지오메트리 변화가
+       * 없는 경우)에서 다시 합성하지 않고 이전 프레임을 그대로 재사용한다 — 그래서 헤더 본체는
+       * 새 테마로 갱신되는데 노치 영역만 이전 테마 색으로 남았다. 기기를 회전시키면(=전체
+       * 재레이아웃이 강제되면) 그제서야 정상 색으로 돌아오는 것으로 이 원인을 확정했다.
+       *
+       * style/transform을 흔들어 리페인트를 "부탁"하는 방식은 통하지 않았다(같은 프레임 안에서
+       * 값을 넣었다 빼면 브라우저는 중간 상태를 실제로 그린 적이 없어 사실상 no-op이다).
+       * 반면 key를 바꾸면 React가 이 노드를 언마운트하고 새 노드를 마운트하므로, 낡은 합성
+       * 레이어를 물려받을 대상 자체가 사라진다 — 재합성을 유도하는 게 아니라 구조적으로 강제한다.
+       *
+       * absolute inset-0은 위치 기준이 nav의 padding box라 pt-[env(...)]로 확보한 safe area
+       * 영역까지 그대로 덮는다. -z-10은 nav(fixed+z-50)가 만든 스택 컨텍스트 안에서만 유효해
+       * 바깥에 영향을 주지 않으면서 로고/버튼 등 in-flow 콘텐츠 아래에 깔린다. */}
+      <div
+        key={isDark ? "dark" : "light"}
+        aria-hidden
+        className="absolute inset-0 -z-10 bg-background/70 backdrop-blur-md"
+      />
       <div className="mx-auto flex max-w-[1200px] items-center justify-between px-gutter py-4">
         <Link
           href="/"
