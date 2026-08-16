@@ -91,17 +91,17 @@ export const metadata: Metadata = {
 // cover로 바꿔야 페이지가 그 영역까지 실제로 그릴 수 있게 되고, NavBar가 padding-top으로
 // env(safe-area-inset-top)만큼 확보해 블러 배경을 노치 아래까지 이어지게 할 수 있다.
 //
-// themeColor: iOS Safari가 노치/상태바 색을 결정할 때 페이지 배경을 실시간으로 다시 샘플링하지
-// 않고 이 <meta name="theme-color"> 값을 참조한다 — 다크모드 토글이 CSS class만 바꾸는 방식(
-// prefers-color-scheme과 무관한 수동 토글)이라 Safari가 그 변화를 감지할 방법이 없어, 노치
-// 영역이 항상 SSR 기본값인 다크로 고정돼 보였다. 여기 정적으로 넣는 값은 서버가 항상 "dark"로
-// 렌더링하는 SSR 기본값과 맞춰둔 초기값일 뿐이고, 실제 라이트/다크 전환은 THEME_INIT_SCRIPT와
-// theme-context.tsx의 toggleTheme이 이 meta 태그의 content를 직접 갱신해 처리한다.
+// themeColor는 의도적으로 여기 두지 않는다 — 여기 선언하면 React가 그 meta의 소유권을 갖는데,
+// 아래 THEME_INIT_SCRIPT가 hydration 전에 그 DOM 노드를 직접 고쳐버리면 React는 자기가 렌더한
+// 것과 다르다고 보고 **자기 값(다크)으로 meta를 하나 더 삽입한다**. 그 결과 라이트 모드
+// 사용자에게 [#f7f9fb, #0b1326] 두 개가 공존하게 되고, 토글 코드가 첫 번째만 갱신하는 사이
+// 뒤쪽 다크값이 영구히 남아 iOS 노치 색이 계속 다크로 고정됐다(프로덕션에서 실제 재현함).
+// 그래서 theme-color는 React가 아니라 THEME_INIT_SCRIPT와 theme-context.tsx가 단독으로
+// 소유하며, 양쪽 모두 "기존 것을 전부 제거하고 하나만 삽입"하는 방식으로 항상 1개를 보장한다.
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   viewportFit: "cover",
-  themeColor: THEME_COLOR_DARK,
 }
 
 // 다크모드가 기본값이므로 서버는 항상 "dark" 클래스로 렌더링한다 — 라이트 모드 사용자는 아래
@@ -114,10 +114,11 @@ export const viewport: Viewport = {
 // 프로덕션에서 실측). 테마 판단을 클라이언트(쿠키를 읽는 인라인 스크립트)로 옮기면 cookies()가
 // 완전히 사라져 이 라우트들이 다시 정적으로 빌드되고, prefetch도 진짜 함수 호출이 아닌 CDN 캐시
 // 히트가 된다.
-// "dark" 클래스 제거뿐 아니라 <meta name="theme-color">의 content도 같이 맞춰야 한다 — 이걸
-// 빠뜨리면 라이트 모드 사용자가 처음 페이지를 열었을 때 노치 영역이 SSR 기본값인 다크색으로
-// 고정된 채 시작된다(theme-context.tsx의 toggleTheme 주석 참고).
-const THEME_INIT_SCRIPT = `(function(){try{var m=document.cookie.match(/(?:^|; )${THEME_COOKIE_KEY}=([^;]*)/);if(m&&decodeURIComponent(m[1])==="light"){document.documentElement.classList.remove("dark");var t=document.querySelector('meta[name="theme-color"]');if(t)t.setAttribute("content","${THEME_COLOR_LIGHT}")}}catch(e){}})()`
+// "dark" 클래스 제거뿐 아니라 <meta name="theme-color">도 여기서 직접 만들어 넣는다 — viewport
+// export에서 뺐기 때문에(위 주석 참고) 이 스크립트가 유일한 초기 생성 지점이다. 기존 것을 전부
+// 제거한 뒤 하나만 삽입해 어떤 경우에도 theme-color가 2개 이상 남지 않도록 보장한다. body의 첫
+// 자식이라 첫 페인트 전에 실행되므로 노치 색이 잘못된 값으로 한 번 칠해지는 일도 없다.
+const THEME_INIT_SCRIPT = `(function(){try{var m=document.cookie.match(/(?:^|; )${THEME_COOKIE_KEY}=([^;]*)/);var light=!!m&&decodeURIComponent(m[1])==="light";if(light){document.documentElement.classList.remove("dark")}var o=document.head.querySelectorAll('meta[name="theme-color"]');for(var i=0;i<o.length;i++){o[i].parentNode.removeChild(o[i])}var t=document.createElement("meta");t.setAttribute("name","theme-color");t.setAttribute("content",light?"${THEME_COLOR_LIGHT}":"${THEME_COLOR_DARK}");document.head.appendChild(t)}catch(e){}})()`
 
 export default function RootLayout({
   children,

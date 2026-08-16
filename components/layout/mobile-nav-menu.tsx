@@ -18,11 +18,9 @@ interface MobileNavMenuProps {
  * cmdk 기반 SearchModal과 달리 커맨드 팔레트가 아니라 단순 메뉴라 포커스 트랩은 없다. 바깥 클릭은
  * 투명 backdrop이 가로채 닫기만 하고 아래 콘텐츠로 전파되지 않게 막는다 — document pointerdown
  * 리스너만으로 닫으면 클릭 자체는 그대로 통과해 배경의 카드/링크가 같이 클릭돼버린다.
- * backdrop은 body로 포탈링한다 — filter류 속성이 있는 조상은 후손 fixed 요소의 containing
- * block이 돼버려서, backdrop을 nav 안에 두면 뷰포트 전체가 아니라 nav 높이(약 64px)로 잘려
- * 클릭을 가로채지 못하기 때문이다. (현재 backdrop-filter는 nav 본체가 아니라 nav-bar.tsx의
- * 배경 전용 레이어로 옮겨져 있어 nav 자체는 더 이상 containing block이 아니지만, body 포탈은
- * 그 구조 변화와 무관하게 항상 안전하므로 그대로 유지한다.)
+ * backdrop은 body로 포탈링한다 — nav가 backdrop-blur-md(backdrop-filter)를 쓰는데, filter류
+ * 속성이 있는 조상은 후손 fixed 요소의 containing block이 돼버려서 nav 안에 두면 backdrop이
+ * 뷰포트 전체가 아니라 nav 높이(약 64px)로 잘려 클릭을 가로채지 못한다.
  */
 export function MobileNavMenu({ links }: MobileNavMenuProps) {
   const pathname = usePathname()

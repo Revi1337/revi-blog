@@ -11,6 +11,25 @@ interface ThemeContextValue {
 
 const ThemeContext = createContext<ThemeContextValue | null>(null)
 
+/** <meta name="theme-color">를 항상 정확히 1개만 남도록 교체한다 — iOS Safari가 노치 뒤 safe
+ * area를 칠할 때 참조하는 값이다.
+ *
+ * content 속성만 고치지 않고 기존 것을 전부 지운 뒤 새로 삽입하는 이유: 예전엔 이 meta를
+ * app/layout.tsx의 viewport export가 선언해 React가 소유했는데, hydration 전에 인라인
+ * 스크립트가 그 DOM 노드를 직접 고치면 React가 자기 값(다크)으로 meta를 하나 더 삽입해버렸다.
+ * 그래서 라이트 사용자에게 [#f7f9fb, #0b1326]이 공존했고, 여기서 querySelector로 첫 번째만
+ * 갱신하는 동안 뒤쪽 다크값이 영구히 남아 노치 색이 계속 다크로 고정됐다(프로덕션 실측 확인).
+ * 지금은 viewport에서 themeColor를 빼 React의 소유권을 없앴고, 초기 생성(THEME_INIT_SCRIPT)과
+ * 이후 전환(여기)이 모두 "전부 제거 후 하나 삽입"으로 통일돼 중복이 생길 수 없다. */
+function setThemeColorMeta(themeColor: string) {
+  const head = document.head
+  head.querySelectorAll('meta[name="theme-color"]').forEach((el) => el.remove())
+  const meta = document.createElement("meta")
+  meta.setAttribute("name", "theme-color")
+  meta.setAttribute("content", themeColor)
+  head.appendChild(meta)
+}
+
 export function ThemeProvider({ children }: { children: ReactNode }) {
   // layout.tsx의 인라인 스크립트가 hydration 전에 이미 <html>의 "dark" 클래스를 쿠키 기준으로
   // 맞춰놨으므로, 그 결과를 그대로 읽어 초기 상태로 삼는다 — 서버는 항상 "dark"로 렌더링하지만
@@ -27,14 +46,9 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     setIsDark(next)
     document.documentElement.classList.toggle("dark", next)
     document.cookie = `${THEME_COOKIE_KEY}=${next ? "dark" : "light"}; path=/; max-age=31536000`
-    // iOS Safari는 노치/상태바 색을 CSS 배경이 아니라 이 <meta name="theme-color">의 content를
-    // 참조해 결정한다 — class만 토글하고 이 메타를 갱신하지 않으면 노치 영역이 항상 최초 로드
-    // 시점 값(SSR 기본값인 다크)으로 고정된 채 이 수동 토글을 전혀 반영하지 못한다(OS의
-    // prefers-color-scheme 변경이 아니라 순수 클라이언트 상태 전환이라 Safari가 스스로 감지할
-    // 방법이 없음).
-    document
-      .querySelector('meta[name="theme-color"]')
-      ?.setAttribute("content", next ? THEME_COLOR_DARK : THEME_COLOR_LIGHT)
+    // 노치 뒤 safe area 색은 CSS가 아니라 theme-color meta로 결정되므로 함께 갱신한다 —
+    // 자세한 배경은 setThemeColorMeta 주석 참고.
+    setThemeColorMeta(next ? THEME_COLOR_DARK : THEME_COLOR_LIGHT)
   }
 
   return (
