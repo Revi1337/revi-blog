@@ -151,7 +151,7 @@ export function EntryStream({ cards }: { cards: BlogCardData[] }) {
         initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="mb-stack-lg flex items-end justify-between border-l-4 border-primary pl-4 dark:border-primary-fixed"
+        className="mb-stack-lg flex items-center justify-between border-l-4 border-primary pl-4 dark:border-primary-fixed"
       >
         <h3 className="font-headline-lg text-headline-lg text-on-surface">
           Entry Stream
