@@ -6,7 +6,6 @@ import * as motion from "motion/react-client"
 
 import type { Article } from "@/lib/data/types"
 import { useWrapDetection } from "@/lib/hooks/use-wrap-detection"
-import { cn } from "@/lib/utils"
 import { ArticleThumbnailButton } from "@/components/article/article-thumbnail-button"
 import { VisitorStatsWidget } from "@/components/stats/visitor-stats-widget"
 
@@ -18,33 +17,23 @@ function formatDate(iso: string) {
   })
 }
 
-// pl-8(32px)로 구분자 자리를 wrapper 안에 항상 고정으로 확보해둔다 — 원래(이 리팩터 전)
-// 레이아웃은 [이전 항목] -16px(gap-4)- [구분자] -16px(gap-4)- [아이콘] 순서로, 구분자
-// 앞뒤에 각각 16px씩 여백이 있었다. 앞쪽 16px은 바깥 flex row의 gap-4가 그대로 담당하므로,
-// 이 wrapper는 나머지 절반(구분자 자체 + 구분자 뒤 16px 여백)만 pl-8로 확보한다 — 앞 16px은
-// 구분자 zone(w-4), 뒤 16px은 순수 여백이다. 이걸 pl-4로 줄이면 구분자와 아이콘 사이 여백이
-// 사실상 사라져(구분자가 그 좁은 zone 안에서 아이콘에 거의 붙어버림) 버린다.
-//
-// pl-8은 조건과 무관하게 항상 고정이어야 한다 — 조건에 따라 pl-8 자체를 뺐다 붙였다 하면
-// 그만큼 wrapper의 레이아웃 폭이 바뀌어 줄바꿈 여부 판정(useWrapDetection이 보는 offsetTop)이
-// 요동치고, 그 결과 구분자가 나타났다 사라졌다 하며 줄바꿈도 같이 뒤집히는 무한 루프가 생긴다.
-//
-// 줄바꿈됐을 땐 그 pl-8 자리가 시각적으로 빈 여백처럼 보이면 안 되므로, translate로 wrapper
-// 전체를 pl-8만큼(-32px) 왼쪽으로 밀어 시각적으로만 상쇄한다 — transform은 paint 단계에서만
-// 적용되고 offsetTop/레이아웃 계산에는 관여하지 않으므로, 이 상쇄가 위 줄바꿈 판정에 다시
-// 영향을 주지 않는다(자기 참조 루프에서 완전히 분리됨). 구분자 자체는 absolute로 그 pl-8
-// 자리의 앞쪽 절반에 겹쳐 그리고, 줄바꿈된 항목에서는 렌더링하지 않는다.
+// 바깥 flex row의 가로 gap을 gap-x-8(32px)로 넓혀서, 그 gap 공간 안에 구분자가 겹쳐 그려질
+// 자리를 확보한다 — 세로 gap(줄바꿈된 줄 사이 간격)은 원래대로 gap-y-4(16px)를 유지해야 하므로
+// gap-x/gap-y를 분리했다. 각 항목(wrapper)에는 별도 padding을 주지 않는다 — 이전엔 pl-8로
+// wrapper 안에 구분자 자리를 고정 확보하고 줄바꿈됐을 때 translate로 그 자리를 시각적으로만
+// 상쇄했는데, transform은 paint 단계에서만 적용될 뿐 실제 레이아웃(gap 계산)에는 전혀
+// 관여하지 않아, 줄바꿈된 항목 뒤에 오는 형제가 "translate 적용 전의, 아직 넓은 채인 박스"를
+// 기준으로 배치되면서 그 사이에 원래 폭의 2~3배에 달하는 유령 여백이 생겼다(504px에서 실측
+// 재현). 구분자를 각 wrapper의 padding이 아니라 absolute로 통째로 flow 밖에 두면, wrapper의
+// 레이아웃 폭이 구분자·줄바꿈 상태와 완전히 무관하게 "아이콘+텍스트"만으로 고정되므로 이
+// 문제도, 앞서 겪었던 무한 루프(614px에서 재현)도 원천적으로 발생할 수 없다.
 function Separator({ hidden }: { hidden: boolean }) {
   if (hidden) return null
   return (
-    <span className="absolute top-0 left-0 flex h-5 w-4 items-center justify-center text-outline-variant dark:text-outline-variant/40">
+    <span className="absolute top-0 -left-6 flex h-5 w-4 items-center justify-center text-outline-variant dark:text-outline-variant/40">
       |
     </span>
   )
-}
-
-function metaItemClassName(wrapped: boolean, extra?: string) {
-  return cn("relative flex h-5 items-center pl-8", extra, wrapped && "-translate-x-8")
 }
 
 export function ArticleHeader({ article }: { article: Article }) {
@@ -75,7 +64,7 @@ export function ArticleHeader({ article }: { article: Article }) {
         transition={{ duration: 0.5, delay: 0.25 }}
         className="space-y-3 border-y border-outline-variant py-6 font-code-sm text-sm text-on-surface dark:border-outline-variant/10"
       >
-        <div className="flex flex-wrap items-center gap-4">
+        <div className="flex flex-wrap items-center gap-x-8 gap-y-4">
           <div className="flex items-center gap-1.5">
             <CalendarDays className="size-4 text-primary dark:text-primary-container" />
             <span>{formatDate(article.date)}</span>
@@ -85,7 +74,7 @@ export function ArticleHeader({ article }: { article: Article }) {
               ref={(el) => {
                 itemRefs.current[updatedAtIndex] = el
               }}
-              className={metaItemClassName(wrapped[updatedAtIndex], "gap-1.5")}
+              className="relative flex h-5 items-center gap-1.5"
             >
               <Separator hidden={wrapped[updatedAtIndex]} />
               <History className="size-4 text-primary dark:text-primary-container" />
@@ -96,7 +85,7 @@ export function ArticleHeader({ article }: { article: Article }) {
             ref={(el) => {
               itemRefs.current[readingTimeIndex] = el
             }}
-            className={metaItemClassName(wrapped[readingTimeIndex], "gap-1.5")}
+            className="relative flex h-5 items-center gap-1.5"
           >
             <Separator hidden={wrapped[readingTimeIndex]} />
             <Timer className="size-4 text-primary dark:text-primary-container" />
@@ -108,7 +97,7 @@ export function ArticleHeader({ article }: { article: Article }) {
               ref={(el) => {
                 itemRefs.current[thumbnailIndex] = el
               }}
-              className={metaItemClassName(wrapped[thumbnailIndex])}
+              className="relative flex h-5 items-center"
             >
               <Separator hidden={wrapped[thumbnailIndex]} />
               <ArticleThumbnailButton src={article.thumbnail} />

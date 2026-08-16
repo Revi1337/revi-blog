@@ -127,24 +127,23 @@ function InlineStatsRow({
             itemRefs.current[index] = el
           }}
           className={cn(
-            "relative flex h-5 items-center gap-1.5 pl-8 transition-opacity duration-300",
-            isLoaded ? "opacity-100" : "opacity-0",
-            wrapped[index] && "-translate-x-8"
+            "relative flex h-5 items-center gap-1.5 transition-opacity duration-300",
+            isLoaded ? "opacity-100" : "opacity-0"
           )}
         >
-          {/* 구분자 자리를 pl-8(32px)로 wrapper 안에 항상 고정 확보해둔다 — 원래 레이아웃은
-           * [이전 항목] -16px(gap-4)- [구분자] -16px(gap-4)- [아이콘] 순서였다. 앞쪽 16px은
-           * 바깥 flex row의 gap-4가 담당하므로, 이 wrapper는 나머지 절반(구분자 zone 16px +
-           * 구분자 뒤 여백 16px)만 pl-8로 확보한다. 조건에 따라 pl-8 자체를 뺐다 붙였다 하면
-           * 그만큼 wrapper 폭이 바뀌어 줄바꿈 판정(offsetTop)이 요동치고, 구분자가 나타났다
-           * 사라졌다 하며 줄바꿈도 같이 뒤집히는 무한 루프가 생긴다. pl-8을 항상 고정해두면 이
-           * 되먹임 자체가 성립하지 않는다. 줄바꿈됐을 땐 그 빈 자리가 여백처럼 보이지 않도록
-           * wrapper 전체를 translate로 pl-8만큼(-32px) 시각적으로만 상쇄한다 — transform은
-           * paint 단계에서만 적용돼 offsetTop에는 관여하지 않으므로 판정에 다시 영향을 주지
-           * 않는다. 구분자 자체는 absolute로 그 pl-8 자리의 앞쪽 절반에 겹쳐 그리고, 줄바꿈된
-           * 항목에서는 렌더링하지 않는다. */}
+          {/* 구분자를 각 wrapper의 padding으로 자리를 고정 확보해뒀던 이전 방식은, 줄바꿈됐을
+           * 때 그 자리를 translate로 "시각적으로만" 상쇄했다 — 그런데 transform은 paint
+           * 단계에서만 적용될 뿐 실제 레이아웃(다음 형제와의 gap 계산)에는 전혀 관여하지 않아,
+           * 줄바꿈된 항목 뒤에 오는 형제가 "translate 적용 전의, 아직 넓은 채인 박스"를
+           * 기준으로 배치되면서 원래 폭의 2~3배에 달하는 유령 여백이 생겼다(504px에서 재현).
+           * 구분자를 wrapper의 padding이 아니라 absolute로 통째로 flow 밖에 두면, wrapper의
+           * 레이아웃 폭이 구분자·줄바꿈 상태와 완전히 무관하게 "아이콘+값"만으로 고정되므로 이
+           * 문제도, 앞서 겪었던 무한 루프(구분자 유무에 따라 폭이 요동쳐 줄바꿈 판정이
+           * 뒤집히는 문제)도 원천적으로 발생할 수 없다. 바깥 flex row의 gap-x-8(32px)이 그
+           * 자리를 제공하므로, 이 wrapper는 별도 padding 없이 -left-6으로 그 gap 안에 겹쳐
+           * 그리기만 하면 된다. */}
           {!wrapped[index] && (
-            <span className="absolute top-0 left-0 flex h-5 w-4 items-center justify-center text-outline-variant dark:text-outline-variant/40">
+            <span className="absolute top-0 -left-6 flex h-5 w-4 items-center justify-center text-outline-variant dark:text-outline-variant/40">
               |
             </span>
           )}
