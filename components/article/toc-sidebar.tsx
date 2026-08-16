@@ -275,10 +275,23 @@ export function TocSidebar({
     updateActiveHeading()
     window.addEventListener("scroll", onScroll, { passive: true })
     window.addEventListener("resize", onScroll)
+    // window의 resize 이벤트는 "브라우저 창 크기"가 바뀔 때만 발생하고, "문서 내용이 자라서
+    // 문서 자체가 길어지는" 경우는 잡지 못한다 — Mermaid/PlantUML/Markmap이 클라이언트에서
+    // 순차적으로 렌더링되며 문서 높이가 계속 바뀌는 동안(toc-sidebar.tsx의 스크롤 복원용
+    // ResizeObserver와 별개로, 실사용 중 발견: overflow-anchor:none 적용 이후 스크롤 위치
+    // 자체는 목표에 일찍 도달해 scroll 이벤트가 끊기는데, 그 뒤로도 문서는 한참 더 자라서
+    // 헤딩들의 실제 위치가 계속 바뀐다 — activeId가 그 중간 상태에 멈춰버렸다), 실제 헤딩
+    // 위치가 최종적으로 안정될 때까지 계속 재계산해야 한다. document.documentElement 자체의
+    // 크기 변화를 관찰해 scroll 이벤트가 없어도 재계산을 트리거한다 — 고정 딜레이 없이 브라우저가
+    // 실제 레이아웃 변화를 감지했을 때만 반응하므로 다이어그램 개수/렌더링 시간과 무관하게 항상
+    // 정확하다. 이미 있는 rAF 스로틀(onScroll)을 그대로 재사용해 과도한 재계산을 막는다.
+    const resizeObserver = new ResizeObserver(onScroll)
+    resizeObserver.observe(document.documentElement)
     return () => {
       cancelled = true
       window.removeEventListener("scroll", onScroll)
       window.removeEventListener("resize", onScroll)
+      resizeObserver.disconnect()
     }
   }, [items])
 
