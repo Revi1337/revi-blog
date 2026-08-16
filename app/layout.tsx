@@ -64,6 +64,9 @@ export const metadata: Metadata = {
   // 콘텐츠로 인덱싱되지 않고 blog.revi1337.com으로 신호가 모이도록 함
   alternates: {
     canonical: SITE_URL,
+    types: {
+      "application/rss+xml": `${SITE_URL}/feed.xml`,
+    },
   },
   icons: {
     icon: "/images/favicon.ico",
