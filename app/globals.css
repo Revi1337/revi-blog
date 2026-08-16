@@ -10,6 +10,15 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 :root {
+  /* 브라우저가 "자기가 소유한 영역"을 칠할 때 참조하는 표준 신호 — iOS Safari는 노치/상태바
+     뒤 safe area, 오버스크롤 영역처럼 페이지 CSS가 직접 칠하지 않는 부분의 색을 이 값으로
+     판단한다. 이 프로젝트의 다크모드는 prefers-color-scheme이 아니라 쿠키 기반 수동 class
+     토글이라, 이걸 지정하지 않으면 브라우저는 페이지를 영원히 light 스킴으로 간주하고 그
+     영역들을 최초 판단값에 고정해버린다(--color-background나 <meta name="theme-color">를
+     아무리 갱신해도 반영되지 않았던 원인). :root/.dark에 각각 두면 별도 JS 동기화 없이 기존
+     class 토글만으로 항상 팔레트와 함께 전환되므로 desync가 구조적으로 불가능하다. */
+  color-scheme: light;
+
   /* Light 팔레트 (core/home-light.html, core/article-detail-light.html에서 추출) */
   --color-background: #f7f9fb;
   --color-error: #ba1a1a;
@@ -64,6 +73,9 @@
 }
 
 .dark {
+  /* :root의 color-scheme 주석 참고 — 팔레트와 항상 같이 전환되도록 짝으로 둔다. */
+  color-scheme: dark;
+
   /* Dark 팔레트 (core/home-dark.html, core/article-detail-dark.html에서 추출) */
   --color-background: #0b1326;
   --color-error: #ffb4ab;
