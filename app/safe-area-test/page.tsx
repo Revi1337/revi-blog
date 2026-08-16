@@ -3,42 +3,49 @@
 import { useEffect, useRef, useState } from "react"
 
 /**
- * ⚠️ 임시 진단 페이지 — 노치(safe area) 색 문제의 원인을 확정하기 위한 용도이며, 원인이
- * 확정되면 삭제한다. 블로그 본체(/)에는 아무 영향이 없다.
+ * ⚠️ 임시 진단 페이지 — 원인이 확정되면 삭제한다. 블로그 본체(/)에는 영향이 없다.
  *
- * 확인하려는 것은 단 하나: "노치 뒤 띠를 페이지가 칠하는가, Safari가 칠하는가".
- * 헤더 하나에 padding-top: env(safe-area-inset-top)을 주고 **불투명 단색**(블러/투명도 없음)을
- * 칠한다. 노치 영역과 헤더 본체는 같은 엘리먼트의 같은 배경색이므로:
- *   - 버튼을 눌렀을 때 노치까지 같이 색이 바뀌면  → 페이지가 칠하는 것(= 우리 CSS로 해결 가능)
- *   - 헤더 본체만 바뀌고 노치는 그대로면        → 페이지는 칠하지만 갱신이 안 되는 것
- *   - 노치가 애초에 이 색이 아니면              → Safari가 칠하는 것(= 페이지 CSS로는 불가)
- * 블러/반투명을 일부러 뺀 이유는, 그 두 가지가 원인 판별을 흐리기 때문이다.
+ * 1차 진단으로 확정된 사실:
+ *   - safe-area-inset-top = 0px  → iOS Safari 일반 탭에서는 웹뷰가 노치 아래로 들어가지 않는다.
+ *     즉 nav에 준 pt-[env(safe-area-inset-top)]은 계속 no-op이었다.
+ *   - 불투명 단색 헤더로 색을 바꾸면 노치 띠도 **즉시** 따라 바뀐다. 이때 theme-color meta는
+ *     전혀 건드리지 않았으므로, Safari는 theme-color가 아니라 **페이지가 그린 픽셀을 샘플링해**
+ *     그 띠를 칠한다는 뜻이다.
+ *
+ * 남은 변수는 실제 nav와 테스트 헤더의 차이인 "반투명"과 "backdrop-blur" 둘뿐이다.
+ * 아래 4가지 조합을 각각 켜고 색을 전환해, 어느 조합에서 노치 갱신이 깨지는지 특정한다.
  */
+
+const VARIANTS = [
+  { id: "A", label: "A. 불투명 + 블러없음 (1차 진단과 동일)", alpha: false, blur: false },
+  { id: "B", label: "B. 반투명 70% + 블러없음", alpha: true, blur: false },
+  { id: "C", label: "C. 불투명 + 블러있음", alpha: false, blur: true },
+  { id: "D", label: "D. 반투명 70% + 블러있음 (실제 nav와 동일)", alpha: true, blur: true },
+] as const
+
 export default function SafeAreaTestPage() {
   const [red, setRed] = useState(true)
+  const [variantId, setVariantId] = useState<string>("A")
   const probeRef = useRef<HTMLDivElement>(null)
   const [inset, setInset] = useState<number | null>(null)
-  const [themeColor, setThemeColor] = useState<string>("")
 
   useEffect(() => {
-    // env(safe-area-inset-top)의 실제 픽셀값 — 0이면 애초에 노치 영역이 페이지에 안 잡힌 것이다
     setInset(probeRef.current?.offsetHeight ?? null)
-    const metas = [...document.querySelectorAll('meta[name="theme-color"]')]
-    setThemeColor(metas.map((m) => m.getAttribute("content")).join(" , ") || "(없음)")
-  }, [red])
+  }, [])
 
-  const bg = red ? "#ff0000" : "#00ff00"
+  const variant = VARIANTS.find((v) => v.id === variantId) ?? VARIANTS[0]
+  const base = red ? "255, 0, 0" : "0, 200, 0"
+  const bg = variant.alpha ? `rgba(${base}, 0.7)` : `rgb(${base})`
 
   return (
     <>
-      {/* 측정 전용(화면에 안 보임) */}
       <div
         ref={probeRef}
         aria-hidden
         style={{ height: "env(safe-area-inset-top)", position: "absolute", visibility: "hidden" }}
       />
 
-      {/* 진단 대상 헤더 — 불투명 단색, 블러 없음 */}
+      {/* 진단 대상 헤더 — 변형만 바뀌고 나머지 조건은 실제 nav와 동일하게 fixed/top:0 */}
       <header
         style={{
           position: "fixed",
@@ -48,19 +55,22 @@ export default function SafeAreaTestPage() {
           zIndex: 100,
           paddingTop: "env(safe-area-inset-top)",
           backgroundColor: bg,
+          ...(variant.blur
+            ? { backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)" }
+            : {}),
         }}
       >
         <div style={{ padding: "16px", fontFamily: "monospace", color: "#000", fontWeight: 700 }}>
-          헤더 본체 (이 색 = {bg})
+          {variant.id} / {red ? "빨강" : "초록"}
         </div>
       </header>
 
       <div
         style={{
-          marginTop: "180px",
-          padding: "24px",
+          marginTop: "160px",
+          padding: "20px",
           fontFamily: "monospace",
-          lineHeight: 1.9,
+          lineHeight: 1.8,
           fontSize: "14px",
         }}
       >
@@ -68,24 +78,48 @@ export default function SafeAreaTestPage() {
           type="button"
           onClick={() => setRed((v) => !v)}
           style={{
-            padding: "20px 28px",
-            fontSize: "18px",
+            width: "100%",
+            padding: "22px",
+            fontSize: "19px",
             fontWeight: 700,
             border: "2px solid currentColor",
             borderRadius: "8px",
-            marginBottom: "24px",
+            marginBottom: "20px",
           }}
         >
-          색 전환 (현재: {red ? "빨강" : "초록"})
+          ① 색 전환 (현재 {red ? "빨강" : "초록"})
         </button>
 
+        <div style={{ fontWeight: 700, marginBottom: "8px" }}>② 헤더 조합 선택</div>
+        <div style={{ display: "flex", flexDirection: "column", gap: "8px", marginBottom: "20px" }}>
+          {VARIANTS.map((v) => (
+            <button
+              key={v.id}
+              type="button"
+              onClick={() => setVariantId(v.id)}
+              style={{
+                padding: "14px",
+                textAlign: "left",
+                fontSize: "14px",
+                fontWeight: v.id === variantId ? 700 : 400,
+                border: `2px solid ${v.id === variantId ? "currentColor" : "transparent"}`,
+                outline: "1px solid currentColor",
+                borderRadius: "8px",
+              }}
+            >
+              {v.label}
+            </button>
+          ))}
+        </div>
+
         <div>safe-area-inset-top = {inset === null ? "측정중" : `${inset}px`}</div>
-        <div>theme-color meta = {themeColor}</div>
-        <div style={{ marginTop: "24px", fontWeight: 700 }}>확인할 것</div>
-        <div>1. 지금 노치 뒤 띠가 헤더와 같은 색인가?</div>
-        <div>2. 버튼을 누르면 노치 띠도 같이 바뀌는가?</div>
-        <div style={{ height: "1500px" }} />
-        <div>(스크롤 끝)</div>
+
+        <div style={{ marginTop: "20px", fontWeight: 700 }}>확인 방법</div>
+        <div>A~D를 하나씩 고른 뒤, 각각에서 ① 색 전환을 눌러</div>
+        <div>노치 띠가 헤더와 같이 바뀌는지 보세요.</div>
+        <div style={{ marginTop: "8px" }}>→ 어느 조합에서 노치가 안 따라오는지 알려주시면 됩니다.</div>
+
+        <div style={{ height: "900px" }} />
       </div>
     </>
   )
