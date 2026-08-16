@@ -1,13 +1,12 @@
 "use client"
 
-import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react"
+import { useCallback, useLayoutEffect, useRef, useState } from "react"
 import dynamic from "next/dynamic"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 
 import { navLinks } from "@/lib/data/nav"
 import { cn } from "@/lib/utils"
-import { useTheme } from "@/components/theme/theme-context"
 import { ThemeToggle } from "@/components/theme/theme-toggle"
 import { MobileNavMenu } from "@/components/layout/mobile-nav-menu"
 import { SearchTrigger } from "@/components/search/search-trigger"
@@ -34,20 +33,6 @@ export function NavBar({ searchIndex }: NavBarProps) {
   useSearchShortcut(openSearch)
 
   const navRef = useRef<HTMLElement>(null)
-  const { isDark } = useTheme()
-
-  // iOS Safari는 position:fixed + backdrop-filter 요소가 env(safe-area-inset-top)로 노치
-  // 위까지 뻗어있으면 그 부분을 별도 컴포지팅 레이어로 다룬다 — 다크모드 토글처럼 지오메트리
-  // 변화 없이 색상만 바뀌는 변경에서는 이 레이어를 다시 그리지 않는 경우가 있어(WebKit 버그),
-  // 헤더 본문은 갱신되는데 노치 위 safe area만 이전 테마 색으로 남는다. transform을 한 프레임
-  // 흔들어 그 레이어의 재구성을 강제로 트리거한다.
-  useEffect(() => {
-    const nav = navRef.current
-    if (!nav) return
-    nav.style.transform = "translateZ(0)"
-    void nav.offsetHeight
-    nav.style.transform = ""
-  }, [isDark])
 
   // article-body heading의 scroll-margin-top과 TocSidebar 스크롤스파이가 참조하는
   // --header-offset을 이 nav의 실제 렌더링 높이로 항상 최신화한다 — 고정값을 여기저기

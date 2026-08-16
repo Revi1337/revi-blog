@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useState, type ReactNode } from "react"
 
-import { THEME_COOKIE_KEY } from "@/components/theme/theme-constants"
+import { THEME_COOKIE_KEY, THEME_COLOR_DARK, THEME_COLOR_LIGHT } from "@/components/theme/theme-constants"
 
 interface ThemeContextValue {
   isDark: boolean
@@ -27,6 +27,14 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     setIsDark(next)
     document.documentElement.classList.toggle("dark", next)
     document.cookie = `${THEME_COOKIE_KEY}=${next ? "dark" : "light"}; path=/; max-age=31536000`
+    // iOS Safari는 노치/상태바 색을 CSS 배경이 아니라 이 <meta name="theme-color">의 content를
+    // 참조해 결정한다 — class만 토글하고 이 메타를 갱신하지 않으면 노치 영역이 항상 최초 로드
+    // 시점 값(SSR 기본값인 다크)으로 고정된 채 이 수동 토글을 전혀 반영하지 못한다(OS의
+    // prefers-color-scheme 변경이 아니라 순수 클라이언트 상태 전환이라 Safari가 스스로 감지할
+    // 방법이 없음).
+    document
+      .querySelector('meta[name="theme-color"]')
+      ?.setAttribute("content", next ? THEME_COLOR_DARK : THEME_COLOR_LIGHT)
   }
 
   return (
