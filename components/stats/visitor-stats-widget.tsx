@@ -4,6 +4,7 @@ import { type ComponentType, useLayoutEffect, useRef, useState } from "react"
 import { Users, TrendingUp, History, Eye } from "lucide-react"
 import { AnimatePresence, m } from "motion/react"
 
+import { useWrapDetection } from "@/lib/hooks/use-wrap-detection"
 import { useVisitorStats } from "@/lib/stats/use-visitor-stats"
 import { cn } from "@/lib/utils"
 
@@ -81,40 +82,6 @@ function AnimatedStatValue({ value }: { value: number | undefined }) {
   )
 }
 
-// flex-wrap 행에서 각 항목이 새 줄의 첫머리로 밀려났는지를 감지한다 — CSS만으로는 "이 flex
-// 아이템이 줄바꿈된 줄의 첫 항목인지"를 판별할 선택자가 없어(:first-child는 DOM 순서 기준일 뿐
-// 시각적 줄바꿈과 무관), 바로 앞 형제와 offsetTop을 비교하는 방식으로 우회한다.
-//
-// 항목 하나당 ResizeObserver를 하나씩 붙이면 같은 부모(메타 줄)를 N개의 옵저버가 중복 관찰하게
-// 되므로, 행 전체를 옵저버 하나로 관찰하고 모든 항목의 줄바꿈 여부를 한 번에 계산한다.
-function useWrapDetection(itemCount: number) {
-  const itemRefs = useRef<(HTMLElement | null)[]>([])
-  const [wrapped, setWrapped] = useState<boolean[]>(() => Array(itemCount).fill(false))
-
-  useLayoutEffect(() => {
-    const parent = itemRefs.current.find(Boolean)?.parentElement
-    if (!parent) return
-
-    const update = () => {
-      setWrapped((prev) => {
-        const next = itemRefs.current.map((el) => {
-          const prevSibling = el?.previousElementSibling as HTMLElement | null
-          return el !== null && prevSibling !== null && el.offsetTop > prevSibling.offsetTop
-        })
-        const changed = next.some((value, index) => value !== prev[index])
-        return changed ? next : prev
-      })
-    }
-
-    update()
-    const observer = new ResizeObserver(update)
-    observer.observe(parent)
-    return () => observer.disconnect()
-  }, [])
-
-  return { itemRefs, wrapped }
-}
-
 function StatItem({
   icon: Icon,
   label,
@@ -160,19 +127,29 @@ function InlineStatsRow({
             itemRefs.current[index] = el
           }}
           className={cn(
-            "flex items-center gap-4 transition-opacity duration-300",
-            isLoaded ? "opacity-100" : "opacity-0"
+            "relative flex h-5 items-center gap-1.5 pl-8 transition-opacity duration-300",
+            isLoaded ? "opacity-100" : "opacity-0",
+            wrapped[index] && "-translate-x-8"
           )}
         >
-          {/* 줄바꿈으로 이 항목이 새 줄의 첫머리로 밀려났을 땐 구분자를 감춘다 — 앞선 항목과
-           * 같은 줄에 있을 때만 "|"로 이어붙는 게 자연스럽다. */}
+          {/* 구분자 자리를 pl-8(32px)로 wrapper 안에 항상 고정 확보해둔다 — 원래 레이아웃은
+           * [이전 항목] -16px(gap-4)- [구분자] -16px(gap-4)- [아이콘] 순서였다. 앞쪽 16px은
+           * 바깥 flex row의 gap-4가 담당하므로, 이 wrapper는 나머지 절반(구분자 zone 16px +
+           * 구분자 뒤 여백 16px)만 pl-8로 확보한다. 조건에 따라 pl-8 자체를 뺐다 붙였다 하면
+           * 그만큼 wrapper 폭이 바뀌어 줄바꿈 판정(offsetTop)이 요동치고, 구분자가 나타났다
+           * 사라졌다 하며 줄바꿈도 같이 뒤집히는 무한 루프가 생긴다. pl-8을 항상 고정해두면 이
+           * 되먹임 자체가 성립하지 않는다. 줄바꿈됐을 땐 그 빈 자리가 여백처럼 보이지 않도록
+           * wrapper 전체를 translate로 pl-8만큼(-32px) 시각적으로만 상쇄한다 — transform은
+           * paint 단계에서만 적용돼 offsetTop에는 관여하지 않으므로 판정에 다시 영향을 주지
+           * 않는다. 구분자 자체는 absolute로 그 pl-8 자리의 앞쪽 절반에 겹쳐 그리고, 줄바꿈된
+           * 항목에서는 렌더링하지 않는다. */}
           {!wrapped[index] && (
-            <span className="text-outline-variant dark:text-outline-variant/40">|</span>
+            <span className="absolute top-0 left-0 flex h-5 w-4 items-center justify-center text-outline-variant dark:text-outline-variant/40">
+              |
+            </span>
           )}
-          <div className="flex items-center gap-1.5">
-            <item.icon className="size-4 text-primary dark:text-primary-container" />
-            <AnimatedStatValue value={item.value} />
-          </div>
+          <item.icon className="size-4 text-primary dark:text-primary-container" />
+          <AnimatedStatValue value={item.value} />
         </div>
       ))}
     </>
