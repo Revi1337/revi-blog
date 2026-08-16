@@ -56,7 +56,11 @@ export function NavBar({ searchIndex }: NavBarProps) {
   return (
     <nav
       ref={navRef}
-      className="fixed top-0 z-50 w-full border-b border-outline-variant bg-background/70 backdrop-blur-md transition-all duration-200 ease-in-out"
+      // pt-[env(safe-area-inset-top)]: 이 padding이 nav 박스 안쪽이라 bg/backdrop-blur가
+      // 그 위까지 함께 칠해진다 — 노치 아래 safe area도 같은 글래스로 이어지고, 실제 로고/버튼
+      // 같은 콘텐츠는 그 padding만큼 자연히 밀려나 노치와 겹치지 않는다. viewport-fit=cover가
+      // app/layout.tsx에 없으면 이 env() 값이 항상 0이라 아무 효과가 없다.
+      className="fixed top-0 z-50 w-full border-b border-outline-variant bg-background/70 pt-[env(safe-area-inset-top)] backdrop-blur-md transition-all duration-200 ease-in-out"
     >
       <div className="mx-auto flex max-w-[1200px] items-center justify-between px-gutter py-4">
         <Link

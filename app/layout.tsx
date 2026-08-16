@@ -1,4 +1,4 @@
-import type { Metadata } from "next"
+import type { Metadata, Viewport } from "next"
 import { Inter, JetBrains_Mono } from "next/font/google"
 import localFont from "next/font/local"
 
@@ -83,6 +83,17 @@ export const metadata: Metadata = {
       "msvalidate.01": "80EDC70E6AFA9AFE8914716474BAAA9D",
     },
   },
+}
+
+// viewportFit: "cover"가 없으면 iOS Safari가 노치/다이나믹 아일랜드 아래 safe area를 페이지가
+// 아예 그릴 수 없는 영역으로 취급해(env(safe-area-inset-top)이 0으로 고정) 그 자리를 브라우저
+// 자체 색으로 채운다 — NavBar의 backdrop-blur 글래스 배경이 그 경계에서 뚝 끊겨 보이는 원인.
+// cover로 바꿔야 페이지가 그 영역까지 실제로 그릴 수 있게 되고, NavBar가 padding-top으로
+// env(safe-area-inset-top)만큼 확보해 블러 배경을 노치 아래까지 이어지게 할 수 있다.
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
 }
 
 // 다크모드가 기본값이므로 서버는 항상 "dark" 클래스로 렌더링한다 — 라이트 모드 사용자는 아래
