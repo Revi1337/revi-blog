@@ -74,10 +74,13 @@ function registerZoomButtons(lightbox: LightboxWithCore) {
   const pswp = lightbox.pswp
   if (!pswp?.ui) return
 
+  /* PhotoSwipe 기본 줌 토글(돋보기) 버튼의 order는 10 — +/-는 같은 계열(단계별 확대·축소)이라
+     서로 붙여두고, 성격이 다른 돋보기 버튼보다 앞에 오도록 둘 다 9보다 작게 잡는다. 값이 같으면
+     Array.sort는 안정 정렬이라 등록 순서(+ 먼저, - 나중)가 그대로 유지된다 */
   pswp.ui.registerElement({
     name: "zoom-in-button",
     ariaLabel: "Zoom in",
-    order: 9,
+    order: 8,
     isButton: true,
     className: "pswp__button--zoom-in",
     html: ZOOM_IN_ICON,
@@ -87,7 +90,7 @@ function registerZoomButtons(lightbox: LightboxWithCore) {
   pswp.ui.registerElement({
     name: "zoom-out-button",
     ariaLabel: "Zoom out",
-    order: 10,
+    order: 8,
     isButton: true,
     className: "pswp__button--zoom-out",
     html: ZOOM_OUT_ICON,
