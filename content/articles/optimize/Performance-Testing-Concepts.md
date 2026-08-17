@@ -1,7 +1,7 @@
 ---
 title: 성능 테스트에 필요한 지식과 용어
 date: 2026-08-14 20:53
-updated_at: 2026-08-15 00:07
+updated_at: 2026-08-17 17:48
 tags:
   - performance
   - optimization
@@ -105,6 +105,9 @@ thumbnail: https://pub-8c61ed96347b483a91c17765cea907da.r2.dev/images/2026-08-15
 > [!note] RPS TPS 차이
 > `RPS`는 개별 요청 단위를, `TPS`는 완료된 트랜잭션(업무 단위) 단위를 셉니다. 하나의 트랜잭션이 여러 요청으로 구성될 수 있기 때문에, 같은 시스템이라도 RPS가 TPS보다 항상 크거나 같습니다. RPS는 "얼마나 많은 요청이 들어오는가"를, TPS는 "얼마나 많은 실제 업무가 처리됐는가"를 나타냅니다.
 
+> [!note] RPS와 TPS의 관계
+> 두 지표의 관계는 트랜잭션 하나가 몇 개의 요청으로 구성되는지에 따라 결정됩니다. 트랜잭션 하나가 요청 하나로 끝난다면 `RPS = TPS`가 되고, 트랜잭션 하나가 `N`개의 요청으로 구성된다면 `RPS = TPS × N`이 됩니다. 예를 들어 로그인 트랜잭션 하나가 인증 요청 → 세션 발급 요청 → 프로필 조회 요청, 총 3개의 요청으로 이루어진다면 `N`은 3이므로, TPS가 10일 때 RPS는 30이 됩니다.
+
 `처리량`(Throughput)은 이 둘을 아우르는 상위 개념으로, 단위 시간당 시스템이 처리한 작업량을 뜻합니다. 초당 바이트 수, RPS, TPS 모두 처리량을 표현하는 방식입니다.
 
 ### 응답 시간과 Latency
@@ -161,6 +164,12 @@ VU를 구현하는 방식은 도구마다 다릅니다. JMeter처럼 VU 하나�
 
 - `오픈 모델`(Open Model): 현재 시스템에 얼마나 많은 사용자가 남아있는지와 무관하게, 정해진 비율로 새 VU를 계속 유입시킵니다. 서버가 느려지더라도 목표한 요청률을 유지하기 위해 필요한 만큼 VU를 동적으로 추가/해제하므로, "초당 얼마나 많은 요청이 들어오는가"를 재현하는 데 적합합니다. 사용자가 응답을 기다리지 않고 계속 유입되는 실제 웹 트래픽 상황을 재현합니다.
 - `닫힌 모델`(Closed Model): 동시 사용자 수를 고정값으로 유지하며, 기존 VU가 빠져나가야 새 VU가 들어옵니다. 반복 실행 속도가 응답 시간에 따라 자연스럽게 달라지므로, "몇 명이 쓰고 있는가"를 재현하는 데 적합합니다. 사용자 풀이 제한된 사내 시스템 같은 상황을 재현합니다.
+
+> [!note] 오픈 모델의 k6 실행기(Executor)
+> 도착률(Arrival Rate) 기반 실행기를 사용합니다. `constant-arrival-rate`는 초당 시작 반복 횟수를 테스트 기간 내내 고정하고, `ramping-arrival-rate`는 단계별로 그 횟수를 늘리거나 줄입니다. 두 실행기 모두 서버 응답 속도와 무관하게 설정한 주기에 맞춰 새 반복을 강제로 시작합니다.
+
+> [!note] 닫힌 모델의 k6 실행기(Executor)
+> VU 수 기반 실행기를 사용합니다. `constant-vus`는 고정된 VU 수를 유지하고, `ramping-vus`는 단계별로 VU 수를 늘리거나 줄입니다. `shared-iterations`는 전체 반복 횟수를 VU들이 나누어 실행하고, `per-vu-iterations`는 VU마다 동일한 반복 횟수를 보장합니다.
 
 같은 처리량이라도 어떤 모델을 쓰느냐에 따라 시스템에 가해지는 실제 압력이 달라지기 때문에, 테스트 목적에 맞는 모델을 선택해야 합니다.
 
@@ -289,3 +298,12 @@ VU를 구현하는 방식은 도구마다 다릅니다. JMeter처럼 VU 하나�
 - [Latency Percentiles for Load Testing Analysis - Gatling](https://gatling.io/blog/latency-percentiles-for-load-testing-analysis)
 - [Open and Closed Models - Grafana k6 Docs](https://grafana.com/docs/k6/latest/using-k6/scenarios/concepts/open-vs-closed/)
 - [Error Codes - Grafana k6 Docs](https://grafana.com/docs/k6/latest/javascript-api/error-codes/)
+- [Scenarios - Grafana k6 Docs](https://grafana.com/docs/k6/latest/using-k6/scenarios/)
+- [Executors - Grafana k6 Docs](https://grafana.com/docs/k6/latest/using-k6/scenarios/executors/)
+- [Arrival-rate VU allocation - Grafana k6 Docs](https://grafana.com/docs/k6/latest/using-k6/scenarios/concepts/arrival-rate-vu-allocation/)
+- [Constant VUs - Grafana k6 Docs](https://grafana.com/docs/k6/latest/using-k6/scenarios/executors/constant-vus/)
+- [Ramping VUs - Grafana k6 Docs](https://grafana.com/docs/k6/latest/using-k6/scenarios/executors/ramping-vus/)
+- [Shared Iterations - Grafana k6 Docs](https://grafana.com/docs/k6/latest/using-k6/scenarios/executors/shared-iterations/)
+- [Per VU Iterations - Grafana k6 Docs](https://grafana.com/docs/k6/latest/using-k6/scenarios/executors/per-vu-iterations/)
+- [Constant Arrival Rate - Grafana k6 Docs](https://grafana.com/docs/k6/latest/using-k6/scenarios/executors/constant-arrival-rate/)
+- [Ramping Arrival Rate - Grafana k6 Docs](https://grafana.com/docs/k6/latest/using-k6/scenarios/executors/ramping-arrival-rate/)
