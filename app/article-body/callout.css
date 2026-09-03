@@ -31,7 +31,10 @@
 /* 콜아웃 타입별 강조색 — Material 팔레트 밖의 신규 시맨틱 컬러(다크/라이트 쌍) */
 .article-body .callout-note { --callout-accent: #0969da; }
 .article-body .callout-info { --callout-accent: #0891b2; }
-.article-body .callout-tip { --callout-accent: #1a7f37; }
+/* tip은 원래 GitHub Alerts 팔레트를 따라 초록이었는데, warning(amber, hue~40°)과 뚜렷이 구분되는
+   노란색으로 교체 요청 받음 — hue를 55°대(초록 쪽에 더 가까운 mustard-yellow)까지 밀어서 warning의
+   주황/갈색 느낌 amber와 색조·채도 모두 벌려놓았다(단순히 밝기만 다른 "옅은 amber"가 되는 걸 피함) */
+.article-body .callout-tip { --callout-accent: #b3a400; }
 .article-body .callout-success { --callout-accent: #15803d; }
 .article-body .callout-warning { --callout-accent: #9a6700; }
 .article-body .callout-danger { --callout-accent: #cf222e; }
@@ -43,7 +46,7 @@
 
 .dark .article-body .callout-note { --callout-accent: #58a6ff; }
 .dark .article-body .callout-info { --callout-accent: #22d3ee; }
-.dark .article-body .callout-tip { --callout-accent: #3fb950; }
+.dark .article-body .callout-tip { --callout-accent: #f3e225; }
 .dark .article-body .callout-success { --callout-accent: #4ade80; }
 .dark .article-body .callout-warning { --callout-accent: #d29922; }
 .dark .article-body .callout-danger { --callout-accent: #f85149; }
@@ -209,7 +212,7 @@
    시맨틱 컬러를 통일한다(교체 시 색 인식이 흔들리지 않도록) */
 .article-body .callout-comeau-note { --callout-comeau-accent: #0969da; }
 .article-body .callout-comeau-info { --callout-comeau-accent: #0891b2; }
-.article-body .callout-comeau-tip { --callout-comeau-accent: #1a7f37; }
+.article-body .callout-comeau-tip { --callout-comeau-accent: #b3a400; }
 .article-body .callout-comeau-success { --callout-comeau-accent: #15803d; }
 .article-body .callout-comeau-warning { --callout-comeau-accent: #9a6700; }
 .article-body .callout-comeau-danger { --callout-comeau-accent: #cf222e; }
@@ -221,7 +224,7 @@
 
 .dark .article-body .callout-comeau-note { --callout-comeau-accent: #58a6ff; }
 .dark .article-body .callout-comeau-info { --callout-comeau-accent: #22d3ee; }
-.dark .article-body .callout-comeau-tip { --callout-comeau-accent: #3fb950; }
+.dark .article-body .callout-comeau-tip { --callout-comeau-accent: #f3e225; }
 .dark .article-body .callout-comeau-success { --callout-comeau-accent: #4ade80; }
 .dark .article-body .callout-comeau-warning { --callout-comeau-accent: #d29922; }
 .dark .article-body .callout-comeau-danger { --callout-comeau-accent: #f85149; }

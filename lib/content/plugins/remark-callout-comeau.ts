@@ -42,7 +42,7 @@ const TYPE_MAP: Record<string, ResolvedType> = {
 }
 
 interface IconPath {
-  tag: "path" | "circle" | "polyline"
+  tag: "path" | "circle" | "polyline" | "rect"
   attrs: Record<string, string>
 }
 
@@ -94,15 +94,26 @@ const SWOOSH_GEOMETRY: Record<SwooshVariant, { viewBox: string; width: string; h
 }
 
 const ICONS: Record<ResolvedType, IconPath[]> = {
+  /** lucide Notebook — remark-callout.ts의 note와 동일한 아이콘으로 교체(연필 vs 공책 비교 후 결정,
+   * 각진 실루엣이 나머지 원형/삼각형 위주 아이콘 사이에서 더 잘 구분됨) */
   note: [
-    { tag: "circle", attrs: { cx: "12", cy: "12", r: "10" } },
-    { tag: "path", attrs: { d: "M12 16v-4" } },
-    { tag: "path", attrs: { d: "M12 8h.01" } },
+    { tag: "path", attrs: { d: "M2 6h4" } },
+    { tag: "path", attrs: { d: "M2 10h4" } },
+    { tag: "path", attrs: { d: "M2 14h4" } },
+    { tag: "path", attrs: { d: "M2 18h4" } },
+    { tag: "rect", attrs: { width: "16", height: "20", x: "4", y: "2", rx: "2" } },
+    { tag: "path", attrs: { d: "M16 2v20" } },
   ],
+  /** lucide BookOpen — remark-callout.ts의 info와 동기화(BookOpen vs MessageSquareText 실측
+   * 비교 후 결정) */
   info: [
-    { tag: "circle", attrs: { cx: "12", cy: "12", r: "10" } },
-    { tag: "path", attrs: { d: "M12 16v-4" } },
-    { tag: "path", attrs: { d: "M12 8h.01" } },
+    { tag: "path", attrs: { d: "M12 7v14" } },
+    {
+      tag: "path",
+      attrs: {
+        d: "M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z",
+      },
+    },
   ],
   tip: [
     {
@@ -179,9 +190,11 @@ const ICONS: Record<ResolvedType, IconPath[]> = {
     { tag: "path", attrs: { d: "M22 13h-4" } },
     { tag: "path", attrs: { d: "M17.2 17c2.1.1 3.8 1.9 3.8 4" } },
   ],
+  /** lucide MessageSquareText — remark-callout.ts의 example과 동기화 */
   example: [
-    { tag: "polyline", attrs: { points: "16 18 22 12 16 6" } },
-    { tag: "polyline", attrs: { points: "8 6 2 12 8 18" } },
+    { tag: "path", attrs: { d: "M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" } },
+    { tag: "path", attrs: { d: "M13 8H7" } },
+    { tag: "path", attrs: { d: "M17 12H7" } },
   ],
   important: [
     { tag: "path", attrs: { d: "m3 11 18-5v12L3 14v-3z" } },
