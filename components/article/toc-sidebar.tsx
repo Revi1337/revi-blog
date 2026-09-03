@@ -378,9 +378,9 @@ export function TocSidebar({
 
   const moreLabel =
     hiddenBelowCount > 0 ? (
-      <p className="mt-2 pr-2 text-right font-code-sm text-[11px] text-on-surface-variant/60" aria-hidden="true">
+      <span className="ml-auto font-code-sm text-[11px] text-on-surface-variant/60" aria-hidden="true">
         +{hiddenBelowCount} more
-      </p>
+      </span>
     ) : null
 
   const nav = (
@@ -472,9 +472,9 @@ export function TocSidebar({
             <div className="mb-4 flex items-center gap-2 text-primary dark:text-primary-container">
               <ListTree className="size-4" />
               <h4 className="font-label-caps text-xs tracking-widest">Table Of Contents</h4>
+              {moreLabel}
             </div>
             {nav}
-            {moreLabel}
           </div>
         ) : null}
       </div>
@@ -487,9 +487,9 @@ export function TocSidebar({
         <div className="mb-4 flex items-center gap-2 text-primary dark:text-primary-container">
           <ListTree className="size-4" />
           <h4 className="font-label-caps text-xs tracking-widest">Table Of Contents</h4>
+          {moreLabel}
         </div>
         {nav}
-        {moreLabel}
       </div>
     </div>
   )
