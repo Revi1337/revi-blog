@@ -14,7 +14,13 @@
   font-weight: var(--text-headline-lg--font-weight);
   color: var(--color-on-surface);
 }
-.article-body h2:first-child {
+/* 헤딩 접기(remark-heading-fold.ts)가 모든 헤딩을 `<details class="heading-fold"><summary>`로
+   감싸므로, h2는 항상 summary의 유일한 자식이 되어 `h2:first-child` 단독으로는 "문서에서 실제로
+   첫 번째인 h2"가 아니라 "모든 h2"에 매치돼 버린다(각자 자기 summary 안에서는 항상 first-child).
+   article-body의 실제 첫 자식인 최상위 details 안, summary의 h2일 때만 매치하도록 두 조건을
+   모두 검사한다(실측으로 발견 — "핵심 지표"처럼 문서 중간에 있는 h2도 margin-top이 0이 되어
+   있었다). */
+.article-body > details.heading-fold:first-child > summary > h2:first-child {
   margin-top: 0;
 }
 /* H2만 구분선을 둔다 — H3~H6는 이미 폰트 크기/굵기로 body와 충분히 구분되고, H3까지 넣으면
@@ -709,12 +715,52 @@
 .article-body details[open] > summary::after {
   transform: rotate(45deg);
 }
-.article-body details > *:not(summary) {
+.article-body details:not(.heading-fold) > *:not(summary) {
   padding: 0 1rem 1rem;
 }
-.article-body details > *:not(summary):first-of-type {
+.article-body details:not(.heading-fold) > *:not(summary):first-of-type {
   margin-top: 0;
 }
+
+/* 헤딩 접기(remark-heading-fold.ts 출력, spec.md FR-001~FR-012) — 콜아웃과 같은
+   <details>/<summary> 프리미티브를 재사용하지만, 시각적으로는 기존(접기 기능이 없던 시절) 헤딩과
+   완전히 동일해야 한다 — 쉐브론이나 박스 없이, 헤딩을 클릭하면 접힐 뿐이다(사용자 피드백 — 콜아웃과
+   달리 헤딩 접기는 눈에 띄는 UI 변화가 있어서는 안 됨).
+   최초 구현은 `<summary>`를 `display: flex`로 만들어 왼쪽에 쉐브론을 그렸는데, 이 때문에 h2가
+   flex item으로 content-width까지만 줄어들어 `h2::after` 밑줄 구분선이 아주 짧아지고, flex
+   컨테이너가 margin collapse를 막아 헤딩 위/아래 여백까지 달라지는 회귀가 실측(playwright, 실제
+   배포 화면과 비교)으로 발견됐다. `<summary>`를 순수 `display: block` 래퍼로 바꿔 h2가 원래와
+   똑같이 전체 폭을 차지하고 margin collapse도 그대로 통과하게 한다 — details/summary 둘 다 자체
+   박스(테두리/배경/패딩)를 전혀 갖지 않으므로 시각적으로는 완전히 "없는 요소"처럼 동작한다. */
+.article-body details.heading-fold {
+  margin: 0;
+  overflow: visible;
+  border: none;
+  border-radius: 0;
+  background: none;
+}
+.article-body details.heading-fold > summary {
+  display: block;
+  padding: 0;
+  list-style: none;
+  cursor: pointer;
+  font: inherit;
+  color: inherit;
+}
+.article-body details.heading-fold > summary::-webkit-details-marker {
+  display: none;
+}
+/* 콜아웃 공용 규칙(위 `.article-body summary::after`)이 만드는 쉐브론을 없앤다 — 헤딩 접기는
+   쉐브론이 필요 없다(사용자 피드백). */
+.article-body details.heading-fold > summary::after {
+  content: none;
+}
+/* 자식 콘텐츠에 별도 padding/margin 규칙을 주지 않는다 — 콜아웃 전용 패딩 리셋 규칙(위
+   `details:not(.heading-fold) > *:not(summary)`)이 이미 `.heading-fold`를 제외하므로, 헤딩
+   접기의 자식(문단/코드블록/표/이미지/중첩 콜아웃 등)은 각자의 원래 CSS를 그대로 유지한다.
+   여기서 `*:not(summary) { padding: 0 }` 같은 규칙을 넣으면 콜아웃처럼 자체 패딩을 가진 자식의
+   스타일까지 덮어써 버리는 회귀가 생긴다(실측으로 발견 — callout-comeau가 패딩을 잃고 카드
+   배경도 없이 텍스트가 가장자리까지 붙어버렸다). */
 
 .article-body .callout {
   margin: 1.5rem 0;

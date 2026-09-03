@@ -8,6 +8,7 @@ import { AnimatePresence, m } from "motion/react"
 import type { TocItem } from "@/lib/data/types"
 import { cn } from "@/lib/utils"
 import { isPlainLeftClick, scrollToHeadingInstant } from "@/components/article/heading-scroll"
+import { expandFoldAncestors } from "@/components/article/heading-fold-ancestors"
 
 // nav-bar.tsx가 실측한 헤더 높이로 런타임에 덮어쓰는 CSS 변수를 읽는다 — getComputedStyle
 // 파싱이 실패하는 극히 예외적인 경우(변수 자체가 없는 등)에 대한 최후 폴백일 뿐, 정상 동작에서는
@@ -122,7 +123,11 @@ export function TocSidebar({
       }
       const hash = window.location.hash
       if (!hash) return
-      const target = document.getElementById(decodeURIComponent(hash.slice(1)))
+      const headingId = decodeURIComponent(hash.slice(1))
+      // 헤딩이 접힌 섹션 안에 있으면 스크롤 전에 먼저 펼쳐야 한다(spec.md FR-006) — 초기 로드 시
+      // 해시로 직접 진입한 경우와, 세션 저장 스크롤 위치가 없는 뒤로가기 복귀 경우 둘 다 여기로 온다.
+      expandFoldAncestors(headingId)
+      const target = document.getElementById(headingId)
       target?.scrollIntoView()
     }
 
@@ -238,8 +243,14 @@ export function TocSidebar({
       // 스크롤/리사이즈 시점의 최신 실측값을 항상 사용해야 한다.
       const headerOffset = readHeaderOffset()
 
-      // 접힌 콜아웃(<details> 미오픈) 안의 헤딩은 offsetParent가 null이라 제외된다.
-      const visibleHeadings = headings.filter((heading) => heading.offsetParent !== null)
+      // 접힌 콜아웃/헤딩 접기(<details> 미오픈) 안의 헤딩을 제외한다. 애초엔 offsetParent가
+      // null이 될 것으로 가정했으나, 헤딩 접기(spec 015) 구현 중 실측(playwright)으로 이 가정이
+      // 틀렸음을 발견했다 — 닫힌 <details>의 자식은 화면에 그려지지 않는데도 offsetParent가
+      // 여전히 조상 엘리먼트를 가리킨다(현재 Chromium 기준). closest("details:not([open])")로
+      // 조상 체인에 닫힌 details가 있는지 직접 확인해야 한다.
+      const visibleHeadings = headings.filter(
+        (heading) => heading.offsetParent !== null && heading.closest("details:not([open])") === null
+      )
       if (visibleHeadings.length === 0) return
 
       let currentId: string | undefined
