@@ -6,8 +6,21 @@ import type { Root, Blockquote, Paragraph, PhrasingContent, Text } from "mdast"
  * `[!TYPE]-`/`[!TYPE]+`는 remark-callout.ts와 동일한 접기 문법(각각 접힌 채/펼친 채 시작) */
 const MARKER_RE = /^\[!(\w+)\]([-+])?(?:\s+(.*))?$/
 
-type ResolvedType = "note" | "info" | "tip" | "success" | "warning" | "danger" | "quote" | "collapse"
+type ResolvedType =
+  | "note"
+  | "info"
+  | "tip"
+  | "success"
+  | "warning"
+  | "danger"
+  | "quote"
+  | "collapse"
+  | "question"
+  | "bug"
+  | "example"
+  | "important"
 
+/** 일반 콜아웃(remark-callout.ts)과 완벽히 동기화 — 지원 타입/별칭 목록을 그쪽과 맞춘다 */
 const TYPE_MAP: Record<string, ResolvedType> = {
   NOTE: "note",
   INFO: "info",
@@ -15,7 +28,12 @@ const TYPE_MAP: Record<string, ResolvedType> = {
   SUCCESS: "success",
   WARNING: "warning",
   DANGER: "danger",
+  CAUTION: "danger",
   QUOTE: "quote",
+  QUESTION: "question",
+  BUG: "bug",
+  EXAMPLE: "example",
+  IMPORTANT: "important",
   /** note/info 같은 특정 의미 없이 그냥 접히는 섹션 — 순수 raw `<details>`와 같은 용도를
    * `[!TYPE]` 문법으로 쓰고 싶을 때 사용. 전용 강조색이 없어 --callout-comeau-accent가
    * 정의되지 않고, 모든 fill/color 선언의 기본값인 --color-outline-variant로 자연히
@@ -24,7 +42,7 @@ const TYPE_MAP: Record<string, ResolvedType> = {
 }
 
 interface IconPath {
-  tag: "path" | "circle"
+  tag: "path" | "circle" | "polyline"
   attrs: Record<string, string>
 }
 
@@ -49,6 +67,10 @@ const SWOOSH_VARIANT_BY_TYPE: Record<ResolvedType, SwooshVariant> = {
   quote: "calm",
   danger: "calm",
   collapse: "calm",
+  question: "calm",
+  bug: "calm",
+  example: "calm",
+  important: "calm",
   warning: "alert",
 }
 
@@ -135,6 +157,35 @@ const ICONS: Record<ResolvedType, IconPath[]> = {
     { tag: "path", attrs: { d: "M22 12h-2" } },
     { tag: "path", attrs: { d: "m15 19-3 3-3-3" } },
     { tag: "path", attrs: { d: "m15 5-3-3-3 3" } },
+  ],
+  question: [
+    { tag: "circle", attrs: { cx: "12", cy: "12", r: "10" } },
+    { tag: "path", attrs: { d: "M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" } },
+    { tag: "path", attrs: { d: "M12 17h.01" } },
+  ],
+  bug: [
+    { tag: "path", attrs: { d: "m8 2 1.88 1.88" } },
+    { tag: "path", attrs: { d: "M14.12 3.88 16 2" } },
+    { tag: "path", attrs: { d: "M9 7.13v-1a3.003 3.003 0 1 1 6 0v1" } },
+    {
+      tag: "path",
+      attrs: { d: "M12 20c-3.3 0-6-2.7-6-6v-3a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v3c0 3.3-2.7 6-6 6" },
+    },
+    { tag: "path", attrs: { d: "M12 20v-9" } },
+    { tag: "path", attrs: { d: "M6.53 9C4.6 8.8 3 7.1 3 5" } },
+    { tag: "path", attrs: { d: "M6 13H2" } },
+    { tag: "path", attrs: { d: "M3 21c0-2.1 1.7-3.9 3.8-4" } },
+    { tag: "path", attrs: { d: "M20.97 5c0 2.1-1.6 3.8-3.5 4" } },
+    { tag: "path", attrs: { d: "M22 13h-4" } },
+    { tag: "path", attrs: { d: "M17.2 17c2.1.1 3.8 1.9 3.8 4" } },
+  ],
+  example: [
+    { tag: "polyline", attrs: { points: "16 18 22 12 16 6" } },
+    { tag: "polyline", attrs: { points: "8 6 2 12 8 18" } },
+  ],
+  important: [
+    { tag: "path", attrs: { d: "m3 11 18-5v12L3 14v-3z" } },
+    { tag: "path", attrs: { d: "M11.6 16.8a3 3 0 1 1-5.8-1.6" } },
   ],
 }
 

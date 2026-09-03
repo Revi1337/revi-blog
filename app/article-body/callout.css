@@ -214,6 +214,10 @@
 .article-body .callout-comeau-warning { --callout-comeau-accent: #9a6700; }
 .article-body .callout-comeau-danger { --callout-comeau-accent: #cf222e; }
 .article-body .callout-comeau-quote { --callout-comeau-accent: #6e7781; }
+.article-body .callout-comeau-question { --callout-comeau-accent: #8250df; }
+.article-body .callout-comeau-bug { --callout-comeau-accent: #c2255c; }
+.article-body .callout-comeau-example { --callout-comeau-accent: #57606a; }
+.article-body .callout-comeau-important { --callout-comeau-accent: #bf3989; }
 
 .dark .article-body .callout-comeau-note { --callout-comeau-accent: #58a6ff; }
 .dark .article-body .callout-comeau-info { --callout-comeau-accent: #22d3ee; }
@@ -222,3 +226,7 @@
 .dark .article-body .callout-comeau-warning { --callout-comeau-accent: #d29922; }
 .dark .article-body .callout-comeau-danger { --callout-comeau-accent: #f85149; }
 .dark .article-body .callout-comeau-quote { --callout-comeau-accent: #8b949e; }
+.dark .article-body .callout-comeau-question { --callout-comeau-accent: #a371f7; }
+.dark .article-body .callout-comeau-bug { --callout-comeau-accent: #f778ba; }
+.dark .article-body .callout-comeau-example { --callout-comeau-accent: #9198a1; }
+.dark .article-body .callout-comeau-important { --callout-comeau-accent: #ec6cb9; }
