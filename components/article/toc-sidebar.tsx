@@ -79,6 +79,7 @@ export function TocSidebar({
 }) {
   const [activeId, setActiveId] = React.useState<string | undefined>(undefined)
   const [open, setOpen] = React.useState(false)
+  const [hiddenBelowCount, setHiddenBelowCount] = React.useState(0)
   const itemRefs = React.useRef(new Map<string, HTMLAnchorElement>())
   const navRef = React.useRef<HTMLElement | null>(null)
 
@@ -326,7 +327,61 @@ export function TocSidebar({
     container.scrollTo({ top: container.scrollTop + delta, behavior: "auto" })
   }, [activeId])
 
+  // .toc-nav는 스크롤바 UI를 숨겨놨을 뿐 실제로는 overflow-y-auto라(toc.css), 헤딩이 많은 글에서
+  // 박스 아래에 항목이 더 있다는 걸 알아챌 시각적 단서가 없다 — 컨테이너 뷰포트 아래로 잘린 항목
+  // 개수를 세어 "+N more"로 보여준다. 휠 스크롤(사용자가 직접 박스 안을 스크롤)과 activeId 변경에
+  // 따른 자동 가운데 정렬(위 effect의 container.scrollTo) 둘 다 container에서 "scroll" 이벤트를
+  // 만들어내므로, 이 하나의 리스너로 두 경우 모두 커버된다.
+  // mobile variant는 드로어가 열릴 때마다 nav 자체가 새로 마운트되므로(open ? <...>{nav}</...> :
+  // null), items만 의존성으로 두면 최초 마운트 시점(드로어가 닫혀 navRef가 null)에만 실행되고
+  // 이후 재오픈 시 리스너가 다시 붙지 않는다 — open도 의존성에 넣어 열릴 때마다 재부착한다.
+  React.useEffect(() => {
+    const container = navRef.current
+    if (!container) return
+
+    let ticking = false
+
+    const updateHiddenBelowCount = () => {
+      const containerRect = container.getBoundingClientRect()
+      let count = 0
+      for (const item of items) {
+        const el = itemRefs.current.get(item.id)
+        if (!el) continue
+        if (el.getBoundingClientRect().bottom > containerRect.bottom + SCROLL_SPY_EPSILON) count += 1
+      }
+      setHiddenBelowCount(count)
+    }
+
+    const onScroll = () => {
+      if (ticking) return
+      ticking = true
+      requestAnimationFrame(() => {
+        updateHiddenBelowCount()
+        ticking = false
+      })
+    }
+
+    updateHiddenBelowCount()
+    container.addEventListener("scroll", onScroll, { passive: true })
+    // 컨테이너 자체는 max-h-[500px]로 고정 높이지만, 항목 라벨이 줄바꿈되는 등 콘텐츠 쪽 높이가
+    // 바뀌는 경우(예: 반응형 폭 변화)까지 잡기 위해 스크롤 이벤트만이 아니라 크기 변화도 관찰한다.
+    const resizeObserver = new ResizeObserver(onScroll)
+    resizeObserver.observe(container)
+
+    return () => {
+      container.removeEventListener("scroll", onScroll)
+      resizeObserver.disconnect()
+    }
+  }, [items, open])
+
   if (items.length === 0) return null
+
+  const moreLabel =
+    hiddenBelowCount > 0 ? (
+      <p className="mt-2 pr-2 text-right font-code-sm text-[11px] text-on-surface-variant/60" aria-hidden="true">
+        +{hiddenBelowCount} more
+      </p>
+    ) : null
 
   const nav = (
     <nav
@@ -419,6 +474,7 @@ export function TocSidebar({
               <h4 className="font-label-caps text-xs tracking-widest">Table Of Contents</h4>
             </div>
             {nav}
+            {moreLabel}
           </div>
         ) : null}
       </div>
@@ -433,6 +489,7 @@ export function TocSidebar({
           <h4 className="font-label-caps text-xs tracking-widest">Table Of Contents</h4>
         </div>
         {nav}
+        {moreLabel}
       </div>
     </div>
   )
