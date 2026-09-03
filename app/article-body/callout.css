@@ -175,8 +175,10 @@
   color: var(--color-on-surface);
 }
 .article-body .callout-comeau-body {
-  display: grid;
-  gap: 0.75rem;
+  /* grid+gap이던 이전 구현은 grid가 형제 간 margin collapse를 막아, 코드 블록처럼 자체
+     margin(2rem)을 가진 자식 뒤에서 gap(0.75rem)까지 더해져 일반 .callout-body보다 간격이
+     과하게 벌어졌다(32px vs 60px, 사용자가 실측 비교로 발견). block 플로우로 되돌려 .callout-body와
+     동일하게 margin collapse에 맡긴다. */
   color: var(--color-on-surface-variant);
   font-family: var(--font-body-md);
   font-size: 0.9375rem;
