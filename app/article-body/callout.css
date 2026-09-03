@@ -1,0 +1,211 @@
+.article-body .callout {
+  margin: 1.5rem 0;
+  overflow: hidden;
+  border-radius: 0.375rem;
+  border: 1px solid var(--callout-accent, var(--color-outline-variant));
+  background-color: color-mix(in srgb, var(--callout-accent, var(--color-outline-variant)) 6%, var(--color-surface-container-lowest));
+}
+.article-body .callout-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  font-family: var(--font-code-sm);
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--callout-accent, var(--color-on-surface));
+}
+.article-body .callout-icon {
+  width: 1.125rem;
+  height: 1.125rem;
+  flex-shrink: 0;
+}
+.article-body .callout-body {
+  padding: 0 1rem 1rem;
+  color: var(--color-on-surface-variant);
+}
+.article-body .callout-body > *:first-child {
+  margin-top: 0;
+}
+
+/* 콜아웃 타입별 강조색 — Material 팔레트 밖의 신규 시맨틱 컬러(다크/라이트 쌍) */
+.article-body .callout-note { --callout-accent: #0969da; }
+.article-body .callout-info { --callout-accent: #0891b2; }
+.article-body .callout-tip { --callout-accent: #1a7f37; }
+.article-body .callout-success { --callout-accent: #15803d; }
+.article-body .callout-warning { --callout-accent: #9a6700; }
+.article-body .callout-danger { --callout-accent: #cf222e; }
+.article-body .callout-question { --callout-accent: #8250df; }
+.article-body .callout-bug { --callout-accent: #c2255c; }
+.article-body .callout-example { --callout-accent: #57606a; }
+.article-body .callout-quote { --callout-accent: #6e7781; }
+.article-body .callout-important { --callout-accent: #bf3989; }
+
+.dark .article-body .callout-note { --callout-accent: #58a6ff; }
+.dark .article-body .callout-info { --callout-accent: #22d3ee; }
+.dark .article-body .callout-tip { --callout-accent: #3fb950; }
+.dark .article-body .callout-success { --callout-accent: #4ade80; }
+.dark .article-body .callout-warning { --callout-accent: #d29922; }
+.dark .article-body .callout-danger { --callout-accent: #f85149; }
+.dark .article-body .callout-question { --callout-accent: #a371f7; }
+.dark .article-body .callout-bug { --callout-accent: #f778ba; }
+.dark .article-body .callout-example { --callout-accent: #9198a1; }
+.dark .article-body .callout-quote { --callout-accent: #8b949e; }
+.dark .article-body .callout-important { --callout-accent: #ec6cb9; }
+
+/* joshwcomeau.com 스타일 콜아웃(> [!TYPE], remark-callout-comeau.ts 출력) — 기존
+   .callout(GitHub Alert 스타일, > [#TYPE])과 완전히 별개의 프로토타입. 좌측에 SVG 2겹으로 그린
+   곡선 장식(스우시)이 흐르다 아이콘 뱃지와 겹치는 지점에서 끝나고, 그 아래는 단색 바로 이어진다.
+   컨테이너가 좁아지면(container query) 장식을 접고 단순 border-left로 대체한다.
+   벤치마킹 원본: https://www.joshwcomeau.com/css/anchor-positioning/#flipped-carets-with-anchored-container-queries-3 */
+.article-body .callout-comeau {
+  position: relative;
+  /* 접기 가능한 콜아웃은 <details>로 렌더되어 범용 `.article-body details{overflow:hidden;
+     border:1px solid ...}` 규칙과도 매치된다 — overflow는 뱃지가 카드 왼쪽 바깥으로 나가는
+     부분이 잘리는 걸 막기 위해, border는 non-collapsible(<aside>) 버전과 톤을 맞추기 위해
+     둘 다 명시적으로 되돌린다 */
+  overflow: visible;
+  border: none;
+  container-type: inline-size;
+  container-name: callout-comeau;
+  margin: 1.5rem 0;
+  padding: 1.25rem 1.25rem 1.25rem 2.75rem;
+  border-radius: var(--radius-lg);
+  background-color: color-mix(in srgb, var(--callout-comeau-accent, var(--color-outline-variant)) 6%, var(--color-surface-container-lowest));
+}
+.article-body .callout-comeau-summary {
+  /* 접기 가능한 콜아웃(<details>)의 헤더 — 범용 `.article-body summary` 규칙(코드체 폰트,
+     0.75rem 1rem 패딩 등)이 이 클래스 선택자보다 우선순위가 낮아 자동으로 깔리므로 명시
+     초기화한다. 화살표(::after)와 marker 숨김은 범용 규칙을 그대로 재사용 — details/summary
+     태그만 맞으면 자동 적용되고 회전 애니메이션도 이미 갖춰져 있다 */
+  display: flex;
+  align-items: center;
+  gap: 0;
+  padding: 0;
+  cursor: pointer;
+  font: inherit;
+  color: inherit;
+}
+.article-body .callout-comeau-summary .callout-comeau-title {
+  /* 요약줄 안에서는 flex 1로 남는 폭을 차지해야 화살표가 우측 끝에 붙는다 */
+  flex: 1 1 auto;
+  margin-bottom: 0;
+}
+.article-body .callout-comeau-body {
+  /* 접기 가능한 콜아웃은 <details>가 되어 범용 `.article-body details > *:not(summary)`
+     규칙(padding: 0 1rem 1rem)과도 매치된다 — 카드 자체 패딩과 이중으로 겹치지 않게 0으로 리셋 */
+  padding: 0;
+}
+.article-body .callout-comeau-rail {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  /* 너비를 강제하지 않는다 — SVG가 width/height 속성(28.5×34.5 또는 37.5×35, remark-callout-comeau.ts
+     의 SWOOSH_GEOMETRY)을 직접 갖고 있어서 absolute + 명시적 width 없이도 그 크기로 shrink-to-fit된다.
+     타입마다 곡선 variant가 달라 폭이 달라지므로 고정폭을 두면 안 된다(FR: 타입별 곡선) */
+}
+.article-body .callout-comeau-swoosh {
+  display: block;
+  /* width/height는 CSS가 아니라 SVG 엘리먼트 자체의 속성으로 온다(Josh 원본과 동일한 방식) —
+     viewBox를 렌더 크기의 정확히 2배로 설계해뒀기 때문에 이 속성값이 스케일을 고정하고,
+     곡선 꼬리(6 units)가 항상 3px로 떨어져 아래 직선 바(3px)와 이음새가 맞는다 */
+  flex-shrink: 0;
+  overflow: visible;
+}
+.article-body .callout-comeau-swoosh-cut {
+  fill: var(--color-background);
+}
+.article-body .callout-comeau-swoosh-stroke {
+  fill: var(--callout-comeau-accent, var(--color-outline-variant));
+}
+.article-body .callout-comeau-bar {
+  flex: 1 1 0;
+  width: 3px;
+  margin-top: -1px;
+  border-radius: 0 0 100px 100px;
+  background-color: var(--callout-comeau-accent, var(--color-outline-variant));
+}
+.article-body .callout-comeau-fallback-bar {
+  display: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 3px;
+  border-radius: 10px;
+  background-color: var(--callout-comeau-accent, var(--color-outline-variant));
+}
+.article-body .callout-comeau-badge {
+  /* 뱃지 중심(x)을 아래로 이어지는 직선 바(.callout-comeau-bar, x:0~3px, 중심 1.5px)와 정확히
+     같은 열에 맞춘다. 뱃지 박스는 아이콘 32px + 좌우 padding 8px = 48px, transform이
+     -50%(-24px) - 1.5px 만큼 왼쪽으로 당기므로: 중심 = left - 1.5. 1.5(바 중심)로 두려면
+     left는 3px여야 한다(left - 1.5 = 1.5 → left = 3) */
+  position: absolute;
+  top: 0;
+  left: 3px;
+  transform: translate(calc(-50% - 1.5px), -50%);
+  display: flex;
+  padding: 8px;
+  color: var(--callout-comeau-accent, var(--color-on-surface));
+}
+.article-body .callout-comeau-icon {
+  display: block;
+}
+.article-body .callout-comeau-title {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-family: var(--font-body-md);
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--color-on-surface);
+}
+.article-body .callout-comeau-body {
+  display: grid;
+  gap: 0.75rem;
+  color: var(--color-on-surface-variant);
+  font-family: var(--font-body-md);
+  font-size: 0.9375rem;
+  line-height: 1.7;
+}
+.article-body .callout-comeau-body > *:first-child {
+  margin-top: 0;
+}
+.article-body .callout-comeau-body > *:last-child {
+  margin-bottom: 0;
+}
+
+/* 컨테이너가 좁아지면(예: 모바일 사이드바 폭) SVG 곡선 장식과 아이콘 뱃지를 접고
+   단순 바(callout-comeau-fallback-bar)로 대체한다 — Josh의 사이트가 container query로
+   flourish/plain-bar 두 구현을 스왑하는 것과 동일한 방식. 컨테이너 자신(.callout-comeau)은
+   스스로가 세운 컨테이너를 쿼리할 수 없으므로(자기 참조 금지) 반드시 자식 엘리먼트를 토글해야 한다 */
+@container callout-comeau (max-width: 360px) {
+  .article-body .callout-comeau-rail,
+  .article-body .callout-comeau-badge {
+    display: none;
+  }
+  .article-body .callout-comeau-fallback-bar {
+    display: block;
+  }
+}
+
+/* 콜아웃 타입별 강조색 — 기존 .callout-* 팔레트와 동일한 값을 재사용해 두 콜아웃 시스템 간
+   시맨틱 컬러를 통일한다(교체 시 색 인식이 흔들리지 않도록) */
+.article-body .callout-comeau-note { --callout-comeau-accent: #0969da; }
+.article-body .callout-comeau-info { --callout-comeau-accent: #0891b2; }
+.article-body .callout-comeau-tip { --callout-comeau-accent: #1a7f37; }
+.article-body .callout-comeau-success { --callout-comeau-accent: #15803d; }
+.article-body .callout-comeau-warning { --callout-comeau-accent: #9a6700; }
+.article-body .callout-comeau-danger { --callout-comeau-accent: #cf222e; }
+.article-body .callout-comeau-quote { --callout-comeau-accent: #6e7781; }
+
+.dark .article-body .callout-comeau-note { --callout-comeau-accent: #58a6ff; }
+.dark .article-body .callout-comeau-info { --callout-comeau-accent: #22d3ee; }
+.dark .article-body .callout-comeau-tip { --callout-comeau-accent: #3fb950; }
+.dark .article-body .callout-comeau-success { --callout-comeau-accent: #4ade80; }
+.dark .article-body .callout-comeau-warning { --callout-comeau-accent: #d29922; }
+.dark .article-body .callout-comeau-danger { --callout-comeau-accent: #f85149; }
+.dark .article-body .callout-comeau-quote { --callout-comeau-accent: #8b949e; }

@@ -1,0 +1,119 @@
+/* Mermaid 확대 보기 모달(components/mermaid/mermaid-lightbox-modal.tsx) — 실제 React 컴포넌트라
+   .article-body 스코프 밖(article-body div의 형제)에 렌더링되므로 전역 선택자를 쓴다.
+   Mermaid/PlantUML(같은 컴포넌트 재사용)/Markmap 세 확대 보기 모두에서 배경이 뷰포트 전체를
+   덮지 못하고 하단이 잘려 보이는 버그가 있었다 — 이 모달이 portal 없이 `<article
+   className="space-y-12 ...">`의 평범한 자식으로 렌더링되는데, Tailwind의 `space-y-12`가 형제
+   요소 사이에 `margin-bottom: 3rem`(48px)을 붙인다. `position: fixed`는 레이아웃 흐름에서
+   빠지지만 margin은 여전히 박스 모델에 반영되므로, `top:0; bottom:0`(inset:0)과 결합해 실제
+   렌더링 높이가 뷰포트보다 48px 작아졌다(실측: 720px 뷰포트에서 672px로 렌더링).
+   `margin: 0`으로 명시적으로 초기화해 조상 컨테이너의 spacing 유틸리티가 새어 들어오지 않게
+   막는다. 배경 불투명도는 이 블로그의 다른 모달(검색 커맨드 팔레트, search-modal.tsx의
+   `overlayClassName="... bg-black/40"`)과 동일한 40%로 맞춘다 — 같은 "모달 스크림"이라는
+   패턴인데 서로 다른 불투명도를 쓰면 일관성이 깨진다는 지적에 따름(사용자 피드백). */
+.mermaid-lightbox-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  padding: 4vh 4vw;
+  background-color: color-mix(in srgb, black 40%, transparent);
+}
+.mermaid-lightbox-panel {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  max-width: 1200px;
+  border-radius: 0.5rem;
+  background-color: var(--color-surface-container-lowest);
+  overflow: hidden;
+}
+.mermaid-lightbox-canvas {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+.mermaid-lightbox-canvas svg {
+  width: 100%;
+  height: 100%;
+}
+.mermaid-lightbox-close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  z-index: 2;
+  display: flex;
+  height: 2.5rem;
+  width: 2.5rem;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 9999px;
+  background-color: color-mix(in srgb, var(--color-surface-container-lowest) 70%, transparent);
+  color: var(--color-on-surface);
+  cursor: pointer;
+}
+.mermaid-lightbox-close:hover {
+  background-color: var(--color-surface-container-low);
+}
+/* 상하좌우 이동 버튼을 3x3 그리드 십자 모양으로, 리셋 버튼을 그 정중앙에 배치한다. 돋보기 +/-는
+   같은 컨트롤 클러스터 아래 별도 줄로 둔다. */
+.mermaid-lightbox-controls {
+  position: absolute;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: repeat(3, 2.25rem);
+  grid-template-rows: repeat(3, 2.25rem) 2.25rem;
+  gap: 0.375rem;
+}
+.mermaid-lightbox-controls button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 0.375rem;
+  background-color: color-mix(in srgb, var(--color-surface-container-lowest) 70%, transparent);
+  color: var(--color-on-surface);
+  cursor: pointer;
+}
+.mermaid-lightbox-controls button:hover {
+  background-color: var(--color-surface-container-low);
+}
+.mermaid-lightbox-pan-up {
+  grid-column: 2;
+  grid-row: 1;
+}
+.mermaid-lightbox-pan-left {
+  grid-column: 1;
+  grid-row: 2;
+}
+.mermaid-lightbox-reset {
+  grid-column: 2;
+  grid-row: 2;
+}
+.mermaid-lightbox-pan-right {
+  grid-column: 3;
+  grid-row: 2;
+}
+.mermaid-lightbox-pan-down {
+  grid-column: 2;
+  grid-row: 3;
+}
+.mermaid-lightbox-zoom-out {
+  grid-column: 1;
+  grid-row: 4;
+}
+.mermaid-lightbox-zoom-in {
+  grid-column: 3;
+  grid-row: 4;
+}
+.mermaid-lightbox-icon {
+  width: 1.1rem;
+  height: 1.1rem;
+}

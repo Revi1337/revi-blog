@@ -1,0 +1,171 @@
+/* 아티클 본문(dangerouslySetInnerHTML로 주입되는 raw HTML)의 타이포그래피 —
+   Tailwind preflight가 heading/list 기본 스타일을 리셋하므로 여기서 직접 복원한다. */
+.article-body h2 {
+  margin-top: 3rem;
+  scroll-margin-top: var(--header-offset);
+  /* var(--font-headline-lg) 대신 --font-pretendard를 직접 참조한다 — Tailwind v4의 "@theme inline"
+     토큰은 자체 유틸리티 클래스(.font-headline-lg 등)에만 값이 리터럴로 인라인되고, 이 파일처럼
+     유틸리티 클래스를 거치지 않는 raw CSS에서 var(--font-headline-lg)로 참조하면 값이 비어
+     body의 font-body-md(Inter 우선)로 조용히 폴백해버린다. */
+  font-family: var(--font-pretendard), sans-serif;
+  font-size: var(--text-headline-lg);
+  line-height: var(--text-headline-lg--line-height);
+  letter-spacing: var(--text-headline-lg--letter-spacing);
+  font-weight: var(--text-headline-lg--font-weight);
+  color: var(--color-on-surface);
+}
+/* 헤딩 접기(remark-heading-fold.ts)가 모든 헤딩을 `<details class="heading-fold"><summary>`로
+   감싸므로, h2는 항상 summary의 유일한 자식이 되어 `h2:first-child` 단독으로는 "문서에서 실제로
+   첫 번째인 h2"가 아니라 "모든 h2"에 매치돼 버린다(각자 자기 summary 안에서는 항상 first-child).
+   article-body의 실제 첫 자식인 최상위 details 안, summary의 h2일 때만 매치하도록 두 조건을
+   모두 검사한다(실측으로 발견 — "핵심 지표"처럼 문서 중간에 있는 h2도 margin-top이 0이 되어
+   있었다). */
+.article-body > details.heading-fold:first-child > summary > h2:first-child {
+  margin-top: 0;
+}
+/* H2만 구분선을 둔다 — H3~H6는 이미 폰트 크기/굵기로 body와 충분히 구분되고, H3까지 넣으면
+   섹션당 여러 개 반복돼 오히려 화면이 잘게 쪼개져 보인다(사용자 피드백). */
+.article-body h2::after {
+  content: "";
+  display: block;
+  margin-top: 0.5rem;
+  height: 1px;
+  background-color: color-mix(in srgb, var(--color-on-surface) 30%, transparent);
+}
+.article-body h3 {
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+  scroll-margin-top: var(--header-offset);
+  font-family: var(--font-pretendard), sans-serif;
+  font-size: 1.625rem;
+  line-height: 2.125rem;
+  font-weight: 600;
+  color: var(--color-on-surface);
+}
+.article-body h4 {
+  margin-top: 1.5rem;
+  margin-bottom: 0.75rem;
+  scroll-margin-top: var(--header-offset);
+  font-family: var(--font-pretendard), sans-serif;
+  font-size: 1.25rem;
+  line-height: 1.75rem;
+  font-weight: 600;
+  color: var(--color-on-surface);
+}
+/* h5/h6는 TOC·퍼머링크 지원 범위(h2~h4) 밖이라 rehype-heading-anchor가 id/앵커를 붙이지 않는다.
+   여기서는 순수 시각 스타일만 h4와 동일하게 맞춰서, 만약 마크다운에서 #####/######을 쓰더라도
+   최소한 폰트 굵기가 400(브라우저 기본값)으로 뚝 떨어지는 일은 없게 한다. */
+.article-body h5,
+.article-body h6 {
+  margin-top: 1.5rem;
+  margin-bottom: 0.75rem;
+  font-family: var(--font-pretendard), sans-serif;
+  font-size: 1.25rem;
+  line-height: 1.75rem;
+  font-weight: 600;
+  color: var(--color-on-surface);
+}
+/* heading 앵커 링크 — 마크업은 rehype-heading-anchor 플러그인이 빌드 타임에 h2/h3/h4 끝에 삽입한다.
+   평소엔 숨겨져 있다가 라벨 텍스트(.heading-anchor-label) 위에 hover/focus하면 살짝 오른쪽에서
+   밀려 들어오며 나타난다(GitHub 스타일). h2/h3/h4는 block이라 라벨을 inline span으로 감싸지 않으면
+   hover 영역이 텍스트 우측 빈 공간까지 라인 전체로 넓어지므로, 라벨 span 기준으로만 반응하게 한다. */
+.article-body .heading-anchor {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 0.5rem;
+  vertical-align: middle;
+  opacity: 0;
+  transform: translateX(-0.25rem);
+  transition:
+    opacity 0.18s ease-out,
+    transform 0.18s ease-out,
+    color 0.15s ease-out;
+  color: color-mix(in srgb, var(--color-on-surface-variant) 55%, transparent);
+}
+.article-body .heading-anchor-label:hover + .heading-anchor,
+.article-body .heading-anchor:hover,
+.article-body .heading-anchor:focus-visible {
+  opacity: 1;
+  transform: translateX(0);
+}
+.article-body .heading-anchor:hover {
+  color: var(--color-primary);
+}
+.dark .article-body .heading-anchor:hover {
+  color: var(--color-primary-fixed);
+}
+.article-body .heading-anchor-icon {
+  width: 0.8em;
+  height: 0.8em;
+}
+.article-body p {
+  margin-top: 1rem;
+  line-height: 1.75rem;
+  font-weight: var(--text-body-md--font-weight);
+  color: var(--color-on-surface-variant);
+}
+/* 본문/리스트(Reference 등) 안의 인라인 링크 — Tailwind preflight가 기본 밑줄/색상을 지워서
+   본문 텍스트와 구분이 안 됐다. 다른 곳(heading-anchor)과 같은 포인트 컬러(--color-primary)를
+   쓰고, 밑줄은 항상 보이게 해서(hover 전용이 아니라) 클릭 가능하다는 걸 텍스트만 봐도 알 수 있게 한다. */
+.article-body a {
+  color: var(--color-primary);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  text-decoration-color: color-mix(in srgb, var(--color-primary) 40%, transparent);
+  transition: text-decoration-color 0.15s ease-out;
+}
+.article-body a:hover {
+  text-decoration-color: var(--color-primary);
+}
+.dark .article-body a {
+  color: var(--color-primary-fixed);
+  text-decoration-color: color-mix(in srgb, var(--color-primary-fixed) 40%, transparent);
+}
+.dark .article-body a:hover {
+  text-decoration-color: var(--color-primary-fixed);
+}
+.article-body ul {
+  margin-top: 1.5rem;
+  margin-bottom: 1.5rem;
+  margin-left: 1.5rem;
+  list-style-type: disc;
+  font-weight: var(--text-body-md--font-weight);
+  color: var(--color-on-surface-variant);
+}
+.article-body ol {
+  margin-top: 1.5rem;
+  margin-bottom: 1.5rem;
+  margin-left: 1.5rem;
+  list-style-type: decimal;
+  font-weight: var(--text-body-md--font-weight);
+  color: var(--color-on-surface-variant);
+}
+.article-body li {
+  margin-top: 0.5rem;
+}
+/* ul/ol이 li 안에 중첩되면(예: ol > li > ul) 위쪽 규칙의 margin-top/bottom: 1.5rem이
+   그대로 상속돼 li 간격(0.5rem)과 뒤섞이면서 항목마다 간격이 들쭉날쭉해 보였다.
+   중첩된 리스트는 부모 li의 리듬(0.5rem)을 따르도록 여백을 좁게 재정의한다. */
+.article-body li > ul,
+.article-body li > ol {
+  margin-top: 0.5rem;
+  margin-bottom: 0;
+}
+
+/* 마커 없는 일반 인용구(`>` 문법) — [#TYPE]/[!TYPE] 마커가 있는 blockquote는
+   remark-callout(-comeau).ts가 hName을 div/aside/details로 치환해버리므로 이 셀렉터에는
+   걸리지 않는다. 즉 실제 <blockquote> 태그로 남는 건 마커 없는 순수 인용구뿐이다. */
+.article-body blockquote {
+  margin: 1.5rem 0;
+  padding-left: 1rem;
+  border-left: 3px solid var(--color-outline-variant);
+  color: var(--color-on-surface-variant);
+  font-style: italic;
+}
+.article-body blockquote p {
+  margin-top: 0;
+}
+.article-body blockquote p + p {
+  margin-top: 0.5rem;
+}

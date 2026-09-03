@@ -1,0 +1,44 @@
+/* GFM 테이블(remark-gfm) — body의 32px grid 배경 위에 표를 그리면 배경/테두리가 없어 셀
+   구분이 전혀 보이지 않던 문제를 해결한다. table에 직접 overflow-x를 걸어(GitHub markdown-body와
+   동일한 방식) 래퍼 엘리먼트 없이도 좁은 화면에서 가로 스크롤을 허용한다. */
+.article-body table {
+  display: block;
+  width: max-content;
+  max-width: 100%;
+  margin: 1.5rem 0;
+  overflow-x: auto;
+  border-collapse: collapse;
+  font-size: 0.9375rem;
+  color: var(--color-on-surface-variant);
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-outline-variant) transparent;
+}
+.article-body table::-webkit-scrollbar {
+  height: 6px;
+}
+.article-body table::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+.article-body table::-webkit-scrollbar-thumb {
+  background-color: var(--color-outline-variant);
+  border-radius: 3px;
+}
+.article-body th,
+.article-body td {
+  padding: 0.4rem 0.875rem;
+  line-height: 1.45;
+  border: 1px solid color-mix(in srgb, var(--color-outline-variant) 40%, transparent);
+}
+.article-body thead th {
+  background-color: var(--color-surface-container);
+  color: var(--color-on-surface);
+  font-weight: 600;
+  text-align: left;
+  white-space: nowrap;
+}
+.article-body tbody tr {
+  background-color: var(--color-surface-container-lowest);
+}
+.article-body tbody tr:nth-child(even) {
+  background-color: color-mix(in srgb, var(--color-surface-container) 40%, var(--color-surface-container-lowest));
+}

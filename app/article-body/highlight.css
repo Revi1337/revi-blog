@@ -1,0 +1,10 @@
+/* ==text== 하이라이트(remark-highlight.ts) */
+.article-body mark {
+  border-radius: 0.125rem;
+  padding: 0.05em 0.2em;
+  background-color: color-mix(in srgb, var(--color-primary) 30%, transparent);
+  color: var(--color-on-surface);
+}
+.dark .article-body mark {
+  background-color: color-mix(in srgb, var(--color-primary-fixed) 35%, transparent);
+}

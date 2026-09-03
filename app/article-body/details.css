@@ -1,0 +1,102 @@
+/* 콜아웃(> [!TYPE]) + raw <details>/<summary>(옵시디언 원고 접이식 섹션) 공용 스타일
+   (remark-callout.ts 출력, spec.md FR-001~FR-014).
+   `.heading-fold`는 아래 details/summary 선택자에서 `:where(:not(.heading-fold))`로 처음부터
+   제외한다 — heading-fold는 "요소가 아예 없는 것처럼" 보여야 하는데, 예전엔 이 공용 규칙을
+   heading-fold도 똑같이 받은 뒤 별도 override 블록(margin/overflow/border/background/display/
+   padding 등)으로 하나하나 되돌리는 방식이었다. 되돌리기 목록이 이 공용 규칙이 실제로 선언한
+   속성과 항상 정확히 일치해야 했는데, 실측으로 4차례 어긋남이 발견됐다(research.md §8) — 공용
+   규칙에 속성이 추가/변경될 때마다 override 쪽도 사람이 기억해서 맞춰야 하는 구조였기 때문이다.
+   반드시 `:not()`이 아니라 `:where(:not(...))`로 감싸야 한다 — `:not()`을 details 선택자에 직접
+   쓰면 특이도가 (0,1,1)에서 (0,2,1)로 올라가, `.callout-comeau`의 overflow/border 재정의
+   (특이도 0,2,0, `isCollapsible`일 때 `<details class="callout-comeau">`로도 렌더됨 —
+   remark-callout-comeau.ts:324)를 역전시켜버린다. `:where()`는 내부 선택자의 특이도를 0으로
+   만들므로 원래 특이도(0,1,1)를 그대로 유지하면서 heading-fold만 구조적으로 제외할 수 있다. */
+.article-body details:where(:not(.heading-fold)) {
+  margin: 1.5rem 0;
+  overflow: hidden;
+  border-radius: 0.375rem;
+  border: 1px solid color-mix(in srgb, var(--color-outline-variant) 40%, transparent);
+  background-color: var(--color-surface-container-lowest);
+}
+.article-body details:where(:not(.heading-fold)) > summary {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  list-style: none;
+  cursor: pointer;
+  font-family: var(--font-code-sm);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--color-on-surface);
+}
+.article-body details:where(:not(.heading-fold)) > summary::-webkit-details-marker {
+  display: none;
+}
+.article-body details:where(:not(.heading-fold)) > summary::after {
+  content: "";
+  flex-shrink: 0;
+  width: 0.5rem;
+  height: 0.5rem;
+  margin-left: auto;
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  transform: rotate(-45deg);
+  transition: transform 0.2s ease;
+}
+.article-body details:where(:not(.heading-fold))[open] > summary::after {
+  transform: rotate(45deg);
+}
+.article-body details:not(.heading-fold) > *:not(summary) {
+  padding: 0 1rem 1rem;
+}
+.article-body details:not(.heading-fold) > *:not(summary):first-of-type {
+  margin-top: 0;
+}
+
+/* 헤딩 접기(remark-heading-fold.ts 출력, spec.md FR-001~FR-012) — 콜아웃과 같은
+   <details>/<summary> 프리미티브를 재사용하지만, 시각적으로는 기존(접기 기능이 없던 시절) 헤딩과
+   완전히 동일해야 한다 — 쉐브론이나 박스 없이, 헤딩을 클릭하면 접힐 뿐이다(사용자 피드백 — 콜아웃과
+   달리 헤딩 접기는 눈에 띄는 UI 변화가 있어서는 안 됨).
+   위 공용 규칙이 `:where(:not(.heading-fold))`로 heading-fold를 이미 제외하므로, 아래 선언은
+   "공용 규칙을 되돌리는 override"가 아니라 heading-fold 자신의 완결된 스타일이다 — 공용 규칙에
+   무엇이 추가/변경되든 여기엔 새어 들어오지 않는다.
+   summary를 `display: block`으로 두는 이유: 최초 구현은 `display: flex`로 만들어 왼쪽에
+   쉐브론을 그렸는데, 이 때문에 h2가 flex item으로 content-width까지만 줄어들어 `h2::after`
+   밑줄 구분선이 아주 짧아지고, flex 컨테이너가 margin collapse를 막아 헤딩 위/아래 여백까지
+   달라지는 회귀가 실측(playwright, 실제 배포 화면과 비교)으로 발견됐다. `display: block`이면
+   h2가 원래와 똑같이 전체 폭을 차지하고 margin collapse도 그대로 통과한다 — details/summary
+   둘 다 자체 박스(테두리/배경/패딩)를 전혀 갖지 않으므로 시각적으로는 완전히 "없는 요소"처럼
+   동작한다. */
+.article-body details.heading-fold {
+  margin: 0;
+  overflow: visible;
+  border: none;
+  border-radius: 0;
+  background: none;
+}
+.article-body details.heading-fold > summary {
+  display: block;
+  padding: 0;
+  list-style: none;
+  cursor: pointer;
+  font: inherit;
+  color: inherit;
+}
+/* 브라우저 기본 <summary> 마커(디스크로저 삼각형)를 숨긴다 — 공용 규칙이 더 이상 heading-fold에
+   적용되지 않으므로, 이건 "취소"가 아니라 heading-fold가 직접 챙겨야 하는 자신의 스타일이다. */
+.article-body details.heading-fold > summary::-webkit-details-marker {
+  display: none;
+}
+/* 공용 규칙의 쉐브론(`::after`)이 애초에 heading-fold에 적용되지 않으므로 이 선언은 사실
+   불필요하지만(콜아웃 쉐브론은 애초에 안 생김), 방어적으로 명시해 둔다 — 헤딩 접기는 쉐브론이
+   필요 없다(사용자 피드백). */
+.article-body details.heading-fold > summary::after {
+  content: none;
+}
+/* 자식 콘텐츠에 별도 padding/margin 규칙을 주지 않는다 — 콜아웃 전용 패딩 리셋 규칙(위
+   `details:not(.heading-fold) > *:not(summary)`)이 이미 `.heading-fold`를 제외하므로, 헤딩
+   접기의 자식(문단/코드블록/표/이미지/중첩 콜아웃 등)은 각자의 원래 CSS를 그대로 유지한다.
+   여기서 `*:not(summary) { padding: 0 }` 같은 규칙을 넣으면 콜아웃처럼 자체 패딩을 가진 자식의
+   스타일까지 덮어써 버리는 회귀가 생긴다(실측으로 발견 — callout-comeau가 패딩을 잃고 카드
+   배경도 없이 텍스트가 가장자리까지 붙어버렸다). */

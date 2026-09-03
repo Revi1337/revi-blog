@@ -1,0 +1,66 @@
+/* 이미지 라이트박스(PhotoSwipe) — 본문/썸네일 이미지 클릭 시 lib/lightbox/open-image-lightbox.ts가
+   동적으로 로드해 연다. 크기 제약(FR-003)과 확대·축소 배율(FR-007)은 해당 모듈의 옵션이 담당하고,
+   여기서는 배경 블러(FR-004)만 담당한다. 커스텀 +/- 버튼은 별도 hover 스타일을 얹지 않고
+   PhotoSwipe 기본 `.pswp__button:hover`(배경 없이 opacity만 1로 올라가는 것)를 그대로 따른다 —
+   닫기·화살표 버튼과 동일한 hover 느낌을 위해서다(사용자 피드백, Constitution Principle II) */
+.article-body img {
+  cursor: zoom-in;
+}
+/* 이미지 문단(p > img) 바로 다음에 오는, 이미지가 아닌(=순수 텍스트) 문단에만 여백 추가 */
+.article-body p:has(> img) + p:not(:has(> img)) {
+  margin-top: 2.5rem; /* 기존 .article-body p { margin-top: 1rem } 위에 덮어씀 */
+}
+
+/* 이미지 로딩 인디케이터 — remark-images.ts가 <img>에 심어둔 width/height 덕분에 이미지
+   문단은 로드 전부터 실제 비율만큼 공간이 이미 예약돼 있다(레이아웃 시프트 없음). 이 문단을
+   기준 좌표(position: relative)로 삼아, ImageLoadingIndicatorHandler가 로드 전 <img> 바로
+   뒤에 심는 인디케이터를 그 예약된 공간에 정확히 겹쳐(inset: 0) 그린다. */
+.article-body p:has(> img) {
+  position: relative;
+}
+.image-loading-indicator {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background-color: var(--color-surface-container);
+}
+.image-loading-indicator span {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 9999px;
+  background-color: var(--color-outline);
+  animation: image-loading-wave 1s ease-in-out infinite;
+}
+.image-loading-indicator span:nth-child(1) {
+  animation-delay: 0s;
+}
+.image-loading-indicator span:nth-child(2) {
+  animation-delay: 0.12s;
+}
+.image-loading-indicator span:nth-child(3) {
+  animation-delay: 0.24s;
+}
+.image-loading-indicator span:nth-child(4) {
+  animation-delay: 0.36s;
+}
+@keyframes image-loading-wave {
+  0%,
+  60%,
+  100% {
+    transform: translateY(0);
+    opacity: 0.4;
+  }
+  30% {
+    transform: translateY(-40%);
+    opacity: 1;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .image-loading-indicator span {
+    animation: none;
+    opacity: 0.6;
+  }
+}
