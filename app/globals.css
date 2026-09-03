@@ -292,8 +292,3 @@ body {
   background-color: var(--color-primary-fixed-dim);
   color: var(--color-on-primary-fixed);
 }
-
-.pswp__bg {
-  -webkit-backdrop-filter: blur(16px);
-  backdrop-filter: blur(16px);
-}

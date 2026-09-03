@@ -127,7 +127,7 @@ export async function openImageLightbox({
     dataSource: preparedDataSource,
     index,
     pswpModule: () => import("photoswipe"),
-    bgOpacity: 0.85,
+    bgOpacity: 0.4,
     paddingFn,
     showHideAnimationType: "zoom",
     loop: false,
