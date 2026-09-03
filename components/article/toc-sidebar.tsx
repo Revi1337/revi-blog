@@ -376,12 +376,26 @@ export function TocSidebar({
 
   if (items.length === 0) return null
 
-  const moreLabel =
-    hiddenBelowCount > 0 ? (
-      <span className="ml-auto font-code-sm text-[11px] text-on-surface-variant/60" aria-hidden="true">
-        +{hiddenBelowCount} more
-      </span>
-    ) : null
+  // key를 hiddenBelowCount 값이 아니라 고정 문자열로 둔다 — count가 13→12처럼 숫자만 바뀔 때는
+  // AnimatePresence가 같은 자식으로 보고 텍스트만 조용히 갱신하고, 0 ↔ 0 초과로 넘어가 이 자식 자체가
+  // 나타나거나 사라질 때만 enter/exit 모션이 재생된다(사용자 요청 — "더보기" 등장/퇴장에만 모션).
+  const moreLabel = (
+    <AnimatePresence>
+      {hiddenBelowCount > 0 && (
+        <m.span
+          key="more-label"
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          exit={{ opacity: 0, scale: 0.8 }}
+          transition={{ duration: 0.2 }}
+          className="ml-auto font-code-sm text-[11px] text-on-surface-variant/60"
+          aria-hidden="true"
+        >
+          +{hiddenBelowCount} more
+        </m.span>
+      )}
+    </AnimatePresence>
+  )
 
   const nav = (
     <nav
