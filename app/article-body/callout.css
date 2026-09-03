@@ -82,12 +82,23 @@
   align-items: center;
   gap: 0;
   padding: 0;
+  /* title→body 간격(0.5rem)을 여기로 옮겼다 — 원래는 .callout-comeau-title의 margin-bottom이
+     담당했는데, 그 값은 summary가 display:flex인 collapsible 변형에서 화살표와 나란히 정렬되는
+     flex item 자체의 margin이라 실측으로 확인됨(align-items:center가 margin box 기준으로
+     정렬되므로 margin-bottom만 있으면 위로 치우쳐 보임) — 그래서 title 쪽엔 margin-bottom:0으로
+     상쇄해뒀다. 그 결과 non-collapsible(<aside>, summary 없이 title이 body와 직접 형제)에서는
+     여전히 8px 간격이 보이지만, collapsible(<details>)에서는 title의 margin-bottom이 0이라
+     summary와 body 사이 간격이 통째로 사라지는 회귀가 있었다(사용자가 두 변형을 나란히 놓고
+     비교하다 발견). summary 자신에 margin-bottom을 주면 flex 정렬(margin box 기준 center)은
+     그대로 유지하면서 summary→body 사이에 동일한 8px가 다시 생긴다. */
+  margin-bottom: 0.5rem;
   cursor: pointer;
   font: inherit;
   color: inherit;
 }
 .article-body .callout-comeau-summary .callout-comeau-title {
-  /* 요약줄 안에서는 flex 1로 남는 폭을 차지해야 화살표가 우측 끝에 붙는다 */
+  /* 요약줄 안에서는 flex 1로 남는 폭을 차지해야 화살표가 우측 끝에 붙는다. margin-bottom은
+     summary 쪽으로 옮겼으므로(위 주석) 여기 남겨두면 이중으로 더해지니 0으로 유지한다. */
   flex: 1 1 auto;
   margin-bottom: 0;
 }

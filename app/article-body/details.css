@@ -47,10 +47,19 @@
 .article-body details:where(:not(.heading-fold))[open] > summary::after {
   transform: rotate(45deg);
 }
-.article-body details:not(.heading-fold) > *:not(summary) {
+/* :where()로 감싸야 하는 이유는 위 details/summary 규칙과 동일하다 — `:not(.heading-fold)`를
+   그대로 쓰면 특이도가 (0,2,2)까지 올라가 `.callout-comeau-body { padding: 0 }`(특이도 0,2,0)를
+   역전시켜버린다. 이 버그는 heading-fold 리팩터와 무관하게 이미 존재했었다 — `> [!note]+`처럼
+   접기 가능한 callout-comeau(<details class="callout-comeau">로 렌더)에서만 재현되는데, 발행된
+   콘텐츠 중에는 이 변형이 없어서(callout-comeau는 지금까지 전부 <aside>로만 렌더됨) 눈에 띄지
+   않고 있었다(_diagram.md에서 실측 재현 — 접기 가능 버전만 본문 좌우/아래에 16px가 덧붙어
+   카드 안쪽으로 더 들어가 보였다). `:where()`로 감싸면 특이도가 (0,1,2)로 낮아져 `.callout-body`/
+   `.callout-comeau-body`처럼 이 요소를 더 구체적으로 겨냥하는 규칙에 항상 지고, 그런 규칙이
+   없는 순수 raw <details> 자식에는 여전히 그대로 적용된다. */
+.article-body details:where(:not(.heading-fold)) > *:not(summary) {
   padding: 0 1rem 1rem;
 }
-.article-body details:not(.heading-fold) > *:not(summary):first-of-type {
+.article-body details:where(:not(.heading-fold)) > *:not(summary):first-of-type {
   margin-top: 0;
 }
 
@@ -95,7 +104,7 @@
   content: none;
 }
 /* 자식 콘텐츠에 별도 padding/margin 규칙을 주지 않는다 — 콜아웃 전용 패딩 리셋 규칙(위
-   `details:not(.heading-fold) > *:not(summary)`)이 이미 `.heading-fold`를 제외하므로, 헤딩
+   `details:where(:not(.heading-fold)) > *:not(summary)`)이 이미 `.heading-fold`를 제외하므로, 헤딩
    접기의 자식(문단/코드블록/표/이미지/중첩 콜아웃 등)은 각자의 원래 CSS를 그대로 유지한다.
    여기서 `*:not(summary) { padding: 0 }` 같은 규칙을 넣으면 콜아웃처럼 자체 패딩을 가진 자식의
    스타일까지 덮어써 버리는 회귀가 생긴다(실측으로 발견 — callout-comeau가 패딩을 잃고 카드
