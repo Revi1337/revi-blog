@@ -16,7 +16,6 @@ import { remarkHighlight } from "@/lib/content/plugins/remark-highlight"
 import { remarkObsidianLinks } from "@/lib/content/plugins/remark-obsidian-links"
 import { remarkImages } from "@/lib/content/plugins/remark-images"
 import { remarkPlainText } from "@/lib/content/plugins/remark-plain-text"
-import { remarkHeadingFold } from "@/lib/content/plugins/remark-heading-fold"
 import { rehypeCodeCopyButton } from "@/lib/content/plugins/rehype-code-copy-button"
 import { rehypeCodeLanguageLabel } from "@/lib/content/plugins/rehype-code-language-label"
 import { rehypeHeadingAnchor } from "@/lib/content/plugins/rehype-heading-anchor"
@@ -42,7 +41,6 @@ const processor = unified()
   .use(remarkImages)
   .use(remarkToc)
   .use(remarkPlainText)
-  .use(remarkHeadingFold)
   .use(remarkRehype, { allowDangerousHtml: true })
   .use(rehypeHeadingAnchor)
   .use(rehypePrettyCode, {
