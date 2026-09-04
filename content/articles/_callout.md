@@ -20,9 +20,6 @@ show_on_homepage: false
 > [#DANGER]
 > Danger 콜아웃입니다. 위험하거나 되돌리기 어려운 작업을 경고합니다.
 
-> [#CAUTION]
-> Caution은 danger의 별칭입니다. 동일한 스타일로 렌더링됩니다.
-
 > [#INFO]
 > Info 콜아웃입니다. 일반적인 정보 전달에 사용합니다.
 
@@ -46,6 +43,56 @@ show_on_homepage: false
 
 > [#COLLAPSE]
 > Collapse 타입입니다. 전용 강조색 없이 중립 회색(--color-outline-variant)으로 렌더링됩니다.
+
+> [#ABSTRACT]
+> Abstract 콜아웃입니다. Obsidian 기본 콜아웃 13종 중 우리에게 없던 타입 — 요약/TL;DR 내용에 사용합니다.
+
+> [#TODO]
+> Todo 콜아웃입니다. Obsidian 기본 콜아웃 13종 중 우리에게 없던 타입 — 해야 할 일 목록에 사용합니다.
+
+> [#FAILURE]
+> Failure 콜아웃입니다. Obsidian 기본 콜아웃 13종 중 우리에게 없던 타입 — danger와 의미는 가깝지만 "실패한 상태"를 나타낼 때 사용합니다.
+
+### 별칭(alias) 확인
+
+> [#CAUTION]
+> caution — warning의 별칭입니다(Obsidian 기준 — 기존엔 danger로 잘못 매핑돼 있었음).
+
+> [#HINT]
+> hint — tip의 별칭입니다.
+
+> [#CHECK]
+> check — success의 별칭입니다.
+
+> [#DONE]
+> done — success의 별칭입니다.
+
+> [#HELP]
+> help — question의 별칭입니다.
+
+> [#FAQ]
+> faq — question의 별칭입니다.
+
+> [#ATTENTION]
+> attention — warning의 별칭입니다.
+
+> [#ERROR]
+> error — danger의 별칭입니다.
+
+> [#CITE]
+> cite — quote의 별칭입니다.
+
+> [#SUMMARY]
+> summary — abstract의 별칭입니다.
+
+> [#TLDR]
+> tldr — abstract의 별칭입니다.
+
+> [#FAIL]
+> fail — failure의 별칭입니다.
+
+> [#MISSING]
+> missing — failure의 별칭입니다.
 
 ### 커스텀 타이틀
 
@@ -89,9 +136,6 @@ show_on_homepage: false
 > [!DANGER]
 > Danger 콜아웃입니다.
 
-> [!CAUTION]
-> Caution은 danger의 별칭입니다. 일반 콜아웃과 동일하게 동작합니다.
-
 > [!INFO]
 > Info 콜아웃입니다.
 
@@ -115,6 +159,56 @@ show_on_homepage: false
 
 > [!COLLAPSE]
 > Collapse 타입입니다. 전용 강조색 없이 중립 회색(--color-outline-variant)으로 렌더링됩니다.
+
+> [!ABSTRACT]
+> Abstract 콜아웃입니다. 일반 콜아웃과 동기화된 타입입니다.
+
+> [!TODO]
+> Todo 콜아웃입니다. 일반 콜아웃과 동기화된 타입입니다.
+
+> [!FAILURE]
+> Failure 콜아웃입니다. 일반 콜아웃과 동기화된 타입입니다.
+
+### 별칭(alias) 확인
+
+> [!CAUTION]
+> caution — warning의 별칭입니다(Obsidian 기준 — 기존엔 danger로 잘못 매핑돼 있었음).
+
+> [!HINT]
+> hint — tip의 별칭입니다.
+
+> [!CHECK]
+> check — success의 별칭입니다.
+
+> [!DONE]
+> done — success의 별칭입니다.
+
+> [!HELP]
+> help — question의 별칭입니다.
+
+> [!FAQ]
+> faq — question의 별칭입니다.
+
+> [!ATTENTION]
+> attention — warning의 별칭입니다.
+
+> [!ERROR]
+> error — danger의 별칭입니다.
+
+> [!CITE]
+> cite — quote의 별칭입니다.
+
+> [!SUMMARY]
+> summary — abstract의 별칭입니다.
+
+> [!TLDR]
+> tldr — abstract의 별칭입니다.
+
+> [!FAIL]
+> fail — failure의 별칭입니다.
+
+> [!MISSING]
+> missing — failure의 별칭입니다.
 
 ### 커스텀 타이틀
 
