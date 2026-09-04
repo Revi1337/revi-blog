@@ -24,7 +24,11 @@
   padding: 0 1rem 1rem;
   color: var(--color-on-surface-variant);
 }
-.article-body .callout-body > *:first-child {
+/* 중첩된 콜아웃(.callout/.callout-comeau)은 제외 — 이 리셋은 "타이틀 바로 아래 첫 문단"의
+   여백만 지우려는 의도인데, 중첩 콜아웃이 body의 첫 자식이 되는 경우(상위 콜아웃에 타이틀만 있고
+   본문 텍스트가 없을 때) 여기 걸리면 콜아웃 자신의 margin(1.5rem)까지 지워져 타이틀 바로 아래
+   거의 붙어 보인다(실측: 8px까지 줄어듦, 사용자가 3단 중첩 스크린샷에서 발견) */
+.article-body .callout-body > *:first-child:not(.callout):not(.callout-comeau) {
   margin-top: 0;
 }
 
@@ -195,7 +199,10 @@
   font-size: 0.9375rem;
   line-height: 1.7;
 }
-.article-body .callout-comeau-body > *:first-child {
+/* 중첩된 콜아웃은 제외 — .callout-body와 동일한 이유(위 주석 참고). 상위 콜아웃이 타이틀만 있고
+   본문 텍스트 없이 바로 중첩 콜아웃으로 이어지면, 여기 걸려 중첩 콜아웃 자신의 margin(1.5rem)이
+   지워져 타이틀 바로 아래 거의 붙어 보인다 */
+.article-body .callout-comeau-body > *:first-child:not(.callout):not(.callout-comeau) {
   margin-top: 0;
 }
 .article-body .callout-comeau-body > *:last-child {

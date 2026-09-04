@@ -243,3 +243,49 @@ show_on_homepage: false
 
 > [!WARNING] 컨테이너 쿼리 폴백
 > 컨테이너 폭이 좁아지면 좌측 rail/badge 대신 단순 바(fallback-bar)로 전환됩니다. 이 문서에서는 직접 확인하려면 뷰포트/컨테이너 폭을 줄여보세요.
+
+---
+
+## 중첩(nested) Callout 확인
+
+Obsidian은 `>` 개수를 늘려 콜아웃을 중첩할 수 있음(공식 문서 예시: question > todo > example). 우리 파서/CSS가 이걸 지원하는지 확인.
+
+### 일반 Callout 2단 중첩
+
+> [#QUESTION] 중첩이 되나요?
+> 네, 될 수도 있습니다.
+> > [#TODO] 안쪽 콜아웃
+> > 이건 바깥 QUESTION 콜아웃 안에 중첩된 TODO 콜아웃입니다.
+
+### 일반 Callout 3단 중첩 (Obsidian 공식 예시와 동일 구성)
+
+> [#QUESTION] Can callouts be nested?
+> > [#TODO] Yes!, they can.
+> > > [#EXAMPLE] You can even use multiple layers of nesting.
+
+### Comeau 스타일 2단 중첩
+
+> [!QUESTION] 중첩이 되나요?
+> 네, 될 수도 있습니다.
+> > [!TODO] 안쪽 콜아웃
+> > 이건 바깥 QUESTION 콜아웃 안에 중첩된 TODO 콜아웃입니다.
+
+### Comeau 스타일 3단 중첩
+
+> [!QUESTION] Can callouts be nested?
+> > [!TODO] Yes!, they can.
+> > > [!EXAMPLE] You can even use multiple layers of nesting.
+
+### 교차 중첩 — 일반 안에 Comeau
+
+> [#NOTE] 바깥은 일반 콜아웃
+> 바깥 타입: 일반(`[#TYPE]`)
+> > [!TIP] 안쪽은 Comeau 콜아웃
+> > 안쪽 타입: Comeau(`[!TYPE]`)
+
+### 교차 중첩 — Comeau 안에 일반
+
+> [!NOTE] 바깥은 Comeau 콜아웃
+> 바깥 타입: Comeau(`[!TYPE]`)
+> > [#TIP] 안쪽은 일반 콜아웃
+> > 안쪽 타입: 일반(`[#TYPE]`)
