@@ -19,18 +19,32 @@ type ResolvedType =
   | "bug"
   | "example"
   | "important"
+  | "abstract"
+  | "todo"
+  | "failure"
 
-/** 일반 콜아웃(remark-callout.ts)과 완벽히 동기화 — 지원 타입/별칭 목록을 그쪽과 맞춘다 */
+/** 일반 콜아웃(remark-callout.ts)과 완벽히 동기화 — 지원 타입/별칭 목록을 그쪽과 맞춘다.
+ * CAUTION은 Obsidian 기준 danger가 아니라 warning의 별칭이라 그에 맞게 매핑(기존엔 danger로
+ * 잘못 매핑돼 있었음). important는 Obsidian에서 tip의 별칭일 뿐이지만 이 프로젝트는 이미 독립
+ * 타입으로 쓰고 있어(기존 로고 유지) tip의 별칭으로는 추가하지 않는다. */
 const TYPE_MAP: Record<string, ResolvedType> = {
   NOTE: "note",
   INFO: "info",
   TIP: "tip",
+  HINT: "tip",
   SUCCESS: "success",
+  CHECK: "success",
+  DONE: "success",
   WARNING: "warning",
+  CAUTION: "warning",
+  ATTENTION: "warning",
   DANGER: "danger",
-  CAUTION: "danger",
+  ERROR: "danger",
   QUOTE: "quote",
+  CITE: "quote",
   QUESTION: "question",
+  HELP: "question",
+  FAQ: "question",
   BUG: "bug",
   EXAMPLE: "example",
   IMPORTANT: "important",
@@ -39,6 +53,13 @@ const TYPE_MAP: Record<string, ResolvedType> = {
    * 정의되지 않고, 모든 fill/color 선언의 기본값인 --color-outline-variant로 자연히
    * 떨어진다(중립 회색) */
   COLLAPSE: "collapse",
+  ABSTRACT: "abstract",
+  SUMMARY: "abstract",
+  TLDR: "abstract",
+  TODO: "todo",
+  FAILURE: "failure",
+  FAIL: "failure",
+  MISSING: "failure",
 }
 
 interface IconPath {
@@ -71,6 +92,9 @@ const SWOOSH_VARIANT_BY_TYPE: Record<ResolvedType, SwooshVariant> = {
   bug: "calm",
   example: "calm",
   important: "calm",
+  abstract: "calm",
+  todo: "calm",
+  failure: "calm",
   warning: "alert",
 }
 
@@ -199,6 +223,32 @@ const ICONS: Record<ResolvedType, IconPath[]> = {
   important: [
     { tag: "path", attrs: { d: "m3 11 18-5v12L3 14v-3z" } },
     { tag: "path", attrs: { d: "M11.6 16.8a3 3 0 1 1-5.8-1.6" } },
+  ],
+  /** lucide ScrollText — remark-callout.ts의 abstract와 동기화(처음엔 ClipboardList였는데
+   * note/info/example의 사각 실루엣과 겹쳐 두루마리 모양으로 교체) */
+  abstract: [
+    { tag: "path", attrs: { d: "M15 12h-5" } },
+    { tag: "path", attrs: { d: "M15 8h-5" } },
+    { tag: "path", attrs: { d: "M19 17V5a2 2 0 0 0-2-2H4" } },
+    {
+      tag: "path",
+      attrs: {
+        d: "M8 21h12a2 2 0 0 0 2-2v-1a1 1 0 0 0-1-1H11a1 1 0 0 0-1 1v1a2 2 0 1 1-4 0V5a2 2 0 1 0-4 0v2a1 1 0 0 0 1 1h3",
+      },
+    },
+  ],
+  /** lucide ListTodo — remark-callout.ts의 todo와 동기화 */
+  todo: [
+    { tag: "rect", attrs: { x: "3", y: "5", width: "6", height: "6", rx: "1" } },
+    { tag: "path", attrs: { d: "m3 17 2 2 4-4" } },
+    { tag: "path", attrs: { d: "M13 6h8" } },
+    { tag: "path", attrs: { d: "M13 12h8" } },
+    { tag: "path", attrs: { d: "M13 18h8" } },
+  ],
+  /** lucide X — remark-callout.ts의 failure와 동기화 */
+  failure: [
+    { tag: "path", attrs: { d: "M18 6 6 18" } },
+    { tag: "path", attrs: { d: "m6 6 12 12" } },
   ],
 }
 

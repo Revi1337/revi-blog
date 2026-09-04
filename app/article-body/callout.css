@@ -43,6 +43,11 @@
 .article-body .callout-example { --callout-accent: #57606a; }
 .article-body .callout-quote { --callout-accent: #6e7781; }
 .article-body .callout-important { --callout-accent: #bf3989; }
+/* Obsidian 기본 콜아웃 13종 중 우리에게 없던 abstract/todo/failure — 기존 팔레트와 겹치지 않는
+   색상을 새로 배정(teal/indigo/brick-red) */
+.article-body .callout-abstract { --callout-accent: #0d9488; }
+.article-body .callout-todo { --callout-accent: #4f46e5; }
+.article-body .callout-failure { --callout-accent: #9f2b25; }
 
 .dark .article-body .callout-note { --callout-accent: #58a6ff; }
 .dark .article-body .callout-info { --callout-accent: #22d3ee; }
@@ -55,6 +60,9 @@
 .dark .article-body .callout-example { --callout-accent: #9198a1; }
 .dark .article-body .callout-quote { --callout-accent: #8b949e; }
 .dark .article-body .callout-important { --callout-accent: #ec6cb9; }
+.dark .article-body .callout-abstract { --callout-accent: #2dd4bf; }
+.dark .article-body .callout-todo { --callout-accent: #818cf8; }
+.dark .article-body .callout-failure { --callout-accent: #f2777a; }
 
 /* joshwcomeau.com 스타일 콜아웃(> [!TYPE], remark-callout-comeau.ts 출력) — 기존
    .callout(GitHub Alert 스타일, > [#TYPE])과 완전히 별개의 프로토타입. 좌측에 SVG 2겹으로 그린
@@ -228,6 +236,9 @@
 .article-body .callout-comeau-bug { --callout-comeau-accent: #c2255c; }
 .article-body .callout-comeau-example { --callout-comeau-accent: #57606a; }
 .article-body .callout-comeau-important { --callout-comeau-accent: #bf3989; }
+.article-body .callout-comeau-abstract { --callout-comeau-accent: #0d9488; }
+.article-body .callout-comeau-todo { --callout-comeau-accent: #4f46e5; }
+.article-body .callout-comeau-failure { --callout-comeau-accent: #9f2b25; }
 
 .dark .article-body .callout-comeau-note { --callout-comeau-accent: #58a6ff; }
 .dark .article-body .callout-comeau-info { --callout-comeau-accent: #22d3ee; }
@@ -240,3 +251,6 @@
 .dark .article-body .callout-comeau-bug { --callout-comeau-accent: #f778ba; }
 .dark .article-body .callout-comeau-example { --callout-comeau-accent: #9198a1; }
 .dark .article-body .callout-comeau-important { --callout-comeau-accent: #ec6cb9; }
+.dark .article-body .callout-comeau-abstract { --callout-comeau-accent: #2dd4bf; }
+.dark .article-body .callout-comeau-todo { --callout-comeau-accent: #818cf8; }
+.dark .article-body .callout-comeau-failure { --callout-comeau-accent: #f2777a; }
