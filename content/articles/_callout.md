@@ -125,7 +125,7 @@ show_on_homepage: false
 ## Custom 스타일 Callout — `[!TYPE]`
 
 > [!NOTE]
-> Note 콜아웃입니다. joshwcomeau.com 스타일의 좌측 곡선 장식이 특징입니다.
+> Note 콜아웃입니다. 좌측 곡선 장식이 특징입니다.
 
 > [!TIP]
 > Tip 콜아웃입니다.

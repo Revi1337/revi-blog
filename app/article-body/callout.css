@@ -3,7 +3,12 @@
   overflow: hidden;
   border-radius: 0.375rem;
   border: 1px solid var(--callout-accent, var(--color-outline-variant));
-  background-color: color-mix(in srgb, var(--callout-accent, var(--color-outline-variant)) 6%, var(--color-surface-container-lowest));
+  /* 6%였던 걸 12%로 올림 — 벤치마킹한 joshwcomeau.com의 실측 배경(note 타입 기준 rgb(232,241,252))과
+     비교했을 때 6%는 계산상 rgb(244,243,255)로 거의 무채색이라 지나치게 흐렸음(사용자가 실측 비교로
+     발견). 타입별로 정확히 픽셀 일치시키려면 accent와 무관한 고정 hex가 필요한데, 그건 타입마다
+     따로 실측해야 해서 전체 타입에 균일하게 적용 가능한 방식으로 percentage만 올림 — note 기준
+     accent R채널로 역산하면 12%가 실측값에 가장 근접함 */
+  background-color: color-mix(in srgb, var(--callout-accent, var(--color-outline-variant)) 12%, var(--color-surface-container-lowest));
 }
 .article-body .callout-header {
   display: flex;
@@ -33,7 +38,10 @@
 }
 
 /* 콜아웃 타입별 강조색 — Material 팔레트 밖의 신규 시맨틱 컬러(다크/라이트 쌍) */
-.article-body .callout-note { --callout-accent: #0969da; }
+/* 벤치마킹 실측 색으로 교체 — 배경은 note만 고정값으로 박아넣는 대신, 위 .callout의 color-mix
+   percentage를 6%→12%로 올려서 모든 타입에 균일하게 적용(타입마다 따로 실측하지 않고도 전체적으로
+   진하게) */
+.article-body .callout-note { --callout-accent: #4433ff; }
 .article-body .callout-info { --callout-accent: #0891b2; }
 /* tip은 원래 GitHub Alerts 팔레트를 따라 초록이었는데, warning(amber, hue~40°)과 뚜렷이 구분되는
    노란색으로 교체 요청 받음 — hue를 55°대(초록 쪽에 더 가까운 mustard-yellow)까지 밀어서 warning의
@@ -53,7 +61,7 @@
 .article-body .callout-todo { --callout-accent: #4f46e5; }
 .article-body .callout-failure { --callout-accent: #9f2b25; }
 
-.dark .article-body .callout-note { --callout-accent: #58a6ff; }
+.dark .article-body .callout-note { --callout-accent: #3366ff; }
 .dark .article-body .callout-info { --callout-accent: #22d3ee; }
 .dark .article-body .callout-tip { --callout-accent: #f3e225; }
 .dark .article-body .callout-success { --callout-accent: #4ade80; }
@@ -86,7 +94,8 @@
   margin: 1.5rem 0;
   padding: 1.25rem 1.25rem 1.25rem 2.75rem;
   border-radius: var(--radius-lg);
-  background-color: color-mix(in srgb, var(--callout-custom-accent, var(--color-outline-variant)) 6%, var(--color-surface-container-lowest));
+  /* 6%→12% — .callout과 동일한 이유(위 주석 참고), 두 시스템 간 배경 진하기도 통일 */
+  background-color: color-mix(in srgb, var(--callout-custom-accent, var(--color-outline-variant)) 12%, var(--color-surface-container-lowest));
 }
 .article-body .callout-custom-summary {
   /* 접기 가능한 콜아웃(<details>)의 헤더 — 범용 `.article-body summary` 규칙(코드체 폰트,
@@ -232,7 +241,9 @@
 
 /* 콜아웃 타입별 강조색 — 기존 .callout-* 팔레트와 동일한 값을 재사용해 두 콜아웃 시스템 간
    시맨틱 컬러를 통일한다(교체 시 색 인식이 흔들리지 않도록) */
-.article-body .callout-custom-note { --callout-custom-accent: #0969da; }
+/* 벤치마킹 실측 색으로 교체 — 배경은 .callout-note와 동일하게 타입별 고정값 대신 위
+   .callout-custom의 color-mix percentage 조정(6%→12%)으로 균일하게 진하게 처리 */
+.article-body .callout-custom-note { --callout-custom-accent: #4433ff; }
 .article-body .callout-custom-info { --callout-custom-accent: #0891b2; }
 .article-body .callout-custom-tip { --callout-custom-accent: #b3a400; }
 .article-body .callout-custom-success { --callout-custom-accent: #15803d; }
@@ -247,7 +258,7 @@
 .article-body .callout-custom-todo { --callout-custom-accent: #4f46e5; }
 .article-body .callout-custom-failure { --callout-custom-accent: #9f2b25; }
 
-.dark .article-body .callout-custom-note { --callout-custom-accent: #58a6ff; }
+.dark .article-body .callout-custom-note { --callout-custom-accent: #3366ff; }
 .dark .article-body .callout-custom-info { --callout-custom-accent: #22d3ee; }
 .dark .article-body .callout-custom-tip { --callout-custom-accent: #f3e225; }
 .dark .article-body .callout-custom-success { --callout-custom-accent: #4ade80; }
