@@ -11,7 +11,7 @@ import rehypeStringify from "rehype-stringify"
 import { remarkMetrics } from "@/lib/content/plugins/remark-metrics"
 import { remarkToc } from "@/lib/content/plugins/remark-toc"
 import { remarkCallout } from "@/lib/content/plugins/remark-callout"
-import { remarkCalloutComeau } from "@/lib/content/plugins/remark-callout-comeau"
+import { remarkCalloutCustom } from "@/lib/content/plugins/remark-callout-custom"
 import { remarkHighlight } from "@/lib/content/plugins/remark-highlight"
 import { remarkObsidianLinks } from "@/lib/content/plugins/remark-obsidian-links"
 import { remarkImages } from "@/lib/content/plugins/remark-images"
@@ -35,7 +35,7 @@ const processor = unified()
   .use(remarkMath)
   .use(remarkObsidianLinks)
   .use(remarkCallout)
-  .use(remarkCalloutComeau)
+  .use(remarkCalloutCustom)
   .use(remarkHighlight)
   .use(remarkMetrics)
   .use(remarkImages)

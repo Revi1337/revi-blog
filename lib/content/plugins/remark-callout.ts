@@ -48,7 +48,7 @@ const TYPE_MAP: Record<string, ResolvedType> = {
   QUOTE: "quote",
   CITE: "quote",
   IMPORTANT: "important",
-  /** note/info 같은 특정 의미 없이 그냥 접히는 섹션 전용 — remark-callout-comeau.ts의 COLLAPSE와
+  /** note/info 같은 특정 의미 없이 그냥 접히는 섹션 전용 — remark-callout-custom.ts의 COLLAPSE와
    * 동일한 용도. 전용 강조색이 없어 --callout-accent가 정의되지 않고 --color-outline-variant로
    * 자연히 떨어진다(중립 회색) */
   COLLAPSE: "collapse",
@@ -167,7 +167,7 @@ const ICONS: Record<ResolvedType, IconPath[]> = {
     { tag: "path", attrs: { d: "m3 11 18-5v12L3 14v-3z" } },
     { tag: "path", attrs: { d: "M11.6 16.8a3 3 0 1 1-5.8-1.6" } },
   ],
-  /** lucide UnfoldVertical — remark-callout-comeau.ts의 collapse 타입과 동일한 아이콘 */
+  /** lucide UnfoldVertical — remark-callout-custom.ts의 collapse 타입과 동일한 아이콘 */
   collapse: [
     { tag: "path", attrs: { d: "M12 22v-6" } },
     { tag: "path", attrs: { d: "M12 8V2" } },

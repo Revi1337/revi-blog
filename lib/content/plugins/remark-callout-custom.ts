@@ -49,7 +49,7 @@ const TYPE_MAP: Record<string, ResolvedType> = {
   EXAMPLE: "example",
   IMPORTANT: "important",
   /** note/info 같은 특정 의미 없이 그냥 접히는 섹션 — 순수 raw `<details>`와 같은 용도를
-   * `[!TYPE]` 문법으로 쓰고 싶을 때 사용. 전용 강조색이 없어 --callout-comeau-accent가
+   * `[!TYPE]` 문법으로 쓰고 싶을 때 사용. 전용 강조색이 없어 --callout-custom-accent가
    * 정의되지 않고, 모든 fill/color 선언의 기본값인 --color-outline-variant로 자연히
    * 떨어진다(중립 회색) */
   COLLAPSE: "collapse",
@@ -273,7 +273,7 @@ function iconElement(resolvedType: ResolvedType): HastNode {
       strokeWidth: "2",
       strokeLinecap: "round",
       strokeLinejoin: "round",
-      className: "callout-comeau-icon",
+      className: "callout-custom-icon",
       "aria-hidden": "true",
     },
     children: ICONS[resolvedType].map((path) => ({
@@ -289,16 +289,16 @@ function railNode(resolvedType: ResolvedType) {
   const variant = SWOOSH_VARIANT_BY_TYPE[resolvedType]
   const geo = SWOOSH_GEOMETRY[variant]
   return {
-    type: "calloutComeauRail",
+    type: "calloutCustomRail",
     data: {
       hName: "div",
-      hProperties: { className: ["callout-comeau-rail", `callout-comeau-rail--${variant}`], "aria-hidden": "true" },
+      hProperties: { className: ["callout-custom-rail", `callout-custom-rail--${variant}`], "aria-hidden": "true" },
       hChildren: [
         {
           type: "element",
           tagName: "svg",
           properties: {
-            className: ["callout-comeau-swoosh"],
+            className: ["callout-custom-swoosh"],
             width: geo.width,
             height: geo.height,
             viewBox: geo.viewBox,
@@ -308,13 +308,13 @@ function railNode(resolvedType: ResolvedType) {
             {
               type: "element",
               tagName: "path",
-              properties: { className: ["callout-comeau-swoosh-cut"], d: geo.cut },
+              properties: { className: ["callout-custom-swoosh-cut"], d: geo.cut },
               children: [],
             },
             {
               type: "element",
               tagName: "path",
-              properties: { className: ["callout-comeau-swoosh-stroke"], d: geo.stroke },
+              properties: { className: ["callout-custom-swoosh-stroke"], d: geo.stroke },
               children: [],
             },
           ],
@@ -322,7 +322,7 @@ function railNode(resolvedType: ResolvedType) {
         {
           type: "element",
           tagName: "div",
-          properties: { className: ["callout-comeau-bar"] },
+          properties: { className: ["callout-custom-bar"] },
           children: [],
         },
       ] satisfies HastNode[],
@@ -331,24 +331,24 @@ function railNode(resolvedType: ResolvedType) {
 }
 
 /** 컨테이너 쿼리로 폭이 좁아졌을 때 rail/badge 대신 노출되는 단순 바.
- * `.callout-comeau` 자신은 스스로가 세운 컨테이너를 기준으로 쿼리할 수 없어(자기 참조 금지),
+ * `.callout-custom` 자신은 스스로가 세운 컨테이너를 기준으로 쿼리할 수 없어(자기 참조 금지),
  * border-left 같은 컨테이너 자신의 속성 토글이 아니라 이런 별도 자식 엘리먼트로 구현해야 한다 */
 function fallbackBarNode() {
   return {
-    type: "calloutComeauFallbackBar",
+    type: "calloutCustomFallbackBar",
     data: {
       hName: "div",
-      hProperties: { className: ["callout-comeau-fallback-bar"], "aria-hidden": "true" },
+      hProperties: { className: ["callout-custom-fallback-bar"], "aria-hidden": "true" },
     },
   }
 }
 
 function badgeNode(resolvedType: ResolvedType) {
   return {
-    type: "calloutComeauBadge",
+    type: "calloutCustomBadge",
     data: {
       hName: "div",
-      hProperties: { className: ["callout-comeau-badge"] },
+      hProperties: { className: ["callout-custom-badge"] },
       hChildren: [iconElement(resolvedType)] satisfies HastNode[],
     },
   }
@@ -356,10 +356,10 @@ function badgeNode(resolvedType: ResolvedType) {
 
 function titleNode(title: string) {
   return {
-    type: "calloutComeauTitle",
+    type: "calloutCustomTitle",
     data: {
       hName: "strong",
-      hProperties: { className: ["callout-comeau-title"] },
+      hProperties: { className: ["callout-custom-title"] },
       hChildren: [{ type: "text", value: title }] satisfies HastNode[],
     },
   }
@@ -369,14 +369,14 @@ function titleNode(title: string) {
  * 엘리먼트 없이 globals.css의 범용 `.article-body summary::after` 규칙(회전 애니메이션 포함)을
  * 그대로 재사용한다 — <details>/<summary> 태그만 맞으면 자동 적용되므로 중복 마크업 불필요.
  * rail/fallback-bar/badge는 position:absolute라 <summary> 안으로 옮겨도 화면 위치는 그대로다 —
- * 가장 가까운 position 조상(.callout-comeau, 곧 <details>)을 기준으로 계속 절대 배치되기 때문.
+ * 가장 가까운 position 조상(.callout-custom, 곧 <details>)을 기준으로 계속 절대 배치되기 때문.
  * children을 일반 mdast children 배열로 넣어 각 노드가 자기 자신의 data.hName으로 재귀
  * 변환되게 한다(hChildren을 직접 주면 안 됨 — 이미 hName을 가진 커스텀 노드는 raw hast가
  * 아니라서 hChildren 배열에 넣으면 변환되지 않는다) */
 function summaryNode(resolvedType: ResolvedType, title: string) {
   return {
-    type: "calloutComeauSummary",
-    data: { hName: "summary", hProperties: { className: ["callout-comeau-summary"] } },
+    type: "calloutCustomSummary",
+    data: { hName: "summary", hProperties: { className: ["callout-custom-summary"] } },
     children: [railNode(resolvedType), fallbackBarNode(), badgeNode(resolvedType), titleNode(title)],
   }
 }
@@ -389,7 +389,7 @@ function isTextNode(node: PhrasingContent | undefined): node is Text {
  * `> [!TYPE]` blockquote를 joshwcomeau.com 스타일 콜아웃 hast로 치환한다.
  * `[!TYPE]`에 매치하지 않는 blockquote는 그대로 반환한다(no-op).
  */
-export function remarkCalloutComeau() {
+export function remarkCalloutCustom() {
   return (tree: Root) => {
     visit(tree, "blockquote", (node: Blockquote) => {
       const firstParagraph = node.children[0]
@@ -421,8 +421,8 @@ export function remarkCalloutComeau() {
       ]
 
       const body = {
-        type: "calloutComeauBody",
-        data: { hName: "div", hProperties: { className: ["callout-comeau-body"] } },
+        type: "calloutCustomBody",
+        data: { hName: "div", hProperties: { className: ["callout-custom-body"] } },
         children: bodyChildren,
       }
 
@@ -437,7 +437,7 @@ export function remarkCalloutComeau() {
         ...node.data,
         hName: isCollapsible ? "details" : "aside",
         hProperties: {
-          className: ["callout-comeau", `callout-comeau-${resolvedType}`],
+          className: ["callout-custom", `callout-custom-${resolvedType}`],
           ...(collapseState === "expanded" ? { open: true } : {}),
         },
       }

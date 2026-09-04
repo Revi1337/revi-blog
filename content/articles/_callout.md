@@ -122,7 +122,7 @@ show_on_homepage: false
 
 ---
 
-## Comeau 스타일 Callout — `[!TYPE]`
+## Custom 스타일 Callout — `[!TYPE]`
 
 > [!NOTE]
 > Note 콜아웃입니다. joshwcomeau.com 스타일의 좌측 곡선 장식이 특징입니다.
@@ -213,7 +213,7 @@ show_on_homepage: false
 ### 커스텀 타이틀
 
 > [!TIP] 커스텀 타이틀 예시
-> Comeau 스타일도 동일하게 커스텀 타이틀을 지정할 수 있습니다.
+> Custom 스타일도 동일하게 커스텀 타이틀을 지정할 수 있습니다.
 
 ### 접기/펼치기
 
@@ -229,7 +229,7 @@ show_on_homepage: false
 ### 여러 줄 / 블록 포함
 
 > [!DANGER] 코드가 포함된 예시
-> Comeau 스타일 본문에도 여러 문단과 코드 블록을 포함할 수 있습니다.
+> Custom 스타일 본문에도 여러 문단과 코드 블록을 포함할 수 있습니다.
 >
 > ```ts
 > throw new Error("치명적인 오류")
@@ -263,29 +263,29 @@ Obsidian은 `>` 개수를 늘려 콜아웃을 중첩할 수 있음(공식 문서
 > > [#TODO] Yes!, they can.
 > > > [#EXAMPLE] You can even use multiple layers of nesting.
 
-### Comeau 스타일 2단 중첩
+### Custom 스타일 2단 중첩
 
 > [!QUESTION] 중첩이 되나요?
 > 네, 될 수도 있습니다.
 > > [!TODO] 안쪽 콜아웃
 > > 이건 바깥 QUESTION 콜아웃 안에 중첩된 TODO 콜아웃입니다.
 
-### Comeau 스타일 3단 중첩
+### Custom 스타일 3단 중첩
 
 > [!QUESTION] Can callouts be nested?
 > > [!TODO] Yes!, they can.
 > > > [!EXAMPLE] You can even use multiple layers of nesting.
 
-### 교차 중첩 — 일반 안에 Comeau
+### 교차 중첩 — 일반 안에 Custom
 
 > [#NOTE] 바깥은 일반 콜아웃
 > 바깥 타입: 일반(`[#TYPE]`)
-> > [!TIP] 안쪽은 Comeau 콜아웃
-> > 안쪽 타입: Comeau(`[!TYPE]`)
+> > [!TIP] 안쪽은 Custom 콜아웃
+> > 안쪽 타입: Custom(`[!TYPE]`)
 
-### 교차 중첩 — Comeau 안에 일반
+### 교차 중첩 — Custom 안에 일반
 
-> [!NOTE] 바깥은 Comeau 콜아웃
-> 바깥 타입: Comeau(`[!TYPE]`)
+> [!NOTE] 바깥은 Custom 콜아웃
+> 바깥 타입: Custom(`[!TYPE]`)
 > > [#TIP] 안쪽은 일반 콜아웃
 > > 안쪽 타입: 일반(`[#TYPE]`)

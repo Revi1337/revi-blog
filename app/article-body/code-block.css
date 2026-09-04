@@ -11,7 +11,7 @@
   background-color: var(--color-surface-container-lowest);
   padding-top: 2rem;
   /* 이 figure 자신의 실제 렌더링 폭을 기준으로 좁아졌는지 판단해야 한다 — TOC 사이드바 유무로
-     본문 컬럼 폭 자체가 달라지므로 뷰포트 폭(@media) 기준은 부정확하다. callout-comeau와 동일한
+     본문 컬럼 폭 자체가 달라지므로 뷰포트 폭(@media) 기준은 부정확하다. callout-custom과 동일한
      패턴(app/article-body/callout.css). */
   container-type: inline-size;
   container-name: code-figure;
@@ -66,7 +66,7 @@
   text-overflow: ellipsis;
   color: color-mix(in srgb, var(--color-on-surface-variant) 65%, transparent);
 }
-/* 컨테이너(figure) 자신은 자신이 세운 컨테이너를 쿼리할 수 없으므로(callout-comeau와 동일한
+/* 컨테이너(figure) 자신은 자신이 세운 컨테이너를 쿼리할 수 없으므로(callout-custom과 동일한
    제약) title은 자식 엘리먼트로서 쿼리한다. 대칭 중앙 정렬을 위해 넓게 예약해둔 좌우 8.9rem이
    좁은 화면에서는 표시 영역을 거의 다 잡아먹으므로, 그 전에 아예 숨겨서 언어 라벨(모든
    코드블록에 항상 뜨는 기본 기능)과의 시각적 경합을 피한다 — title은 아직 실사용 0건인 선택
