@@ -197,8 +197,15 @@
 /* 컨테이너가 좁아지면(예: 모바일 사이드바 폭) SVG 곡선 장식과 아이콘 뱃지를 접고
    단순 바(callout-comeau-fallback-bar)로 대체한다 — Josh의 사이트가 container query로
    flourish/plain-bar 두 구현을 스왑하는 것과 동일한 방식. 컨테이너 자신(.callout-comeau)은
-   스스로가 세운 컨테이너를 쿼리할 수 없으므로(자기 참조 금지) 반드시 자식 엘리먼트를 토글해야 한다 */
-@container callout-comeau (max-width: 360px) {
+   스스로가 세운 컨테이너를 쿼리할 수 없으므로(자기 참조 금지) 반드시 자식 엘리먼트를 토글해야 한다.
+   기준값은 원래 360px, 그다음 300px로 낮췄었는데 둘 다 부족했다 — `inline-size` 컨테이너 쿼리는
+   .callout-comeau의 content-box(패딩 제외) 기준으로 측정되는데, 이 요소는 뱃지/곡선 자리를 위해
+   padding-left 2.75rem(44px) + padding-right 1.25rem(20px) = 64px를 쓰고 있어서, 렌더 폭(border-box)이
+   342px(iPhone 390px 뷰포트 기준)여도 쿼리가 보는 폭은 342-64=278px로 여전히 300px 미만이었다
+   (실측: getComputedStyle/getBoundingClientRect로 직접 확인, 짐작 아님). 일반 아이폰 대부분(콘텐츠
+   폭 263~281px)까지 커버하려면 250px까지 낮춰야 해서, iPad/데스크톱의 좁은 임베드처럼 진짜 좁은
+   컨테이너만 폴백을 타도록 250px로 조정 */
+@container callout-comeau (max-width: 250px) {
   .article-body .callout-comeau-rail,
   .article-body .callout-comeau-badge {
     display: none;
