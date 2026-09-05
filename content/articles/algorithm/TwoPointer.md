@@ -1,13 +1,15 @@
 ---
-title: "TwoPointer (투 포인터)"
+title: TwoPointer (투 포인터)
 date: 2026-07-18
 updated_at: 2026-07-28
 tags:
   - algorithm
   - two-pointer
   - concept
-description: "가변 크기의 구간을 두 개의 포인터로 효율적으로 탐색하는 투 포인터 알고리즘 개념과 특성"
+description: 가변 크기의 구간을 두 개의 포인터로 효율적으로 탐색하는 투 포인터 알고리즘 개념과 특성
 thumbnail: https://pub-8c61ed96347b483a91c17765cea907da.r2.dev/images/2026-07-28/TwoPointer-thumbnail.jpg
+audio:
+  - https://pub-8c61ed96347b483a91c17765cea907da.r2.dev/media/2026-09-06/TwoPointer-script.mp3
 ---
 
 ## Two Pointer 란

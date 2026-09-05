@@ -1,5 +1,5 @@
 ---
-title: "Prefixsum (누적합)"
+title: Prefixsum (누적합)
 date: 2026-07-17
 updated_at: 2026-07-28
 tags:
@@ -7,8 +7,10 @@ tags:
   - prefix-sum
   - range-sum
   - concept
-description: "1차원 및 2차원 배열에서 O(1) 시간 복잡도로 특정 구간합을 구하기 위한 누적합 계산 기법"
+description: 1차원 및 2차원 배열에서 O(1) 시간 복잡도로 특정 구간합을 구하기 위한 누적합 계산 기법
 thumbnail: https://pub-8c61ed96347b483a91c17765cea907da.r2.dev/images/2026-07-28/Prefixsum-thumbnail.jpg
+audio:
+  - https://pub-8c61ed96347b483a91c17765cea907da.r2.dev/media/2026-09-06/Prefixsum-script.mp3
 ---
 
 ## Prefix sum

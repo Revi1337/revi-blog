@@ -1,13 +1,15 @@
 ---
-title: "SelectionSort (선택 정렬)"
+title: SelectionSort (선택 정렬)
 date: 2026-07-15
 updated_at: 2026-07-28
 tags:
   - algorithm
   - sort
   - concept
-description: "각 라운드마다 최솟값을 찾아 정렬된 영역 끝으로 이동시키는 선택 정렬 알고리즘의 동작 원리와 파이썬 구현"
+description: 각 라운드마다 최솟값을 찾아 정렬된 영역 끝으로 이동시키는 선택 정렬 알고리즘의 동작 원리와 파이썬 구현
 thumbnail: https://pub-8c61ed96347b483a91c17765cea907da.r2.dev/images/2026-07-28/SelectionSort-thumbnail.jpg
+audio:
+  - https://pub-8c61ed96347b483a91c17765cea907da.r2.dev/media/2026-09-06/SelectionSort-script.mp3
 ---
 
 ## Selection Sort

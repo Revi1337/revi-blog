@@ -1,13 +1,15 @@
 ---
-title: "BubbleSort (버블 정렬)"
+title: BubbleSort (버블 정렬)
 date: 2026-07-14
 updated_at: 2026-07-28
 tags:
   - algorithm
   - sort
   - concept
-description: "인접한 두 원소를 비교하며 최댓값을 뒤로 보내는 제자리 정렬 알고리즘인 버블 정렬의 작동 원리와 구현"
+description: 인접한 두 원소를 비교하며 최댓값을 뒤로 보내는 제자리 정렬 알고리즘인 버블 정렬의 작동 원리와 구현
 thumbnail: https://pub-8c61ed96347b483a91c17765cea907da.r2.dev/images/2026-07-28/BubbleSort-thumbnail.jpg
+audio:
+  - https://pub-8c61ed96347b483a91c17765cea907da.r2.dev/media/2026-09-06/BubbleSort-script.mp3
 ---
 
 ## Bubble Sort

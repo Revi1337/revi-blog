@@ -1,5 +1,5 @@
 ---
-title: "Matrix (행렬)"
+title: Matrix (행렬)
 date: 2026-07-13
 updated_at: 2026-07-28
 tags:
@@ -7,8 +7,10 @@ tags:
   - math
   - matrix
   - concept
-description: "행렬의 덧셈, 뺄셈, 곱셈 연산의 조건과 2차원 배열을 이용한 구현 방법"
+description: 행렬의 덧셈, 뺄셈, 곱셈 연산의 조건과 2차원 배열을 이용한 구현 방법
 thumbnail: https://pub-8c61ed96347b483a91c17765cea907da.r2.dev/images/2026-07-28/Matrix-thumbnail.jpg
+audio:
+  - https://pub-8c61ed96347b483a91c17765cea907da.r2.dev/media/2026-09-06/Matrix-script.mp3
 ---
 
 ## 행렬의 덧셈과 뺄셈

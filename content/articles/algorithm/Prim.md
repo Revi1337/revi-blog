@@ -1,13 +1,15 @@
 ---
-title: "Prim (프림)"
+title: Prim (프림)
 date: 2026-07-26
 updated_at: 2026-07-28
 tags:
   - algorithm
   - prim
   - concept
-description: "임의의 정점에서 시작하여 연결된 가장 가중치가 낮은 간선을 선택해 최소 신장 트리(MST)를 확정해 나가는 프림 알고리즘"
+description: 임의의 정점에서 시작하여 연결된 가장 가중치가 낮은 간선을 선택해 최소 신장 트리(MST)를 확정해 나가는 프림 알고리즘
 thumbnail: https://pub-8c61ed96347b483a91c17765cea907da.r2.dev/images/2026-07-28/Prim-thumbnail.jpg
+audio:
+  - https://pub-8c61ed96347b483a91c17765cea907da.r2.dev/media/2026-09-06/Prim-script.mp3
 ---
 
 ## Prim

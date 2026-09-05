@@ -1,13 +1,15 @@
 ---
-title: "InsertionSort (삽입 정렬)"
+title: InsertionSort (삽입 정렬)
 date: 2026-07-16
 updated_at: 2026-07-28
 tags:
   - algorithm
   - sort
   - concept
-description: "정렬된 영역에 현재 원소를 적절한 위치에 삽입하는 제자리 정렬 알고리즘인 삽입 정렬의 개념과 구현"
+description: 정렬된 영역에 현재 원소를 적절한 위치에 삽입하는 제자리 정렬 알고리즘인 삽입 정렬의 개념과 구현
 thumbnail: https://pub-8c61ed96347b483a91c17765cea907da.r2.dev/images/2026-07-28/InsertionSort-thumbnail.jpg
+audio:
+  - https://pub-8c61ed96347b483a91c17765cea907da.r2.dev/media/2026-09-06/InsertionSort-script.mp3
 ---
 
 ## Insertion Sort

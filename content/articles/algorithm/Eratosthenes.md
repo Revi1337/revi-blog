@@ -1,5 +1,5 @@
 ---
-title: "Eratosthenes (에라토스테네스의 체)"
+title: Eratosthenes (에라토스테네스의 체)
 date: 2026-07-20
 updated_at: 2026-07-28
 tags:
@@ -7,8 +7,10 @@ tags:
   - math
   - eratosthenes
   - concept
-description: "주어진 수 n 이하의 모든 소수를 소수의 배수를 지워나가는 방식으로 효율적으로 구하는 에라토스테네스의 체 알고리즘"
+description: 주어진 수 n 이하의 모든 소수를 소수의 배수를 지워나가는 방식으로 효율적으로 구하는 에라토스테네스의 체 알고리즘
 thumbnail: https://pub-8c61ed96347b483a91c17765cea907da.r2.dev/images/2026-07-28/Eratosthenes-thumbnail.jpg
+audio:
+  - https://pub-8c61ed96347b483a91c17765cea907da.r2.dev/media/2026-09-06/Eratosthenes-script.mp3
 ---
 
 ## 에라토스테네스의 체

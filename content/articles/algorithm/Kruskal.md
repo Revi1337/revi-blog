@@ -1,13 +1,15 @@
 ---
-title: "Kruskal (크루스칼)"
+title: Kruskal (크루스칼)
 date: 2026-07-25
 updated_at: 2026-07-28
 tags:
   - algorithm
   - kruskal
   - concept
-description: "탐욕적 전략과 서로소 집합(Union-Find)을 활용하여 무방향 가중치 그래프의 최소 신장 트리(MST)를 구하는 크루스칼 알고리즘"
+description: 탐욕적 전략과 서로소 집합(Union-Find)을 활용하여 무방향 가중치 그래프의 최소 신장 트리(MST)를 구하는 크루스칼 알고리즘
 thumbnail: https://pub-8c61ed96347b483a91c17765cea907da.r2.dev/images/2026-07-28/Kruskal-thumbnail.jpg
+audio:
+  - https://pub-8c61ed96347b483a91c17765cea907da.r2.dev/media/2026-09-06/Kruskal-script.mp3
 ---
 
 ## Kruskal

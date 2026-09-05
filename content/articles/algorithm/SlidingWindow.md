@@ -8,6 +8,8 @@ tags:
   - concept
 description: 연속된 데이터 구조에서 고정된 크기의 창을 이동시키며 부분 배열을 O(N)으로 처리하는 슬라이딩 윈도우 알고리즘
 thumbnail: https://pub-8c61ed96347b483a91c17765cea907da.r2.dev/images/2026-07-28/SlidingWindow-thumbnail.jpg
+audio:
+  - https://pub-8c61ed96347b483a91c17765cea907da.r2.dev/media/2026-09-06/SlidingWindow-script.mp3
 ---
 
 ## Sliding Window 란

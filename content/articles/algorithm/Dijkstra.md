@@ -1,13 +1,15 @@
 ---
-title: "Dijkstra (다익스트라)"
+title: Dijkstra (다익스트라)
 date: 2026-07-24
 updated_at: 2026-07-28
 tags:
   - algorithm
   - dijkstra
   - concept
-description: "양의 가중치가 있는 그래프에서 특정 시작 정점으로부터 다른 모든 노드까지의 최단 거리를 구하는 다익스트라 알고리즘"
+description: 양의 가중치가 있는 그래프에서 특정 시작 정점으로부터 다른 모든 노드까지의 최단 거리를 구하는 다익스트라 알고리즘
 thumbnail: https://pub-8c61ed96347b483a91c17765cea907da.r2.dev/images/2026-07-28/Dijkstra-thumbnail.jpg
+audio:
+  - https://pub-8c61ed96347b483a91c17765cea907da.r2.dev/media/2026-09-06/Dijkstra-script.mp3
 ---
 
 ## Dijkstra
