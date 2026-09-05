@@ -63,8 +63,9 @@ export interface Article {
   thumbnail?: string
   thumbnailFit?: ThumbnailFit
   /** 없으면 메타 정보 줄에 오디오 재생 버튼 자체를 노출하지 않음 — 브라우저에서 바로 재생
-   * 가능한 오디오 URL(생성/호스팅은 이 프로젝트 범위 밖, 저자가 직접 준비) */
-  audio?: string
+   * 가능한 오디오 URL(생성/호스팅은 이 프로젝트 범위 밖, 저자가 직접 준비). 배열이면 여러
+   * 트랙(예: 챕터별 오디오)으로 취급해 재생 시 선택 드롭다운을 띄운다. */
+  audio?: string | string[]
   bodyHtml: string
   /** 검색 전용 — 마크다운 서식 기호를 제거한 순수 본문 텍스트 */
   plainBody: string

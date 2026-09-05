@@ -54,10 +54,17 @@ export function ArticleHeader({ article }: { article: Article }) {
   // 구분자가 없으므로 추적 대상에서 제외한다.
   const updatedAtIndex = article.updatedAt ? 0 : -1
   const readingTimeIndex = article.updatedAt ? 1 : 0
-  const audioIndex = article.audio ? readingTimeIndex + 1 : -1
-  const thumbnailIndex = article.thumbnail ? readingTimeIndex + 1 + (article.audio ? 1 : 0) : -1
-  const trackedItemCount =
-    readingTimeIndex + 1 + (article.audio ? 1 : 0) + (article.thumbnail ? 1 : 0)
+  // frontmatter의 audio는 단일 문자열(트랙 1개)이든 배열(챕터별 여러 트랙)이든 둘 다 받는다 —
+  // 이후 로직은 전부 이 정규화된 배열 하나만 보고 판단한다.
+  const audioTracks = article.audio
+    ? Array.isArray(article.audio)
+      ? article.audio
+      : [article.audio]
+    : []
+  const hasAudio = audioTracks.length > 0
+  const audioIndex = hasAudio ? readingTimeIndex + 1 : -1
+  const thumbnailIndex = article.thumbnail ? readingTimeIndex + 1 + (hasAudio ? 1 : 0) : -1
+  const trackedItemCount = readingTimeIndex + 1 + (hasAudio ? 1 : 0) + (article.thumbnail ? 1 : 0)
   const { itemRefs, wrapped } = useWrapDetection(trackedItemCount)
 
   // 재생 상태는 새 Context 없이 ArticleHeader가 직접 소유한다(research.md §2) — 소비자가
@@ -117,7 +124,7 @@ export function ArticleHeader({ article }: { article: Article }) {
             <span>{article.readingTimeMinutes} min read</span>
           </div>
           <VisitorStatsWidget variant="inline" articleSlug={article.slug} />
-          {article.audio ? (
+          {hasAudio ? (
             <div
               ref={(el) => {
                 itemRefs.current[audioIndex] = el
@@ -164,10 +171,10 @@ export function ArticleHeader({ article }: { article: Article }) {
       </motion.div>
 
       <AnimatePresence>
-        {isAudioOpen && article.audio ? (
+        {isAudioOpen && hasAudio ? (
           <ArticleAudioPlayer
             key="audio-player"
-            src={article.audio}
+            tracks={audioTracks}
             initialTime={openInitialTime}
             onTimeUpdate={(time) => {
               lastPositionRef.current = time
