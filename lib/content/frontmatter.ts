@@ -10,6 +10,8 @@ export interface ArticleFrontmatter {
   thumbnail?: string
   /** 없으면 "cover"(꽉 채워 크롭) — 로고처럼 크롭하면 안 되는 썸네일만 "contain"으로 전체 노출 */
   thumbnail_fit?: "cover" | "contain"
+  /** 없으면 재생 버튼 자체를 노출하지 않음 — 브라우저에서 바로 재생 가능한 오디오 URL */
+  audio?: string
   reading_time_minutes?: number
   /** 없으면 true — 홈 카드 그리드/캐러셀 노출 여부 */
   show_on_homepage?: boolean

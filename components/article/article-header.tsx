@@ -1,13 +1,24 @@
 "use client"
 
+import { useRef, useState } from "react"
 import { CalendarDays, History, Timer } from "lucide-react"
 import Link from "next/link"
+import dynamic from "next/dynamic"
 import * as motion from "motion/react-client"
+import { AnimatePresence } from "motion/react"
 
 import type { Article } from "@/lib/data/types"
 import { useWrapDetection } from "@/lib/hooks/use-wrap-detection"
 import { ArticleThumbnailButton } from "@/components/article/article-thumbnail-button"
+import { ArticleAudioButton } from "@/components/article/article-audio-button"
 import { VisitorStatsWidget } from "@/components/stats/visitor-stats-widget"
+
+// 재생 버튼을 누르기 전까지는 전혀 필요 없으므로 지연 로드한다 — nav-bar.tsx의 SearchModal과
+// 동일한 패턴(bundle-dynamic-imports).
+const ArticleAudioPlayer = dynamic(
+  () => import("@/components/article/article-audio-player").then((m) => m.ArticleAudioPlayer),
+  { ssr: false }
+)
 
 function formatDate(iso: string) {
   return new Date(iso).toLocaleDateString("en-US", {
@@ -43,9 +54,23 @@ export function ArticleHeader({ article }: { article: Article }) {
   // 구분자가 없으므로 추적 대상에서 제외한다.
   const updatedAtIndex = article.updatedAt ? 0 : -1
   const readingTimeIndex = article.updatedAt ? 1 : 0
-  const thumbnailIndex = article.thumbnail ? readingTimeIndex + 1 : -1
-  const trackedItemCount = readingTimeIndex + 1 + (article.thumbnail ? 1 : 0)
+  const audioIndex = article.audio ? readingTimeIndex + 1 : -1
+  const thumbnailIndex = article.thumbnail ? readingTimeIndex + 1 + (article.audio ? 1 : 0) : -1
+  const trackedItemCount =
+    readingTimeIndex + 1 + (article.audio ? 1 : 0) + (article.thumbnail ? 1 : 0)
   const { itemRefs, wrapped } = useWrapDetection(trackedItemCount)
+
+  // 재생 상태는 새 Context 없이 ArticleHeader가 직접 소유한다(research.md §2) — 소비자가
+  // 트리거 버튼과 하단 플레이어 단 둘뿐이라 앱 전역 Provider를 둘 이유가 없다. lastPositionRef는
+  // 닫기(X) 후 같은 페이지에 머무는 동안 이어듣기(FR-012)를 위한 마지막 재생 위치 보존용 —
+  // 플레이어가 언마운트돼도(닫기) 이 값은 ArticleHeader에 남아있고, 페이지를 벗어나면
+  // ArticleHeader 자체가 언마운트되며 함께 소멸한다.
+  const [isAudioOpen, setIsAudioOpen] = useState(false)
+  // 렌더 중에 ref.current를 직접 읽지 않도록, 열 때(이벤트 핸들러 안에서) 그 순간의 값을
+  // openInitialTime state로 한 번 캡처해 플레이어에 넘긴다 — lastPositionRef 자체는 그대로
+  // 재생 위치 갱신용 트랜지언트 저장소로 유지한다.
+  const [openInitialTime, setOpenInitialTime] = useState(0)
+  const lastPositionRef = useRef(0)
 
   return (
     <header className="space-y-4">
@@ -92,6 +117,22 @@ export function ArticleHeader({ article }: { article: Article }) {
             <span>{article.readingTimeMinutes} min read</span>
           </div>
           <VisitorStatsWidget variant="inline" articleSlug={article.slug} />
+          {article.audio ? (
+            <div
+              ref={(el) => {
+                itemRefs.current[audioIndex] = el
+              }}
+              className="relative flex h-5 items-center"
+            >
+              <Separator hidden={wrapped[audioIndex]} />
+              <ArticleAudioButton
+                onClick={() => {
+                  setOpenInitialTime(lastPositionRef.current)
+                  setIsAudioOpen(true)
+                }}
+              />
+            </div>
+          ) : null}
           {article.thumbnail ? (
             <div
               ref={(el) => {
@@ -121,6 +162,20 @@ export function ArticleHeader({ article }: { article: Article }) {
           </div>
         )}
       </motion.div>
+
+      <AnimatePresence>
+        {isAudioOpen && article.audio ? (
+          <ArticleAudioPlayer
+            key="audio-player"
+            src={article.audio}
+            initialTime={openInitialTime}
+            onTimeUpdate={(time) => {
+              lastPositionRef.current = time
+            }}
+            onClose={() => setIsAudioOpen(false)}
+          />
+        ) : null}
+      </AnimatePresence>
     </header>
   )
 }

@@ -54,6 +54,7 @@ async function loadArticleFile(parsed: ParsedArticleFile, titleToSlug: Map<strin
     description: frontmatter.description,
     thumbnail: frontmatter.thumbnail,
     thumbnailFit: frontmatter.thumbnail_fit,
+    audio: frontmatter.audio,
     bodyHtml,
     plainBody,
     toc,
