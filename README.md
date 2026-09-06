@@ -192,3 +192,7 @@ npm run dev:docker
 
 - 리전: `icn1` (서울)
 - Cron: 매주 방문자 통계 정리 작업(`/api/cron/cleanup-stats`) 실행
+
+## 라이선스
+
+오픈소스 라이선스가 아닙니다. 모든 권리는 저작권자에게 있습니다. 자세한 내용은 [LICENSE](./LICENSE) 참고.
