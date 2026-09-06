@@ -136,6 +136,13 @@ export async function openImageLightbox({
     maxZoomLevel: 2,
   })
 
+  /* msrc(저해상도 미리보기)를 안 넘기기 때문에 기본 placeholder는 이미지 박스 크기의 단색
+     회색(#222, --pswp-placeholder-bg) div로 그려진다. 투명 배경 SVG(예: Spring 로고)처럼
+     불투명하게 전체를 덮지 않는 이미지가 로드되면, 그 회색 박스가 실제 이미지로 순간 교체되며
+     "회색이 사라지는" 플래시로 보인다(실측 재현). 어차피 이 프로젝트는 placeholder를 별도로
+     준비해두지 않으므로, 박스 자체를 그리지 않도록 꺼서 로드 전엔 스크림만 보이게 한다. */
+  lightbox.addFilter("useContentPlaceholder", () => false)
+
   lightbox.on("uiRegister", () => registerZoomButtons(lightbox))
 
   lightbox.init()
