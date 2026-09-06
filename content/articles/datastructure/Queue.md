@@ -1,12 +1,15 @@
 ---
 title: Queue
 date: 2026-07-02
+updated_at: 2026-09-06 19:55
 tags:
   - datastructure
   - queue
   - concept
-description: "선입선출(FIFO) 방식으로 한쪽 끝에서 삽입하고 다른쪽 끝에서 제거하는 큐(Queue) 자료구조 개념"
+description: 선입선출(FIFO) 방식으로 한쪽 끝에서 삽입하고 다른쪽 끝에서 제거하는 큐(Queue) 자료구조 개념
 thumbnail: https://pub-8c61ed96347b483a91c17765cea907da.r2.dev/images/2026-07-29/Queue-thumbnail.jpg
+audio:
+  - https://pub-8c61ed96347b483a91c17765cea907da.r2.dev/media/2026-09-06/Queue-script.mp3
 ---
 
 ## Queue

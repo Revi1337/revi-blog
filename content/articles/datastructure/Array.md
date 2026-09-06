@@ -1,12 +1,15 @@
 ---
 title: Array
 date: 2026-06-30
+updated_at: 2026-09-06 19:55
 tags:
   - datastructure
   - array
   - concept
-description: "메모리상에 연속적으로 데이터가 배치되는 선형 자료구조인 배열(Array)의 개념과 특성"
+description: 메모리상에 연속적으로 데이터가 배치되는 선형 자료구조인 배열(Array)의 개념과 특성
 thumbnail: https://pub-8c61ed96347b483a91c17765cea907da.r2.dev/images/2026-07-29/Array-thumbnail.jpg
+audio:
+  - https://pub-8c61ed96347b483a91c17765cea907da.r2.dev/media/2026-09-06/Array-script.mp3
 ---
 
 ## Array

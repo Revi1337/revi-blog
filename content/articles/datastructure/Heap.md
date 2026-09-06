@@ -1,13 +1,16 @@
 ---
 title: Heap
 date: 2026-07-07
+updated_at: 2026-09-06 19:55
 tags:
   - datastructure
   - heap
   - priority-queue
   - concept
-description: "우선순위 큐를 효율적으로 구현하는 완전 이진 트리 기반의 힙(Heap) 자료구조 개념과 특성"
+description: 우선순위 큐를 효율적으로 구현하는 완전 이진 트리 기반의 힙(Heap) 자료구조 개념과 특성
 thumbnail: https://pub-8c61ed96347b483a91c17765cea907da.r2.dev/images/2026-07-29/Heap-thumbnail.jpg
+audio:
+  - https://pub-8c61ed96347b483a91c17765cea907da.r2.dev/media/2026-09-06/Heap-script.mp3
 ---
 
 ## Heap

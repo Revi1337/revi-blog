@@ -1,13 +1,16 @@
 ---
 title: Spanning Tree
 date: 2026-07-09
+updated_at: 2026-09-06 19:55
 tags:
   - datastructure
   - spanning-tree
   - graph
   - concept
-description: "무방향 연결 그래프의 모든 정점을 사이클 없이 (V-1)개 간선으로 연결하는 신장 트리(Spanning Tree) 개념"
+description: 무방향 연결 그래프의 모든 정점을 사이클 없이 (V-1)개 간선으로 연결하는 신장 트리(Spanning Tree) 개념
 thumbnail: https://pub-8c61ed96347b483a91c17765cea907da.r2.dev/images/2026-07-29/SpanningTree-thumbnail.jpg
+audio:
+  - https://pub-8c61ed96347b483a91c17765cea907da.r2.dev/media/2026-09-06/SpanningTree-script.mp3
 ---
 
 ## Spanning Tree

@@ -1,12 +1,15 @@
 ---
 title: HashTable
 date: 2026-07-04
+updated_at: 2026-09-06 19:55
 tags:
   - datastructure
   - hashtable
   - concept
-description: "Key를 해시 함수를 통해 인덱스로 매핑하여 Key-Value 쌍을 O(1)에 조작하는 해시 테이블(HashTable)의 개념"
+description: Key를 해시 함수를 통해 인덱스로 매핑하여 Key-Value 쌍을 O(1)에 조작하는 해시 테이블(HashTable)의 개념
 thumbnail: https://pub-8c61ed96347b483a91c17765cea907da.r2.dev/images/2026-07-29/HashTable-thumbnail.jpg
+audio:
+  - https://pub-8c61ed96347b483a91c17765cea907da.r2.dev/media/2026-09-06/HashTable-script.mp3
 ---
 
 ## HashTable

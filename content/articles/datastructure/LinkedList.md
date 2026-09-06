@@ -1,12 +1,15 @@
 ---
 title: LinkedList
 date: 2026-07-03
+updated_at: 2026-09-06 19:55
 tags:
   - datastructure
   - linkedlist
   - concept
-description: "노드가 데이터와 다음 주소 포인터를 포함하여 불연속적인 메모리상에서 논리적 연결을 이루는 연결 리스트 개념"
+description: 노드가 데이터와 다음 주소 포인터를 포함하여 불연속적인 메모리상에서 논리적 연결을 이루는 연결 리스트 개념
 thumbnail: https://pub-8c61ed96347b483a91c17765cea907da.r2.dev/images/2026-07-29/LinkedList-thumbnail.jpg
+audio:
+  - https://pub-8c61ed96347b483a91c17765cea907da.r2.dev/media/2026-09-06/LinkedList-script.mp3
 ---
 
 ## LinkedList

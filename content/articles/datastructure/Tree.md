@@ -1,12 +1,15 @@
 ---
 title: Tree
 date: 2026-07-05
+updated_at: 2026-09-06 19:55
 tags:
   - datastructure
   - tree
   - concept
-description: "노드들이 부모-자식 관계의 계층적 구조를 이루는 비선형 자료구조인 트리(Tree) 개념"
+description: 노드들이 부모-자식 관계의 계층적 구조를 이루는 비선형 자료구조인 트리(Tree) 개념
 thumbnail: https://pub-8c61ed96347b483a91c17765cea907da.r2.dev/images/2026-07-29/Tree-thumbnail.jpg
+audio:
+  - https://pub-8c61ed96347b483a91c17765cea907da.r2.dev/media/2026-09-06/Tree-script.mp3
 ---
 
 ## Tree

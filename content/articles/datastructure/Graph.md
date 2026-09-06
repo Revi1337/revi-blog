@@ -1,12 +1,15 @@
 ---
 title: Graph
 date: 2026-07-08
+updated_at: 2026-09-06 19:55
 tags:
   - datastructure
   - graph
   - concept
-description: "노드(정점)와 간선으로 데이터의 연결 관계를 표현하는 비선형 자료구조인 그래프(Graph)의 개념"
+description: 노드(정점)와 간선으로 데이터의 연결 관계를 표현하는 비선형 자료구조인 그래프(Graph)의 개념
 thumbnail: https://pub-8c61ed96347b483a91c17765cea907da.r2.dev/images/2026-07-29/Graph-thumbnail.jpg
+audio:
+  - https://pub-8c61ed96347b483a91c17765cea907da.r2.dev/media/2026-09-06/Graph-script.mp3
 ---
 
 ## Graph

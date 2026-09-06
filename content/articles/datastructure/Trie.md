@@ -1,13 +1,16 @@
 ---
 title: Trie
 date: 2026-07-11
+updated_at: 2026-09-06 19:55
 tags:
   - datastructure
   - trie
   - prefix-tree
   - concept
-description: "문자열 검색과 접두사(Prefix) 탐색을 효율적으로 수행하는 트라이(Trie) 자료구조 개념"
+description: 문자열 검색과 접두사(Prefix) 탐색을 효율적으로 수행하는 트라이(Trie) 자료구조 개념
 thumbnail: https://pub-8c61ed96347b483a91c17765cea907da.r2.dev/images/2026-07-29/Trie-thumbnail.jpg
+audio:
+  - https://pub-8c61ed96347b483a91c17765cea907da.r2.dev/media/2026-09-06/Trie-script.mp3
 ---
 
 ## Trie

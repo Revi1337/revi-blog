@@ -1,13 +1,16 @@
 ---
 title: BST
 date: 2026-07-06
+updated_at: 2026-09-06 19:55
 tags:
   - datastructure
   - bst
   - tree
   - concept
-description: "왼쪽 자식 < 부모 < 오른쪽 자식 정렬 규칙을 만족하는 이진 탐색 트리(BST)의 개념과 특성"
+description: 왼쪽 자식 < 부모 < 오른쪽 자식 정렬 규칙을 만족하는 이진 탐색 트리(BST)의 개념과 특성
 thumbnail: https://pub-8c61ed96347b483a91c17765cea907da.r2.dev/images/2026-07-29/BST-thumbnail.jpg
+audio:
+  - https://pub-8c61ed96347b483a91c17765cea907da.r2.dev/media/2026-09-06/BST-script.mp3
 ---
 
 ## Binary Search Tree (BST)

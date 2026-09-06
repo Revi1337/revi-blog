@@ -1,12 +1,15 @@
 ---
 title: Stack
 date: 2026-07-01
+updated_at: 2026-09-06 19:55
 tags:
   - datastructure
   - stack
   - concept
-description: "후입선출(LIFO) 방식으로 한쪽 끝(Top)에서만 데이터의 추가와 제거가 일어나는 스택(Stack) 개념"
+description: 후입선출(LIFO) 방식으로 한쪽 끝(Top)에서만 데이터의 추가와 제거가 일어나는 스택(Stack) 개념
 thumbnail: https://pub-8c61ed96347b483a91c17765cea907da.r2.dev/images/2026-07-29/Stack-thumbnail.jpg
+audio:
+  - https://pub-8c61ed96347b483a91c17765cea907da.r2.dev/media/2026-09-06/Stack-script.mp3
 ---
 
 ## Stack
