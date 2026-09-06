@@ -116,16 +116,14 @@ function InlineStatsRow({
   items: { icon: ComponentType<{ className?: string }>; label: string; value: number | undefined }[]
   isLoaded: boolean
 }) {
-  const { itemRefs, wrapped } = useWrapDetection(items.length)
+  const { setItemRef, wrapped } = useWrapDetection(items.length)
 
   return (
     <>
       {items.map((item, index) => (
         <div
           key={item.label}
-          ref={(el) => {
-            itemRefs.current[index] = el
-          }}
+          ref={setItemRef(index)}
           className={cn(
             "relative flex h-5 items-center gap-1.5 transition-opacity duration-300",
             isLoaded ? "opacity-100" : "opacity-0"

@@ -65,7 +65,7 @@ export function ArticleHeader({ article }: { article: Article }) {
   const audioIndex = hasAudio ? readingTimeIndex + 1 : -1
   const thumbnailIndex = article.thumbnail ? readingTimeIndex + 1 + (hasAudio ? 1 : 0) : -1
   const trackedItemCount = readingTimeIndex + 1 + (hasAudio ? 1 : 0) + (article.thumbnail ? 1 : 0)
-  const { itemRefs, wrapped } = useWrapDetection(trackedItemCount)
+  const { setItemRef, wrapped } = useWrapDetection(trackedItemCount)
 
   // 재생 상태는 새 Context 없이 ArticleHeader가 직접 소유한다(research.md §2) — 소비자가
   // 트리거 버튼과 하단 플레이어 단 둘뿐이라 앱 전역 Provider를 둘 이유가 없다. lastPositionRef는
@@ -103,9 +103,7 @@ export function ArticleHeader({ article }: { article: Article }) {
           </div>
           {article.updatedAt ? (
             <div
-              ref={(el) => {
-                itemRefs.current[updatedAtIndex] = el
-              }}
+              ref={setItemRef(updatedAtIndex)}
               className="relative flex h-5 items-center gap-1.5"
             >
               <Separator hidden={wrapped[updatedAtIndex]} />
@@ -114,9 +112,7 @@ export function ArticleHeader({ article }: { article: Article }) {
             </div>
           ) : null}
           <div
-            ref={(el) => {
-              itemRefs.current[readingTimeIndex] = el
-            }}
+            ref={setItemRef(readingTimeIndex)}
             className="relative flex h-5 items-center gap-1.5"
           >
             <Separator hidden={wrapped[readingTimeIndex]} />
@@ -126,9 +122,7 @@ export function ArticleHeader({ article }: { article: Article }) {
           <VisitorStatsWidget variant="inline" articleSlug={article.slug} />
           {hasAudio ? (
             <div
-              ref={(el) => {
-                itemRefs.current[audioIndex] = el
-              }}
+              ref={setItemRef(audioIndex)}
               className="relative flex h-5 items-center"
             >
               <Separator hidden={wrapped[audioIndex]} />
@@ -142,9 +136,7 @@ export function ArticleHeader({ article }: { article: Article }) {
           ) : null}
           {article.thumbnail ? (
             <div
-              ref={(el) => {
-                itemRefs.current[thumbnailIndex] = el
-              }}
+              ref={setItemRef(thumbnailIndex)}
               className="relative flex h-5 items-center"
             >
               <Separator hidden={wrapped[thumbnailIndex]} />

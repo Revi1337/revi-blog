@@ -1,4 +1,4 @@
-import { useLayoutEffect, useRef, useState } from "react"
+import { useCallback, useLayoutEffect, useRef, useState } from "react"
 
 // flex-wrap 행에서 각 항목이 새 줄의 첫머리로 밀려났는지를 감지한다 — CSS만으로는 "이 flex
 // 아이템이 줄바꿈된 줄의 첫 항목인지"를 판별할 선택자가 없어(:first-child는 DOM 순서 기준일 뿐
@@ -14,6 +14,16 @@ import { useLayoutEffect, useRef, useState } from "react"
 export function useWrapDetection(itemCount: number) {
   const itemRefs = useRef<(HTMLElement | null)[]>([])
   const [wrapped, setWrapped] = useState<boolean[]>(() => Array(itemCount).fill(false))
+
+  // itemRefs는 이 훅의 반환값이므로, 대입(mutation)도 훅 내부에서만 일어나야 한다
+  // (react-hooks/immutability) — 소비자는 인덱스만 넘기고 실제 ref.current 대입은
+  // 여기 클로저가 대신 수행한다.
+  const setItemRef = useCallback(
+    (index: number) => (el: HTMLElement | null) => {
+      itemRefs.current[index] = el
+    },
+    []
+  )
 
   useLayoutEffect(() => {
     const parent = itemRefs.current.find(Boolean)?.parentElement
@@ -36,5 +46,5 @@ export function useWrapDetection(itemCount: number) {
     return () => observer.disconnect()
   }, [])
 
-  return { itemRefs, wrapped }
+  return { setItemRef, wrapped }
 }
