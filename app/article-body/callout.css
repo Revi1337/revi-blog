@@ -102,7 +102,10 @@
   container-type: inline-size;
   container-name: callout-custom;
   margin: 1.5rem 0;
-  padding: 1.25rem 1.25rem 1.25rem 2.75rem;
+  /* 좌우 padding을 2.75rem으로 통일 — 원래 오른쪽만 1.25rem이라 뱃지 없는 오른쪽이 왼쪽보다
+     좁아 보였음(사용자가 실측 비교로 발견). 왼쪽 2.75rem은 스우시/뱃지 장식 공간 확보용이었지만,
+     시각적 대칭을 우선해 오른쪽도 동일하게 맞춤 */
+  padding: 1.25rem 2.75rem;
   border-radius: var(--radius-lg);
   /* 6%→12% — .callout과 동일한 이유(위 주석 참고), 두 시스템 간 배경 진하기도 통일.
      --callout-own-bg는 .callout과 동일한 용도(아래 .callout-custom-body가 상속받아 사용) */
