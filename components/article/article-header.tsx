@@ -11,6 +11,7 @@ import type { Article } from "@/lib/data/types"
 import { useWrapDetection } from "@/lib/hooks/use-wrap-detection"
 import { ArticleThumbnailButton } from "@/components/article/article-thumbnail-button"
 import { ArticleAudioButton } from "@/components/article/article-audio-button"
+import { SeriesBox } from "@/components/article/series-box"
 import { VisitorStatsWidget } from "@/components/stats/visitor-stats-widget"
 
 // 재생 버튼을 누르기 전까지는 전혀 필요 없으므로 지연 로드한다 — nav-bar.tsx의 SearchModal과
@@ -161,6 +162,14 @@ export function ArticleHeader({ article }: { article: Article }) {
           </div>
         )}
       </motion.div>
+
+      {article.series && article.series.length > 0 && (
+        <div className="flex flex-col gap-3">
+          {article.series.map((membership) => (
+            <SeriesBox key={membership.id} membership={membership} />
+          ))}
+        </div>
+      )}
 
       <AnimatePresence>
         {isAudioOpen && hasAudio ? (

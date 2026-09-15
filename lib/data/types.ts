@@ -49,6 +49,30 @@ export interface ArticleNavRef {
   title: string
 }
 
+/** lib/data/series-presets.ts에 운영자가 직접 관리하는 시리즈 원본 데이터 — 글 원문(frontmatter)은
+ * 이 정보를 전혀 모른다. slugs 배열 순서가 곧 시리즈 내 편 순서다(별도 order 필드 없음). */
+export interface SeriesPreset {
+  /** 레지스트리 전체에서 유일해야 하는 식별자(kebab-case) — 화면에 노출되지 않음 */
+  id: string
+  /** 접힌 상태에서도 보이는 시리즈 표시 이름 */
+  label: string
+  /** 이 시리즈에 속한 글의 slug를 순서대로 나열 — 배열 인덱스가 시리즈 내 순번(N)을 결정 */
+  slugs: string[]
+}
+
+/** loadArticles()가 SeriesPreset[]과 로드된 Article[]로부터 빌드 타임에 파생시켜 각 Article에
+ * attach하는 값 — 저장소에 커밋되지 않고 매 빌드마다 재계산된다 */
+export interface SeriesMembership {
+  id: string
+  label: string
+  /** 시리즈 안에서 이 글의 순번(1-based) */
+  index: number
+  /** 시리즈 전체 편 수 */
+  total: number
+  /** 시리즈에 속한 전체 편 목록(순서대로) — 펼친 박스에 10개 단위로 페이지네이션되어 노출 */
+  episodes: ArticleNavRef[]
+}
+
 export interface Article {
   slug: string
   title: string
@@ -77,6 +101,8 @@ export interface Article {
   next?: ArticleNavRef
   /** 없으면 true — 홈 카드 그리드/캐러셀/검색 노출 여부 */
   showOnHomepage: boolean
+  /** 없거나 빈 배열이면 어떤 시리즈에도 속하지 않음 — lib/data/series-presets.ts 기반 빌드 타임 파생 */
+  series?: SeriesMembership[]
 }
 
 export const DEFAULT_THUMBNAIL = "/images/default-thumbnail.svg"
