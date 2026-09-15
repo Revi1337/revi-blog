@@ -110,6 +110,21 @@ audio:
 > [!IMPORTANT]
 > `content/articles/**`를 수정한 뒤에는 브라우저 새로고침만으로는 반영되지 않습니다. 콘텐츠는 모듈 최상단 `await`로 한 번만 로드되어 캐시되므로, 반드시 `next dev`를 재시작해야 변경 사항이 보입니다.
 
+## QuickSearch 프리셋 관리
+
+홈페이지 상단의 QuickSearch 버튼(예: "DataStructure", "Algorithm")을 추가·변경할 때는 `lib/data/quick-search-presets.ts` 한 곳만 수정합니다.
+
+```ts
+export const quickSearchPresets: QuickSearchPreset[] = [
+  { id: "my-preset", label: "표시 이름", tags: ["tag1", "tag2"] },
+]
+```
+
+- `tags`는 1~3개까지 지정할 수 있고, 글의 `tags`와 AND 매칭됩니다 (지정한 태그를 모두 가진 글만 필터링됩니다).
+- 버튼 개수는 고정되어 있지 않습니다 — 배열에 항목을 추가·삭제하는 것만으로 늘리거나 줄일 수 있습니다.
+- `label`은 버튼 표시 텍스트이자, 필터 활성화 시 "Entry Stream" 헤더 라벨에도 그대로 노출됩니다.
+- 일반 TypeScript 모듈이라 `content/articles/**`와 달리 `next dev` 재시작 없이 즉시 반영됩니다.
+
 ## 시리즈(연재) 관리
 
 게시글을 연재 시리즈로 묶을 때는 글 원문(frontmatter)을 건드리지 않고 `lib/data/series-presets.ts` 한 곳만 수정합니다 — 소속/순서의 단일 소스입니다.
