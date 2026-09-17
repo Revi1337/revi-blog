@@ -30,19 +30,41 @@ function parseArticleFile(filePath: string): ParsedArticleFile {
   return { filePath, slug, frontmatter, rawBody }
 }
 
-/** `[[제목]]`/`[[slug]]` wikilink 해석용 — 옵시디언 노트 제목과 slug 둘 다로 찾을 수 있도록 매핑한다 */
-function buildTitleToSlugMap(parsed: ParsedArticleFile[]): Map<string, string> {
+/**
+ * wikilink 해석용 매핑 — 옵시디언과 동일하게 frontmatter의 title/slug가 아니라 vault 파일 경로만
+ * 링크 타겟으로 인식한다. 파일명이 vault 전체에서 유일하면 `[[Tree]]`처럼 파일명만으로도 찾을 수
+ * 있게 하고, 같은 파일명이 여러 디렉터리에 있으면 그 bare 키는 등록하지 않아 `[[algorithm/Tree]]`
+ * 처럼 경로를 포함해야만 찾을 수 있게 한다 — 옵시디언이 파일명 충돌 시 경로 명시를 요구하는 것과
+ * 동일한 동작이다.
+ */
+function buildWikilinkTargetMap(parsed: ParsedArticleFile[]): Map<string, string> {
+  const basenameCounts = new Map<string, number>()
+  for (const { filePath } of parsed) {
+    const basename = path.basename(filePath, ".md").toLowerCase()
+    basenameCounts.set(basename, (basenameCounts.get(basename) ?? 0) + 1)
+  }
+
   const map = new Map<string, string>()
-  for (const { frontmatter, slug } of parsed) {
-    map.set(slug.toLowerCase(), slug)
-    map.set(frontmatter.title.trim().toLowerCase(), slug)
+  for (const { filePath, slug } of parsed) {
+    const basename = path.basename(filePath, ".md").toLowerCase()
+    const relativePath = path
+      .relative(CONTENT_DIR, filePath)
+      .replace(/\.md$/i, "")
+      .split(path.sep)
+      .join("/")
+      .toLowerCase()
+
+    map.set(relativePath, slug)
+    if (basenameCounts.get(basename) === 1) {
+      map.set(basename, slug)
+    }
   }
   return map
 }
 
-async function loadArticleFile(parsed: ParsedArticleFile, titleToSlug: Map<string, string>): Promise<Article> {
+async function loadArticleFile(parsed: ParsedArticleFile, wikilinkTargets: Map<string, string>): Promise<Article> {
   const { slug, frontmatter, rawBody } = parsed
-  const { bodyHtml, toc, plainBody, images } = await renderMarkdown(stripComments(rawBody), titleToSlug)
+  const { bodyHtml, toc, plainBody, images } = await renderMarkdown(stripComments(rawBody), wikilinkTargets)
   const readingTimeMinutes = frontmatter.reading_time_minutes ?? computeReadingTimeMinutes(rawBody)
 
   return {
@@ -153,12 +175,12 @@ export async function loadArticles(): Promise<LoadedContent> {
     .filter((name) => name.endsWith(".md"))
   const filePaths = filenames.map((name) => path.join(CONTENT_DIR, name))
 
-  // wikilink가 다른 글을 참조할 수 있으므로, 렌더링 전에 전체 글의 frontmatter부터 훑어
-  // title/slug → slug 매핑을 먼저 만든다.
+  // wikilink가 다른 글을 참조할 수 있으므로, 렌더링 전에 전체 글의 파일 경로부터 훑어
+  // 파일명/경로 → slug 매핑을 먼저 만든다.
   const parsedFiles = filePaths.map((filePath) => parseArticleFile(filePath))
-  const titleToSlug = buildTitleToSlugMap(parsedFiles)
+  const wikilinkTargets = buildWikilinkTargetMap(parsedFiles)
 
-  const loaded = await Promise.all(parsedFiles.map((parsed) => loadArticleFile(parsed, titleToSlug)))
+  const loaded = await Promise.all(parsedFiles.map((parsed) => loadArticleFile(parsed, wikilinkTargets)))
   assertNoDuplicateSlugs(loaded.map((article, index) => ({ slug: article.slug, filePath: filePaths[index] })))
 
   // showOnHomepage 여부와 무관하게 전체 글을 대상으로 시리즈를 attach한다 — 시리즈 상세 페이지

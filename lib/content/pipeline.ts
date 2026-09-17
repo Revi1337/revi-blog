@@ -55,9 +55,9 @@ const processor = unified()
 
 export async function renderMarkdown(
   rawBody: string,
-  titleToSlug: Map<string, string>
+  wikilinkTargets: Map<string, string>
 ): Promise<RenderResult> {
-  const input = new VFile({ value: rawBody, data: { titleToSlug } })
+  const input = new VFile({ value: rawBody, data: { wikilinkTargets } })
   const file = await processor.process(input)
   return {
     bodyHtml: String(file),

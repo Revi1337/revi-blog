@@ -15,12 +15,14 @@ const IMAGE_EXTENSIONS = new Set(["png", "jpg", "jpeg", "gif", "svg", "webp", "a
  * 배포 환경에 존재하지 않으므로 실물 파일을 리포에 커밋해야 함). public/images/는 이 저장소가
  * 직접 소유·커밋하는 정적 자산(기본 썸네일 등) 전용이라 별개로 유지한다 — vault에서 온 콘텐츠(attachments)와
  * 리포 자체 자산(images)을 출처 기준으로 구분한다.
- * wikilink는 file.data.titleToSlug(제목·slug → slug 매핑, loader.ts가 전체 글의 frontmatter를
- * 먼저 훑어 생성)로 해석하고, 대상 글을 찾지 못하면 깨진 링크 대신 평문으로 남긴다.
+ * wikilink는 file.data.wikilinkTargets(파일명·경로 → slug 매핑, loader.ts가 전체 글의 파일
+ * 경로를 먼저 훑어 생성)로 해석하고, 대상 글을 찾지 못하면 깨진 링크 대신 평문으로 남긴다.
+ * 옵시디언처럼 `.md` 확장자를 붙여 쓴 타겟(`[[Tree.md]]`, `[[경로/Tree.md]]`)도 동일하게
+ * 해석되도록 lookup 전에 trailing `.md`를 대소문자 구분 없이 제거한다.
  */
 export function remarkObsidianLinks() {
   return (tree: Root, file: VFile) => {
-    const titleToSlug = (file.data.titleToSlug as Map<string, string> | undefined) ?? new Map()
+    const wikilinkTargets = (file.data.wikilinkTargets as Map<string, string> | undefined) ?? new Map()
 
     visit(tree, "text", (node: Text, index, parent: Parent | undefined) => {
       if (!parent || index === undefined) return
@@ -49,7 +51,7 @@ export function remarkObsidianLinks() {
           // 미해결 wikilink와 동일하게 평문으로 남긴다 (섣불리 img로 오인해 깨진 태그를 만들지 않음)
           replacement.push({ type: "text", value: label })
         } else {
-          const slug = titleToSlug.get(trimmedTarget.toLowerCase())
+          const slug = wikilinkTargets.get(stripMdExtension(trimmedTarget).toLowerCase())
           if (slug) {
             replacement.push({
               type: "link",
@@ -71,6 +73,10 @@ export function remarkObsidianLinks() {
       return index + replacement.length
     })
   }
+}
+
+function stripMdExtension(target: string): string {
+  return target.replace(/\.md$/i, "")
 }
 
 function resolveAttachmentUrl(filename: string): string {

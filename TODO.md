@@ -28,3 +28,35 @@
 
 **재검토 조건**: `find content/articles -name "*.md" | wc -l`로 확인했을 때 글 개수가 대략
 500개를 넘어서거나, 체감상 build 시간이 실제로 불편해지는 시점에 다시 실측 후 필요하면 착수.
+
+## wikilink 헤딩 앵커 지원 (`[[Note#Heading]]`, `[[#Heading]]`)
+
+**상태**: 보류 — `feat/wikilink-filename-resolution` 브랜치에서 파일명/경로 기반 wikilink 매칭(옵시디언과
+동일하게 `[[Tree]]`/`[[Tree.md]]`/`[[경로/Tree]]`/`[[경로/Tree.md]]` 전부 지원)은 구현·검증 완료했지만,
+헤딩 앵커는 그 작업에서 의도적으로 제외함.
+
+**배경**: `lib/content/plugins/remark-obsidian-links.ts`는 지금 `[[Note#Heading]]`,
+`[[Note#Heading|별칭]]`, `[[#Heading]]`(같은 문서 내 앵커) 전부 대상 문서/헤딩을 못 찾고 plain
+text로 fallback한다. 실제로 `content/articles/language/python/Scope.md`(`[[Scope#주의점|...]]`)와
+`content/articles/algorithm/Prefixsum.md`(`[[#Index 0 Base 엣지 케이스]]`)에서 이 문제로 링크가
+깨져 있음(둘 다 이미 plain text로 렌더링되는 중이라 당장 회귀 위험은 없음).
+
+**필요 작업**: 지금 `lib/content/loader.ts`는 title/slug만 전체 글 대상으로 사전 수집(2-pass)하는데,
+헤딩 앵커를 풀려면 문서별 헤딩 id 목록까지 사전에 수집해야 함(TOC 생성에 쓰는 슬러그화 규칙과
+동일하게). 같은 문서 내 앵커(`[[#Heading]]`)는 렌더링 중인 문서 자신의 헤딩을 참조하는 별도
+로직이 추가로 필요해서, 파일명 매칭보다 스코프가 큼.
+
+**재검토 조건**: 헤딩 앵커 wikilink를 쓸 실제 수요(예: 옛 블로그 이관 중 앵커 참조가 많이
+나온다거나)가 생기면 착수.
+
+## wikilink `aliases:` frontmatter 지원
+
+**상태**: 보류 — 필요성 미확인
+
+**배경**: 옵시디언이 노트 제목(파일명) 외에 공식으로 지원하는 유일한 대체 매칭 필드는
+`aliases:` frontmatter인데(임의의 `title` 필드가 아님), 지금 이 블로그엔 이 필드가 없고
+와일드카드 매칭 로직도 없음. `feat/wikilink-filename-resolution`에서 wikilink 매칭을 순수
+파일명/경로 기반으로 옮기면서 `title` 기반 매칭은 의도적으로 제거했는데(옵시디언 시맨틱과
+어긋나서), 그 대체재로 `aliases:`를 지원할지는 아직 미정.
+
+**재검토 조건**: 파일명과 다른 별칭으로 wikilink를 걸고 싶은 실제 케이스가 생기면 착수.
