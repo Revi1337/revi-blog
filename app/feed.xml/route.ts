@@ -1,6 +1,8 @@
 import { articles } from "@/lib/data/articles"
 import { SITE_URL } from "@/lib/site-config"
 
+export const dynamic = "force-static"
+
 const EXCERPT_LENGTH = 180
 
 function escapeXml(value: string): string {
