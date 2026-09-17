@@ -47,7 +47,7 @@ function AudioTrackPlayer({ src, initialTime, onTimeUpdate, onClose, trackPicker
   // 계속 덮어써 드래그와 서로 충돌한다 — 드래그 중엔 그 덮어쓰기를 멈춘다.
   const isScrubbingRef = useRef(false)
 
-  const { audioRef, isPlaying, duration, playbackRate, play, pause, seek, cyclePlaybackRate } =
+  const { audioRef, isPlaying, duration, playbackRate, playbackError, play, pause, seek, cyclePlaybackRate } =
     useAudioPlayback({
       initialTime,
       onTimeUpdate: (currentTime) => {
@@ -69,18 +69,28 @@ function AudioTrackPlayer({ src, initialTime, onTimeUpdate, onClose, trackPicker
     <>
       <audio ref={audioRef} src={src} preload="metadata" />
 
-      <button
-        type="button"
-        aria-label={isPlaying ? "Pause" : "Play"}
-        onClick={isPlaying ? pause : play}
-        className="flex size-9 shrink-0 items-center justify-center rounded-full bg-primary text-on-primary transition-colors hover:brightness-110 dark:bg-primary-container dark:text-on-primary-container"
-      >
-        {isPlaying ? (
-          <Pause className="size-4" fill="currentColor" />
-        ) : (
-          <Play className="size-4" fill="currentColor" />
-        )}
-      </button>
+      <div className="relative shrink-0">
+        <button
+          type="button"
+          aria-label={isPlaying ? "Pause" : "Play"}
+          onClick={isPlaying ? pause : play}
+          className="flex size-9 items-center justify-center rounded-full bg-primary text-on-primary transition-colors hover:brightness-110 dark:bg-primary-container dark:text-on-primary-container"
+        >
+          {isPlaying ? (
+            <Pause className="size-4" fill="currentColor" />
+          ) : (
+            <Play className="size-4" fill="currentColor" />
+          )}
+        </button>
+        {playbackError ? (
+          <span
+            role="alert"
+            className="absolute bottom-full left-1/2 mb-2 w-max max-w-40 -translate-x-1/2 rounded-md bg-surface-container-highest px-2 py-1 text-center font-code-sm text-[11px] text-on-surface shadow-md"
+          >
+            {playbackError}
+          </span>
+        ) : null}
+      </div>
 
       <span
         ref={elapsedTextRef}

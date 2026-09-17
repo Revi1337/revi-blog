@@ -19,6 +19,7 @@ export function useAudioPlayback({ initialTime, onTimeUpdate, onEnded }: UseAudi
   const [isPlaying, setIsPlaying] = useState(false)
   const [duration, setDuration] = useState(0)
   const [playbackRate, setPlaybackRate] = useState<PlaybackRate>(1)
+  const [playbackError, setPlaybackError] = useState<string | null>(null)
 
   // 콜백을 ref에 담아두면 아래 effect가 매 렌더 재구독하지 않고도 항상 최신 콜백을 호출한다.
   const onTimeUpdateRef = useRef(onTimeUpdate)
@@ -80,9 +81,16 @@ export function useAudioPlayback({ initialTime, onTimeUpdate, onEnded }: UseAudi
     }
   }, [])
 
+  // audio.play()는 브라우저 자동재생 정책·네트워크 오류·깨진 URL 등으로 거부될 수 있는
+  // Promise를 반환한다 — 이를 기다리지 않고 바로 isPlaying을 true로 만들면 실제로는 재생이
+  // 안 되는데도 UI가 Pause 아이콘을 보여주는 상태가 된다. 성공했을 때만 isPlaying을 true로
+  // 바꾸고, 실패하면 Play 상태를 유지하며 오류를 알린다.
   const play = useCallback(() => {
-    audioRef.current?.play().catch(() => {})
-    setIsPlaying(true)
+    setPlaybackError(null)
+    audioRef.current?.play().then(
+      () => setIsPlaying(true),
+      () => setPlaybackError("오디오를 재생할 수 없습니다.")
+    )
   }, [])
 
   const pause = useCallback(() => {
@@ -104,5 +112,5 @@ export function useAudioPlayback({ initialTime, onTimeUpdate, onEnded }: UseAudi
     })
   }, [])
 
-  return { audioRef, isPlaying, duration, playbackRate, play, pause, seek, cyclePlaybackRate }
+  return { audioRef, isPlaying, duration, playbackRate, playbackError, play, pause, seek, cyclePlaybackRate }
 }
