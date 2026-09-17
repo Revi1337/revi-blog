@@ -1,6 +1,6 @@
 "use client"
 
-import { useCallback, useLayoutEffect, useRef, useState } from "react"
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react"
 import dynamic from "next/dynamic"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
@@ -12,26 +12,35 @@ import { ThemeToggle } from "@/components/theme/theme-toggle"
 import { MobileNavMenu } from "@/components/layout/mobile-nav-menu"
 import { SearchTrigger } from "@/components/search/search-trigger"
 import { useSearchShortcut } from "@/components/search/use-search-shortcut"
-import type { SearchIndexEntry } from "@/lib/data/types"
+import { useSearchIndex } from "@/lib/search/use-search-index"
 
 const SearchModal = dynamic(
   () => import("@/components/search/search-modal").then((m) => m.SearchModal),
   { ssr: false }
 )
 
-interface NavBarProps {
-  searchIndex: SearchIndexEntry[]
-}
-
-export function NavBar({ searchIndex }: NavBarProps) {
+export function NavBar() {
   const pathname = usePathname()
   const [searchOpen, setSearchOpen] = useState(false)
   const [hasOpenedSearch, setHasOpenedSearch] = useState(false)
+  const [shouldLoadSearchIndex, setShouldLoadSearchIndex] = useState(false)
+  const searchIndex = useSearchIndex(shouldLoadSearchIndex)
   const openSearch = useCallback(() => {
     setHasOpenedSearch(true)
+    setShouldLoadSearchIndex(true)
     setSearchOpen(true)
   }, [])
   useSearchShortcut(openSearch)
+
+  // 검색을 열지 않는 방문자의 초기 HTML에는 검색 인덱스가 아예 안 실리지만(server-serialization
+  // 회피), 실제로 여는 사람이 매번 fetch 왕복을 느끼지 않도록 idle 시점에 미리 백그라운드로
+  // 받아둔다 — 브라우저가 한가할 때 받아오므로 초기 hydration과 경쟁하지 않는다(js-request-idle-
+  // callback). openSearch에서도 동일하게 true로 세팅하는 건, idle 콜백이 아직 안 돌았는데
+  // 방문자가 그새 Ctrl+K부터 누르는 경우를 위한 안전장치다.
+  useEffect(() => {
+    const scheduleIdleWork = window.requestIdleCallback ?? ((cb: () => void) => setTimeout(cb, 1))
+    scheduleIdleWork(() => setShouldLoadSearchIndex(true))
+  }, [])
 
   const navRef = useRef<HTMLElement>(null)
   const { isBlurSuppressed } = useTheme()

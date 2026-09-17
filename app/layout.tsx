@@ -8,7 +8,6 @@ import { NavBar } from "@/components/layout/nav-bar"
 import { Footer } from "@/components/layout/footer"
 import { RouteScrollReset } from "@/components/layout/route-scroll-reset"
 import { MotionProvider } from "@/components/motion-provider"
-import { searchIndex } from "@/lib/data/search"
 import { DEFAULT_WEBSITE_OG_IMAGE } from "@/lib/data/types"
 import { SITE_URL, SITE_NAME, SITE_DESCRIPTION } from "@/lib/site-config"
 
@@ -147,7 +146,7 @@ export default function RootLayout({
         <ThemeProvider>
           <MotionProvider>
             <RouteScrollReset />
-            <NavBar searchIndex={searchIndex} />
+            <NavBar />
             <main className="relative flex-1 pt-24">{children}</main>
             <Footer />
           </MotionProvider>

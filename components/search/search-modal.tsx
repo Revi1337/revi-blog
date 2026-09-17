@@ -13,7 +13,9 @@ import type { SearchIndexEntry } from "@/lib/data/types"
 interface SearchModalProps {
   open: boolean
   onOpenChange: (open: boolean) => void
-  searchIndex: SearchIndexEntry[]
+  // nav-bar.tsx가 idle/오픈 시점에 fetch로 받아오는 중이면 아직 undefined다 — 검색어를 입력한
+  // 상태에서 이 구간에 걸리면 "결과 없음"이 아니라 로딩 중임을 구분해서 보여줘야 한다.
+  searchIndex: SearchIndexEntry[] | undefined
 }
 
 /**
@@ -31,7 +33,8 @@ export function SearchModal({ open, onOpenChange, searchIndex }: SearchModalProp
   // case), 힌트 노출 여부는 raw 입력이 완전히 비어있는지로만 판단한다 — parsedQuery.term이 아니다.
   const isEmpty = deferredQuery.trim() === ""
 
-  const engine = useMemo(() => createSearchEngine(searchIndex), [searchIndex])
+  const isIndexLoading = searchIndex === undefined
+  const engine = useMemo(() => createSearchEngine(searchIndex ?? []), [searchIndex])
   const results = useMemo(() => engine.search(parsedQuery), [engine, parsedQuery])
 
   function handleSelect(slug: string) {
@@ -115,6 +118,10 @@ export function SearchModal({ open, onOpenChange, searchIndex }: SearchModalProp
               Add more tags separated by spaces (e.g. <span className="text-primary">#react node</span>) to narrow
               results
             </p>
+          </div>
+        ) : isIndexLoading ? (
+          <div className="px-4 py-8 text-center font-code-sm text-code-sm text-on-surface-variant">
+            Loading search index...
           </div>
         ) : (
           <SearchResults results={results} term={parsedQuery.term} onSelect={handleSelect} />
