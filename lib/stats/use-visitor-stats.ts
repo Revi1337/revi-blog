@@ -1,15 +1,19 @@
 import useSWR from "swr"
 
+import { jsonFetcher } from "@/lib/fetcher"
 import type { GlobalStats } from "@/lib/stats/get-stats"
 
 export interface ArticleStats extends GlobalStats {
   views: number
 }
 
-const fetcher = (url: string) => fetch(url).then((res) => res.json())
+interface UseVisitorStatsResult {
+  stats: GlobalStats | ArticleStats | undefined
+  error: unknown
+}
 
-export function useVisitorStats(slug?: string): GlobalStats | ArticleStats | undefined {
+export function useVisitorStats(slug?: string): UseVisitorStatsResult {
   const key = slug ? `/api/stats/${slug}` : "/api/stats"
-  const { data } = useSWR<GlobalStats | ArticleStats>(key, fetcher)
-  return data
+  const { data, error } = useSWR<GlobalStats | ArticleStats>(key, jsonFetcher)
+  return { stats: data, error }
 }

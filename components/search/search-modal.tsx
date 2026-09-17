@@ -16,6 +16,10 @@ interface SearchModalProps {
   // nav-bar.tsx가 idle/오픈 시점에 fetch로 받아오는 중이면 아직 undefined다 — 검색어를 입력한
   // 상태에서 이 구간에 걸리면 "결과 없음"이 아니라 로딩 중임을 구분해서 보여줘야 한다.
   searchIndex: SearchIndexEntry[] | undefined
+  // fetch가 실패했을 때 true — 이걸 구분 안 하면 searchIndex가 계속 undefined인 것만 보고
+  // "로딩 중" 문구가 영원히 떠있게 된다(실제로는 다시는 안 온다).
+  searchIndexError: boolean
+  onRetrySearchIndex: () => void
 }
 
 /**
@@ -24,7 +28,13 @@ interface SearchModalProps {
  * useDeferredValue로 감싸 non-urgent 업데이트로 필터링해 입력 반응성을 유지한다
  * (vercel-react-best-practices의 rerender-use-deferred-value 규칙, SC-002).
  */
-export function SearchModal({ open, onOpenChange, searchIndex }: SearchModalProps) {
+export function SearchModal({
+  open,
+  onOpenChange,
+  searchIndex,
+  searchIndexError,
+  onRetrySearchIndex,
+}: SearchModalProps) {
   const router = useRouter()
   const [query, setQuery] = useState("")
   const deferredQuery = useDeferredValue(query)
@@ -109,7 +119,18 @@ export function SearchModal({ open, onOpenChange, searchIndex }: SearchModalProp
       </div>
 
       <Command.List className="max-h-[70vh] overflow-y-auto p-2">
-        {isEmpty ? (
+        {searchIndexError ? (
+          <div className="flex flex-col items-center gap-3 px-4 py-8 text-center font-code-sm text-code-sm text-on-surface-variant">
+            <p>검색 인덱스를 불러오지 못했습니다.</p>
+            <button
+              type="button"
+              onClick={onRetrySearchIndex}
+              className="rounded-md border border-outline-variant px-3 py-1.5 text-on-surface transition-colors hover:border-primary hover:text-primary dark:hover:border-primary-fixed dark:hover:text-primary-fixed"
+            >
+              다시 시도
+            </button>
+          </div>
+        ) : isEmpty ? (
           <div className="space-y-1 px-3 py-6 text-center font-code-sm text-code-sm text-on-surface-variant">
             <p>
               Type <span className="text-primary">#tag-name</span> to search articles by tag

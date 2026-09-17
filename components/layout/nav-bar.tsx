@@ -24,7 +24,7 @@ export function NavBar() {
   const [searchOpen, setSearchOpen] = useState(false)
   const [hasOpenedSearch, setHasOpenedSearch] = useState(false)
   const [shouldLoadSearchIndex, setShouldLoadSearchIndex] = useState(false)
-  const searchIndex = useSearchIndex(shouldLoadSearchIndex)
+  const { searchIndex, error: searchIndexError, retry: retrySearchIndex } = useSearchIndex(shouldLoadSearchIndex)
   const openSearch = useCallback(() => {
     setHasOpenedSearch(true)
     setShouldLoadSearchIndex(true)
@@ -138,6 +138,8 @@ export function NavBar() {
           open={searchOpen}
           onOpenChange={setSearchOpen}
           searchIndex={searchIndex}
+          searchIndexError={!!searchIndexError}
+          onRetrySearchIndex={retrySearchIndex}
         />
       ) : null}
     </nav>

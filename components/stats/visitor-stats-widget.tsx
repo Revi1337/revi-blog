@@ -255,11 +255,20 @@ export function VisitorStatsWidget({
   variant: "mobile" | "inline"
   articleSlug?: string
 }) {
-  const stats = useVisitorStats(articleSlug)
+  const { stats, error } = useVisitorStats(articleSlug)
   // 데이터가 오기 전엔 value를 undefined로 두어 StatItem이 아무 것도 그리지 않게 하고, 위젯
   // 전체는 opacity로 숨겨둔다 — 응답이 도착하는 순간 실제 값과 함께 자연스럽게 페이드인되며,
   // "-"나 스켈레톤 없이 곧바로 최종 숫자로 나타난다.
   const isLoaded = stats !== undefined
+
+  // articleSlug가 있는 inline 사용(아티클 메타 줄의 Views)은 날짜/읽는시간처럼 항상 보이는
+  // 텍스트와 한 줄에 나란히 끼어있다 — opacity로만 숨기면 실패해도 그 자리 폭은 그대로 예약돼
+  // 있어서, 다음 항목(썸네일 등)의 구분선("|")만 허공에 매달린 것처럼 보인다(실측 확인). 그래서
+  // 이 경우만 아예 렌더링을 안 해 레이아웃에서 완전히 접히게 한다. 홈/북마크(variant="mobile")는
+  // 독립된 블록이라 opacity로 숨겨도 여백처럼 자연스럽게 지나가므로 기존 동작을 유지한다.
+  if (articleSlug && error) {
+    return null
+  }
 
   // 아티클 상세는 "이 글의 조회수"만 관심사이므로 Views 하나만 보여준다 — Total/Today/Yesterday는
   // 사이트 전체 지표라 홈/북마크에서만 의미가 있다.
