@@ -21,6 +21,11 @@ export function generateStaticParams() {
   return articles.map((article) => ({ slug: article.slug }))
 }
 
+// 콘텐츠가 빌드 타임에 완전히 확정되는 구조(content/articles 변경도 재빌드 전엔 반영 안 됨)라,
+// generateStaticParams()에 없는 slug는 런타임에 서버 함수를 한 번 실행해 notFound()로 판정할
+// 필요 없이 라우팅 단계에서 바로 정적 404로 끝내도 된다.
+export const dynamicParams = false
+
 export async function generateMetadata({
   params,
 }: {
