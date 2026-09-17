@@ -10,8 +10,10 @@ Next.js 기반 개인 기술 블로그. 마크다운 콘텐츠 파이프라인, 
 
 ## 주요 기능
 
-- 커스텀 마크다운 렌더링 파이프라인 (콜아웃, 수식, 다이어그램, 코드 하이라이팅)
-- FlexSearch 기반 클라이언트 검색 (Cmd+K 커맨드 팔레트)
+- 커스텀 마크다운 렌더링 파이프라인 (콜아웃, 하이라이트, 수식, 위키링크, 지표 카드, 다이어그램)
+- 자동 목차(TOC), 헤딩 퍼머링크, 이전/다음 글 탐색
+- 코드 블록 언어 라벨 및 복사 버튼
+- FlexSearch 기반 클라이언트 검색 (Cmd+K 커맨드 팔레트, `#태그명` 입력으로 다중 태그 AND 검색)
 - Giscus 연동 댓글
 - 이미지 라이트박스 (PhotoSwipe)
 - 게시글 오디오 내레이션 재생
@@ -103,13 +105,27 @@ updated_at: 2026-01-02
 tags: [tag1, tag2]
 description: 목록/SEO에 노출될 요약
 thumbnail: https://.../thumbnail.jpg
+thumbnail_fit: cover
 audio:
   - https://.../narration.mp3
+reading_time_minutes: 5
+show_on_homepage: true
 ---
 ```
 
-- `slug`는 선택 필드입니다 — 명시하지 않으면 파일명(디렉터리 경로는 제외)을 기준으로 자동 생성됩니다.
-- 서로 다른 디렉터리에 있는 두 파일이 같은 파일명을 쓰면 slug가 충돌해 빌드가 실패합니다. 이때는 충돌하는 파일 중 하나 이상에 `slug`를 직접 지정해 구분하세요.
+| 필드 | 타입 | 필수 | 기본값 | 설명 |
+|---|---|---|---|---|
+| `slug` | `string` | 아니오 | 파일명(디렉터리 경로 제외) 기준 자동 생성 | 서로 다른 디렉터리의 두 파일이 같은 파일명을 쓰면 slug가 충돌해 빌드가 실패합니다 — 이때 충돌하는 파일 중 하나 이상에 직접 지정해 구분하세요. |
+| `title` | `string` | **예** | - | 문서 제목 |
+| `date` | `string` (날짜) | **예** | - | 발행일. 목록 정렬 기준 |
+| `updated_at` | `string` (날짜) | 아니오 | 없음 | 최종 수정일. 상세 페이지에 노출 |
+| `tags` | `string[]` | **예** | - | 태그 목록. QuickSearch·검색 필터링에 사용 |
+| `description` | `string` | 아니오 | 없음 | 목록/SEO(메타 description)에 노출될 요약 |
+| `thumbnail` | `string` (URL) | 아니오 | 없음 | 카드·공유 미리보기용 썸네일 이미지 URL |
+| `thumbnail_fit` | `"cover"` \| `"contain"` | 아니오 | `cover` | 썸네일 크롭 방식. 로고처럼 크롭하면 안 되는 이미지만 `contain` |
+| `audio` | `string` \| `string[]` | 아니오 | 없음 | 내레이션 오디오 URL. 없으면 재생 버튼 자체가 노출되지 않음. 배열로 주면 챕터별 선택 드롭다운이 뜸 |
+| `reading_time_minutes` | `number` | 아니오 | 본문 기준 자동 계산 | 표시할 예상 읽는 시간(분)을 직접 지정하고 싶을 때만 사용 |
+| `show_on_homepage` | `boolean` | 아니오 | `true` | `false`면 홈 카드 그리드/캐러셀, prev/next 네비게이션, `sitemap.xml`, `feed.xml`, 사이트 내 검색 인덱스에서 전부 제외되고 해당 페이지에 `robots: noindex, nofollow`가 붙어 검색엔진에 노출되지 않습니다. 단 URL 자체는 정적 빌드되어 직접 링크로는 계속 접근 가능합니다(내부 검증용 문서 등에 사용) |
 
 > [!IMPORTANT]
 > `content/articles/**`를 수정한 뒤에는 브라우저 새로고침만으로는 반영되지 않습니다. 콘텐츠는 모듈 최상단 `await`로 한 번만 로드되어 캐시되므로, 반드시 `next dev`를 재시작해야 변경 사항이 보입니다.
@@ -152,8 +168,11 @@ export const seriesPresets: SeriesPreset[] = [
 Obsidian 스타일 콜아웃 문법을 지원합니다. `[#TYPE]`은 기본(GitHub Alert류) 스타일, `[!TYPE]`은 사이트 전용 커스텀 스타일로 렌더링됩니다.
 
 ```markdown
+> [#NOTE]
+> 기본(GitHub Alert류) 스타일 콜아웃
+
 > [!NOTE]
-> 기본 콜아웃 내용
+> 사이트 전용 커스텀 스타일 콜아웃
 
 > [!WARNING]- 접힌 상태로 시작하는 콜아웃
 > `-`를 붙이면 collapsed, `+`를 붙이면 expanded 상태로 시작합니다.
@@ -161,9 +180,49 @@ Obsidian 스타일 콜아웃 문법을 지원합니다. `[#TYPE]`은 기본(GitH
 
 지원 타입: `note`, `tip`, `warning`, `danger`, `info`, `success`, `question`, `bug`, `example`, `quote`, `important`, `abstract`, `todo`, `failure`, `collapse` 및 `caution`/`hint`/`check` 등 다수의 별칭.
 
+### 하이라이트
+
+`==텍스트==`는 `<mark>`로 렌더링됩니다.
+
+```markdown
+이 부분이 ==강조 표시== 됩니다.
+```
+
 ### 수식 (KaTeX)
 
 `remark-math` + `rehype-katex`로 인라인(`$...$`)/블록(`$$...$$`) 수식을 렌더링합니다.
+
+### 위키링크 (Obsidian 스타일)
+
+Obsidian vault를 그대로 옮겨온 콘텐츠와 호환되도록, 파일명/경로 기준으로 다른 글을 참조하는 wikilink와 이미지 embed 문법을 지원합니다. frontmatter의 `title`/`slug`가 아니라 **실제 파일 경로**만 링크 타겟으로 인식합니다.
+
+```markdown
+[[Tree]]                  <!-- 파일명 기준 — vault 전체에서 파일명이 유일할 때 -->
+[[Tree.md]]                <!-- .md 확장자를 붙여도 동일하게 동작 -->
+[[datastructure/Tree]]      <!-- 경로 포함 — 같은 파일명이 여러 디렉터리에 있을 때 구분용 -->
+[[Tree|표시할 텍스트]]         <!-- 별칭 -->
+![[image.png]]              <!-- 이미지 embed → /attachments/image.png로 resolve -->
+```
+
+- 파일명이 vault 전체에서 유일하지 않으면(같은 이름의 파일이 다른 디렉터리에도 있으면) 파일명만으로는 어느 문서인지 모호하므로, 그 경우엔 경로를 포함해서 써야 링크가 걸립니다.
+- 대상 문서를 찾지 못하면 링크 대신 평문으로 표시됩니다.
+- 이미지가 아닌 embed(PDF·오디오·비디오·다른 노트 embed 등)는 표시 UI가 없어 평문으로 남습니다.
+
+> [!NOTE]
+> 아래는 현재 미지원입니다 (`TODO.md` 참고, 필요성이 확인되면 착수 예정):
+> - `[[Note#Heading]]`, `[[#Heading]]` 같은 헤딩 앵커 wikilink
+> - `aliases:` frontmatter를 통한 별칭 매칭
+
+### 지표 카드 (metrics)
+
+`label: value` 형식의 줄을 나열하면 카드 UI로 렌더링됩니다.
+
+````markdown
+```metrics
+Time Complexity: O(N log N)
+Space Complexity: O(N)
+```
+````
 
 ### Mermaid 다이어그램
 
