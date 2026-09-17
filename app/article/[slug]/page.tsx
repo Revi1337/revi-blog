@@ -67,6 +67,14 @@ export async function generateMetadata({
       modifiedTime: article.updatedAt ?? article.date,
       authors: [SITE_AUTHOR],
     },
+    // 루트 layout.tsx의 twitter는 card 타입만 지정한다 — card는 부모에서 그대로 상속되므로(Next가
+    // twitter/openGraph는 부모-자식 간 병합한다) 여기서 다시 선언할 필요 없이 글별 title/
+    // description/images만 얹으면 된다.
+    twitter: {
+      title: article.title,
+      description,
+      images: [article.thumbnail ?? DEFAULT_ARTICLE_OG_IMAGE],
+    },
   }
 }
 
