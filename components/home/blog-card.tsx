@@ -16,12 +16,14 @@ export function BlogCard({
   slug,
   title,
   thumbnail,
+  thumbnailFit,
   date,
   readingTimeMinutes,
   priority,
 }: BlogCardData & { priority?: boolean }) {
   const { isDark } = useTheme()
   const src = resolveDefaultThumbnail(thumbnail, isDark)
+  const isContain = thumbnailFit === "contain"
 
   return (
     <Link
@@ -44,7 +46,7 @@ export function BlogCard({
             fill
             sizes="(max-width: 767px) 100vw, (max-width: 1023px) 50vw, (max-width: 1200px) 33vw, 368px"
             priority={priority}
-            className="object-cover"
+            className={isContain ? "object-contain" : "object-cover"}
           />
         </div>
         <div className="flex h-32 flex-col justify-between p-stack-md">
