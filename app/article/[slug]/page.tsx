@@ -42,6 +42,14 @@ export async function generateMetadata({
     alternates: {
       canonical: url,
     },
+    // showOnHomepage: false인 아티클(_callout.md 등 내부 검증용)은 sitemap/RSS/검색 인덱스에서는
+    // 이미 제외되지만, generateStaticParams는 articles 전체를 대상으로 해 URL 자체는 여전히
+    // 빌드된다 — 외부에서 URL이 알려지는 경로(직접 공유, 우연한 링크 등)로 크롤러가 발견해
+    // 인덱싱하는 것까지 막으려면 robots noindex를 명시해야 한다.
+    robots: {
+      index: article.showOnHomepage,
+      follow: article.showOnHomepage,
+    },
     openGraph: {
       type: "article",
       title: article.title,
