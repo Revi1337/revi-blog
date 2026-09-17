@@ -1,6 +1,6 @@
 hero:
   name: "Revi"
-  headline: "코드 너머의 동작 원리를, 시각적으로 파고듭니다."
+  headline: "코드 너머의 동작 원리를 시각적으로 파고듭니다."
   philosophy:
     - icon: "visibility"
       label: "[VISUALIZATION]"
