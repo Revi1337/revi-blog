@@ -13,7 +13,7 @@ thumbnail: https://pub-8c61ed96347b483a91c17765cea907da.r2.dev/images/2026-09-22
 
 ## 개요
 
-Google Antigravity의 에이전트는 독립된 추론 능력뿐만 아니라, 사용자의 로컬 개발 환경 및 외부 웹 리소스와 능동적으로 상호작용하기 위한 표준 내장 도구(Built-in Tools) 세트를 제공받습니다.
+Google Antigravity의 에이전트는 독립된 추론 능력뿐만 아니라, 사용자의 로컬 개발 환경 및 외부 웹 리소스와 능동적으로 상호작용하기 위한 표준 내장 도구(Built-in Tools)를 탑재하고 있습니다.
 
 에이전트는 LLM의 Function Calling 메커니즘을 통해 이러한 도구들을 호출하며, 파일시스템 입출력, 쉘 명령 실행, 웹 검색 및 URL 분석, 멀티 에이전트 위임, 사용자 인터랙션 등을 체계적으로 수행합니다. 또한 이 도구들은 [[Antigravity Hooks]]에서 다루는 수명 주기 훅(PreToolUse 및 PostToolUse)의 핵심 타깃 Matcher로 지정되어 세밀한 실행 권한 제어와 보안 가드레일의 기준이 됩니다.
 
