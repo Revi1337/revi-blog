@@ -83,11 +83,11 @@ Google Antigravity 플랫폼에서 룰(Rules)은 에이전트가 코드베이스
 >    *   Path: ~/.gemini/config/
 >
 > ## Loading Priority and Precedence
-> 1. Workspace Project
-> 2. Declared Configurations
-> 3. Global Discovery
-> 4. Built-in Customizations
-> 5. Global Declared Configurations
+> 4. Workspace Project
+> 5. Declared Configurations
+> 6. Global Discovery
+> 7. Built-in Customizations
+> 8. Global Declared Configurations
 > ```
 >
 > 위 원문과 노트 본문(저장 위치 3가지, 로딩 우선순위 5단계)이 일치함을 확인했습니다(2026-09-22 기준, `agy` 바이너리). 단, `.agents/rules/*.md`처럼 세부 경로에 `/rules/`를 붙이는 표기는 노트 저자가 다른 문맥과 합쳐 재구성한 것으로, 바이너리 원문은 `.agents/`까지만 명시합니다.
@@ -119,13 +119,13 @@ type RuleFrontmatter struct {
 > ```
 > 위 경로, 구조체명, `yaml:"trigger"` 등 필드 태그, `CortexMemoryTrigger` Protobuf 열거형 심볼이 바이너리 내에 실제로 존재함을 확인했습니다(2026-09-22 기준, `agy` 바이너리).
 
-내부 Protobuf 열거형(`CortexMemoryTrigger`)과 매핑되는 핵심 속성입니다.
+내부 Protobuf 열거형(`CortexMemoryTrigger`)과 매핑되는 핵심 속성은 `trigger`, `description`, `glob`/`globs` 세 가지이며, 각각 아래에서 다룹니다.
 
-- **trigger** (필수): 규칙의 활성화 시점을 정의합니다. 직접 테스트 결과, `trigger` 자체를 작성하지 않으면 규칙이 동작하지 않습니다 — "생략 시 `always_on`으로 기본 처리된다"는 세간의 추정과 달리, 반드시 명시해야 합니다. 공식 문서(antigravity.google/docs)는 이 필드 자체를 문서화하지 않고 있습니다.
-- **description** (선택/권장): 규칙의 목적과 적용되어야 하는 상황을 간결하게 설명합니다. 특히 `trigger: model_decision` 사용 시 에이전트가 현재 맥락과 비교하여 규칙 로드 여부를 판단하는 핵심 기준이 됩니다.
-- **glob** / **globs** (선택): 파일 매칭 패턴 문자열 또는 문자열 배열입니다. `trigger: glob`일 때 적용 대상 파일 패턴을 지정하는 데 사용됩니다.
+## Trigger
 
-## Always On
+규칙의 활성화 시점을 정의하는 **필수** 필드입니다. 직접 테스트 결과, `trigger` 자체를 작성하지 않으면 규칙이 동작하지 않습니다 — "생략 시 `always_on`으로 기본 처리된다"는 세간의 추정과 달리, 반드시 명시해야 합니다. 공식 문서(antigravity.google/docs)는 이 필드 자체를 문서화하지 않고 있습니다. 사용 가능한 값은 다음 4가지입니다.
+
+### Always On
 
 세션의 모든 상호작용(Prompt Interaction)마다 에이전트 시스템 프롬프트(`<user_rules>` 영역)에 지속적으로 인라인 주입(Continuously Active)되는 기본 모드입니다.
 
@@ -144,7 +144,7 @@ description: 프로젝트 공통 보안 수칙 및 언어 컨벤션
 - 모든 파일 수정 후에는 반드시 프로젝트 린터를 실행하여 문법 오류가 없는지 검증합니다.
 ```
 
-## Glob
+### Glob
 
 에이전트가 작업 중 지정된 파일 패턴과 일치하는 파일을 열람, 생성, 수정할 때만 동적으로 활성화되는 트리거 방식입니다.
 
@@ -172,7 +172,7 @@ globs:
 >
 > 결과적으로 한 번의 요청이라도 실제로는 "① 파일 생성 Edit(규칙 미적용) → ② 생성된 파일을 규칙에 맞게 고치는 Edit(규칙 적용)" 두 번의 Edit으로 쪼개져 수행됩니다. 이미 존재하는 파일을 수정하는 경우에는 이런 현상 없이 첫 Edit부터 바로 규칙이 적용됩니다.
 
-## Model Decision
+### Model Decision
 
 점진적 공개(Progressive Disclosure) 원칙을 사용하는 지능형 트리거 방식입니다.
 
@@ -192,9 +192,9 @@ description: Prisma ORM 스키마 변경 및 데이터베이스 마이그레이�
 
 작성 팁: `description`에 에이전트가 작업을 인지할 수 있는 명확한 키워드와 상황(예: "Prisma ORM 스키마 변경", "DB 마이그레이션")을 명시해야 에이전트의 활성화 판단 정확도가 높아집니다.
 
-## Manual
+### Manual
 
-에이전트에게 자동으로 주입되지 않으며, **사용자가 에이전트 프롬프트에서 `@mention` 문법으로 명시적으로 호출(Explicitly activated via `@mention` in the agent prompt)**할 때만 활성화되는 모드입니다.
+에이전트에게 자동으로 주입되지 않으며, **사용자가 에이전트 프롬프트에서 `@mention` 문법으로 명시적으로 호출(Explicitly activated via `@mention` in the agent prompt)할 때만 활성화되는 모드입니다.
 
 - **동작 메커니즘**: 안티그래비티 CLI 엔진(`parseAtMentions`)이 사용자의 프롬프트 텍스트 내에서 `@규칙명` 또는 `@파일경로` 형태의 멘션을 감지하면, 해당 매뉴얼 규칙의 전체 본문을 시스템 컨텍스트에 즉시 로드합니다.
 - **특징**: 일상적인 대화에서는 시스템 프롬프트에 전혀 포함되지 않으므로 토큰을 일체 소모하지 않으며, 특정 작업 수행 시 개발자가 명시적으로 가이드라인을 주입할 수 있습니다.
@@ -212,13 +212,21 @@ description: 프로덕션 배포 전 최종 검증 체크리스트
 - 빌드 아티팩트 용량이 이전 릴리즈 대비 비정상적으로 증가하지 않았는지 확인합니다.
 ```
 
-### 프롬프트 호출 예시
+#### 프롬프트 호출 예시
 
 터미널이나 대화창에서 프롬프트 작성 시 `@` 문자를 입력하면 지원되는 규칙 파일들이 자동 완성 목록에 표시되며, 다음과 같이 직접 호출하여 사용합니다.
 
 ```text
 이번 릴리즈 배포 작업을 진행할 예정이야. @release-checklist 규칙을 참고해서 사전 검증을 먼저 수행해줘.
 ```
+
+## Description
+
+규칙의 목적과 적용되어야 하는 상황을 간결하게 설명하는 필드입니다. 특히 `trigger: model_decision` 사용 시 에이전트가 현재 맥락과 비교하여 규칙 로드 여부를 판단하는 핵심 기준이 됩니다.
+
+## Glob & Globs
+
+파일 매칭 패턴을 지정하는 필드입니다. 단일 패턴인 경우 `glob`, 다중 패턴인 경우 `globs` 배열을 사용하며, `trigger: glob`일 때 적용 대상 파일 패턴을 지정하는 데 사용됩니다.
 
 ## Rule 예산 및 제약 사항
 
