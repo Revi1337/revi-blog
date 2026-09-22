@@ -3,9 +3,9 @@ title: Antigravity Tools
 date: 2026-09-22 04:27
 updated_at: 2026-09-22 05:19
 tags:
+  - ai
   - antigravity
   - google
-  - ai
   - tools
 description: Google Antigravity 플랫폼에서 제공하는 표준 내장 도구 세트의 분류별 기능 명세와 세부 파라미터 및 훅 연계 활용 가이드
 thumbnail: https://pub-8c61ed96347b483a91c17765cea907da.r2.dev/images/2026-09-22/Antigravity-Tools-thumbnail.png
