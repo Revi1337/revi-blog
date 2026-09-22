@@ -1,6 +1,6 @@
 ---
 title: Antigravity Rules
-date: 2026-09-22 02:58
+date: 2026-09-22 05:58
 updated_at: 2026-09-23 09:20
 tags:
   - ai
