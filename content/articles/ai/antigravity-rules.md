@@ -4,8 +4,8 @@ date: 2026-09-22 05:58
 updated_at: 2026-09-23 09:20
 tags:
   - ai
-  - antigravity
   - google
+  - antigravity
   - rules
 description: Google Antigravity 에이전트의 룰(Rules) 시스템 개요, 저장 위치 및 계층적 탐색 메커니즘, Frontmatter 스펙과 4가지 트리거 모드(Glob, Always On, Model Decision, Manual), 컨텍스트 예산 최적화 기법을 구조적으로 정리한 문서
 thumbnail: https://pub-8c61ed96347b483a91c17765cea907da.r2.dev/images/2026-09-23/Antigravity-Rules-thumbnail.png
