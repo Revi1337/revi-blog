@@ -82,7 +82,11 @@ ln -s /path/to/my-skill ~/.gemini/config/skills/my-skill
 	"entries": [
 		{
 			"path": "/Users/username/.claude/skills",
-			"exclude": ["deprecated-.*"]
+			"exclude": [
+				"grill-me",
+				"grill-with-docs",
+				"grilling"
+			]
 		},
 		{
 			"path": "/Users/username/.agents/skills",
@@ -94,7 +98,7 @@ ln -s /path/to/my-skill ~/.gemini/config/skills/my-skill
 
 - `path(require)`: 스킬들이 위치한 디렉터리 경로를 지정합니다. 1레벨 깊이로 자동 스캔됩니다.
 - `include_only(optional)`: 해당 경로 내에서 로드할 스킬을 화이트리스트로 지정합니다.
-- `exclude(optional)`: 로드에서 제외할 스킬 패턴을 지정합니다.
+- `exclude(optional)`: 로드에서 제외할 스킬 이름을 지정합니다.
 
 ## Project Level 등록 방식
 
