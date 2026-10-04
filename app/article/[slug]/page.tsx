@@ -5,6 +5,7 @@ import { articles, getArticleBySlug } from "@/lib/data/articles"
 import { DEFAULT_ARTICLE_OG_IMAGE } from "@/lib/data/types"
 import { SITE_URL, SITE_NAME, SITE_DESCRIPTION, SITE_AUTHOR } from "@/lib/site-config"
 import { ArticleHeader } from "@/components/article/article-header"
+import { CopyPageMenu } from "@/components/article/copy-page-menu"
 import { TocSidebar } from "@/components/article/toc-sidebar"
 import { TrackVisit } from "@/components/stats/track-visit"
 import { ArticleNav } from "@/components/article/article-nav"
@@ -128,7 +129,27 @@ export default async function ArticleDetailPage({
         </article>
 
         <aside className="lg:col-span-4">
-          <TocSidebar items={article.toc} variant="desktop" />
+          {/* sticky 래퍼의 top/높이는 TOC 카드 기준(top-40) 그대로 한 글자도 바꾸지 않는다 — Copy
+           * Page 메뉴를 이 박스의 문서 흐름(space-y)에 끼워 넣으면 박스 자신의 높이가 늘어나,
+           * top을 아무리 역산해 끼워 맞춰도 "자연 상태(스크롤 0)에서 이미 고정되어 있는지" 여부가
+           * 깨진다 — 실측: 이 aside 컬럼의 자연 위치는 약 128px인데, 원래 TOC의 top-40(160px)은
+           * 거기서 32px 여유가 있어 스크롤 0부터 이미 고정 상태였지만(프로덕션 blog.revi1337.com
+           * 실측 확인), 메뉴+간격(48px)을 끼워 넣느라 역산한 top-[112px]는 128px보다 작아져 그
+           * 32px 여유가 깨지고 스크롤 0~20px 구간에서 눈에 보이는 "따라잡기" 움직임이 실제
+           * 재현됐다(사용자 리포트로 발견). 그래서 메뉴는 이 박스의 문서 흐름에 전혀 기여하지
+           * 않는 position:absolute로 박스 **바깥 위**에 얹는다 — 박스의 height는 TOC 카드만의
+           * height 그대로이고 top도 원래 160px 그대로이므로, "스크롤 0부터 이미 고정"이라는
+           * 프로덕션 동작과 "끝에서 풀리는 지점"이 기능 추가 전과 완전히 동일하게 보존된다(간단한
+           * 산수가 아니라 애초에 아무것도 바뀌지 않으므로 증명이 필요 없음). z-40: position:sticky는
+           * z-index와 무관하게 항상 새 stacking context를 만들어(CSS 스펙), 명시적 z-index 없이는
+           * 메뉴 내부 드롭다운이 body에 portal된 배경 오버레이(z-30)에 가려 클릭이 막히는 버그가
+           * 실측으로 확인됐다. */}
+          <div className="sticky top-40 z-40 hidden lg:block">
+            <div className="absolute -top-12 left-0">
+              <CopyPageMenu slug={article.slug} />
+            </div>
+            <TocSidebar items={article.toc} variant="desktop" />
+          </div>
         </aside>
       </div>
     </div>
