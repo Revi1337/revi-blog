@@ -120,6 +120,10 @@ show_on_homepage: false
 >
 > 마지막 문단입니다.
 
+### 헤더만 (본문 없음)
+
+> [#NOTE]
+
 ---
 
 ## Custom 스타일 Callout — `[!TYPE]`
@@ -236,6 +240,10 @@ show_on_homepage: false
 > ```
 >
 > 마지막 문단입니다.
+
+### 헤더만 (본문 없음)
+
+> [!NOTE]
 
 ---
 

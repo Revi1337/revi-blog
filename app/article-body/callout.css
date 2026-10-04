@@ -39,6 +39,14 @@
      이렇게 하면 색 공식은 .callout 한 곳에만 존재해서 나중에 바꿔도 여기서 다시 어긋날 일이 없다 */
   --callout-custom-ambient-bg: var(--callout-own-bg);
 }
+/* 본문 없는 콜아웃(body가 빈 노드)은 헤더만 보여야 하는데, 위 padding(특히 bottom 1rem)이 내용
+   없이도 그대로 남아 header 쪽(0.75rem 상하 대칭)보다 아래가 더 두꺼워 보였다(사용자가 위/아래
+   여백 비대칭으로 발견). 접힌(collapsed) <details>는 summary만 보이고 body가 DOM에서 통째로
+   안 보이는(display:none, native) 것과 동일한 모양을 만들기 위해 padding을 0으로 되돌린다 —
+   실제로 접고 펼 수 있는 건 아니므로(마커 없음) <details>/<summary>로 바꾸지 않고 CSS로만 흉내낸다 */
+.article-body .callout-body:empty {
+  padding: 0;
+}
 /* 중첩된 콜아웃(.callout/.callout-custom)은 제외 — 이 리셋은 "타이틀 바로 아래 첫 문단"의
    여백만 지우려는 의도인데, 중첩 콜아웃이 body의 첫 자식이 되는 경우(상위 콜아웃에 타이틀만 있고
    본문 텍스트가 없을 때) 여기 걸리면 콜아웃 자신의 margin(1.5rem)까지 지워져 타이틀 바로 아래
@@ -221,6 +229,15 @@
   font-size: 1rem;
   font-weight: 700;
   color: var(--color-on-surface);
+}
+/* 본문 없는 non-collapsible(<aside>) 콜아웃은 title이 body(빈 div, 이미 padding 0)와 직접
+   형제라서 위 margin-bottom만 그대로 남아 아래쪽에 0.5rem이 더 붙는다(사용자가 위/아래 여백
+   비대칭으로 발견) — collapsible(<details>) 쪽은 title이 summary 안에 있어서
+   `.callout-custom-summary .callout-custom-title`이 이미 margin-bottom:0으로 상쇄해주지만,
+   non-collapsible은 그 selector에 안 걸려 상쇄가 안 됐다. title과 body가 실제 형제인
+   경우에만(접기 마커로 <details>가 된 경우는 제외) 동일하게 0으로 되돌린다 */
+.article-body .callout-custom-title:has(+ .callout-custom-body:empty) {
+  margin-bottom: 0;
 }
 .article-body .callout-custom-body {
   /* grid+gap이던 이전 구현은 grid가 형제 간 margin collapse를 막아, 코드 블록처럼 자체
