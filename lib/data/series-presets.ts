@@ -11,4 +11,9 @@ import type { SeriesPreset } from "@/lib/data/types"
 export const seriesPresets: SeriesPreset[] = [
   { id: "test-pair", label: "Test Pair Series", slugs: ["_series-alpha", "_series-beta"] },
   { id: "test-solo", label: "Test Solo Series", slugs: ["_series-alpha"] },
+  {
+    id: "antigravity",
+    label: "Antigravity Series",
+    slugs: ["Antigravity-Tools", "Antigravity-Rules", "Antigravity-Skills", "Antigravity-Hooks"],
+  },
 ]
