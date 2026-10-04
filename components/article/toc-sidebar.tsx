@@ -491,16 +491,23 @@ export function TocSidebar({
     )
   }
 
+  // 017(Copy Page 메뉴)부터 sticky 포지셔닝 자체는 더 이상 이 컴포넌트가 소유하지 않는다 —
+  // app/article/[slug]/page.tsx가 이 카드와 CopyPageMenu를 하나의 공유 sticky 래퍼로 함께 감싼다.
+  // 두 개의 독립된 position:sticky 요소(TOC 카드 + Copy Page 메뉴)로 분리했던 최초 설계는 각자
+  // 다른 scrollY에서 "풀리는" 수학적 결과를 낳아(release = containerBottom - top - height, 둘의
+  // top+height 합이 다름) 스크롤 시 서로 어긋나는 데드존이 실제로 재현됐다 — 하나의 sticky 박스로
+  // 합치고 그 top을 "원래 TOC의 top(160px) - 위에 얹히는 요소의 높이"만큼 줄이면 (top+height)
+  // 합이 보존되어 합쳐진 뒤에도 풀리는 지점이 TOC 단독이었을 때와 수학적으로 완전히 동일해진다.
+  // 이 카드 자신의 스크롤스파이/활성 항목/"+N more" 로직은 전혀 변경되지 않았다 — 바깥 포지셔닝
+  // 래퍼 한 겹만 호출부로 옮겼을 뿐이다.
   return (
-    <div className="sticky top-40 hidden space-y-10 lg:block">
-      <div className="rounded border border-outline-variant/20 bg-surface-container-lowest p-5">
-        <div className="mb-4 flex items-center gap-2 text-primary dark:text-primary-container">
-          <ListTree className="size-4" />
-          <h4 className="font-label-caps text-xs tracking-widest">Table Of Contents</h4>
-          {moreLabel}
-        </div>
-        {nav}
+    <div className="hidden rounded border border-outline-variant/20 bg-surface-container-lowest p-5 lg:block">
+      <div className="mb-4 flex items-center gap-2 text-primary dark:text-primary-container">
+        <ListTree className="size-4" />
+        <h4 className="font-label-caps text-xs tracking-widest">Table Of Contents</h4>
+        {moreLabel}
       </div>
+      {nav}
     </div>
   )
 }

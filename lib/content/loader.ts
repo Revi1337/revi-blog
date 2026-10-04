@@ -16,6 +16,9 @@ interface ParsedArticleFile {
   slug: string
   frontmatter: ArticleFrontmatter
   rawBody: string
+  /** 프론트매터 블록을 포함한 파일 전체 원문 — Copy Page 메뉴(017)가 "저자가 작성한 그대로"를
+   * 서빙하기 위해서만 쓴다. Article[]/bodyHtml 파이프라인은 여전히 rawBody(본문만)만 사용한다. */
+  raw: string
 }
 
 /** 파일명의 공백은 URL에서 %20으로 깨지므로 하이픈으로 치환해 슬러그를 만든다 */
@@ -27,7 +30,18 @@ function parseArticleFile(filePath: string): ParsedArticleFile {
   const raw = fs.readFileSync(filePath, "utf-8")
   const { frontmatter, rawBody } = parseFrontmatter(filePath, raw)
   const slug = frontmatter.slug ?? slugifyFilename(path.basename(filePath, ".md"))
-  return { filePath, slug, frontmatter, rawBody }
+  return { filePath, slug, frontmatter, rawBody, raw }
+}
+
+/** slug → 파일 전체 원문(프론트매터 포함, stripComments()로 비공개 메모 제외) 역인덱스를 만든다
+ * — Copy Page 메뉴(017) 전용. Article[] 파이프라인과 완전히 독립적인 부산물이라 Article 타입에는
+ * 어떤 필드도 추가하지 않는다(RSC가 서버→클라이언트 prop을 객체 전체로 직렬화하는 문제 회피). */
+function buildRawMarkdownIndex(parsed: ParsedArticleFile[]): Map<string, string> {
+  const index = new Map<string, string>()
+  for (const { slug, raw } of parsed) {
+    index.set(slug, stripComments(raw))
+  }
+  return index
 }
 
 /**
@@ -167,6 +181,9 @@ function attachSeries(loaded: Article[]): Article[] {
 export interface LoadedContent {
   articles: Article[]
   blogSlugs: string[]
+  /** slug → 원문(프론트매터 포함, 비공개 메모 제외) — Copy Page 메뉴(017) 전용, Article[]과 완전히
+   * 독립된 부산물 */
+  rawMarkdownBySlug: Map<string, string>
 }
 
 export async function loadArticles(): Promise<LoadedContent> {
@@ -204,6 +221,7 @@ export async function loadArticles(): Promise<LoadedContent> {
   const bySlug = new Map(chainWithNav.map((article) => [article.slug, article]))
   const articles = sortedDesc.map((article) => bySlug.get(article.slug) ?? article)
   const blogSlugs = chain.map((article) => article.slug)
+  const rawMarkdownBySlug = buildRawMarkdownIndex(parsedFiles)
 
-  return { articles, blogSlugs }
+  return { articles, blogSlugs, rawMarkdownBySlug }
 }
