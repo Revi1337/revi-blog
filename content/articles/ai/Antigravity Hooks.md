@@ -13,7 +13,7 @@ thumbnail: https://pub-8c61ed96347b483a91c17765cea907da.r2.dev/images/2026-10-04
 
 ## 개요
 
-> [!info] Antigravity CLI 1.2.16 기준으로 작성되었습니다.
+> Antigravity CLI 1.2.16 기준으로 작성되었습니다.
 
 훅(Hook)은 Antigravity의 핵심 제어 계층으로, 크게 두 가지 기술적 축을 기반으로 설계되었습니다.
 
