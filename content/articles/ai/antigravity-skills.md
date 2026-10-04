@@ -140,4 +140,5 @@ ln -s /path/to/my-skill ~/.gemini/config/skills/my-skill
 - [Antigravity Skills Documentation](https://antigravity.google/docs/skills)
 - [Google Antigravity Changelog](https://antigravity.google/changelog)
 - [Antigravity CLI 1.1.3 Release Notes (Symlink Resolution)](https://github.com/google-antigravity/antigravity-cli/releases/tag/1.1.3)
+- [Antigravity CLI 1.1.21 Release Notes (Explicit Config Path Priority)](https://github.com/google-antigravity/antigravity-cli/releases/tag/1.1.21)
 - [Antigravity CLI 1.2.10 Release Notes (skills.json Entries & include_only Overhaul)](https://github.com/google-antigravity/antigravity-cli/releases/tag/1.2.10)
