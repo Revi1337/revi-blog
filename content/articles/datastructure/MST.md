@@ -11,6 +11,8 @@ description: 무방향 가중치 그래프에서 모든 정점을 가중치의 �
 thumbnail: https://pub-8c61ed96347b483a91c17765cea907da.r2.dev/images/2026-07-29/MST-thumbnail.jpg
 audio:
   - https://pub-8c61ed96347b483a91c17765cea907da.r2.dev/media/2026-09-06/MST-script.mp3
+show_on_page: false
+show_on_homepage: false
 ---
 
 ## Minimum Cost Spanning Tree

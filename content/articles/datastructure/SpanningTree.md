@@ -11,6 +11,8 @@ description: 무방향 연결 그래프의 모든 정점을 사이클 없이 (V-
 thumbnail: https://pub-8c61ed96347b483a91c17765cea907da.r2.dev/images/2026-07-29/SpanningTree-thumbnail.jpg
 audio:
   - https://pub-8c61ed96347b483a91c17765cea907da.r2.dev/media/2026-09-06/SpanningTree-script.mp3
+show_on_page: false
+show_on_homepage: false
 ---
 
 ## Spanning Tree
