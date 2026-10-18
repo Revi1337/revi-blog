@@ -9,6 +9,7 @@ tags:
   - concept
 description: 성능 테스트에 필요한 용어와 지식들을 정리한 노트
 thumbnail: https://pub-8c61ed96347b483a91c17765cea907da.r2.dev/images/2026-08-15/Performance-Testing-Concepts-thumbnail.png
+show_on_homepage: false
 ---
 
 ## 성능 테스트 기초
