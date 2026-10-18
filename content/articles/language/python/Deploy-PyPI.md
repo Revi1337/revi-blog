@@ -8,6 +8,8 @@ tags:
   - deploy
 description: "파이썬 패키지를 구조화하고 PyPI 공식 저장소에 배포하는 전체 절차 안내"
 thumbnail: https://pub-8c61ed96347b483a91c17765cea907da.r2.dev/images/2026-08-02/Python-Deploy-PyPI-Thumbnail.png
+show_on_page: false
+show_on_homepage: false
 ---
 
 해당 포스팅에서는 우리의 파이썬 프로젝트를 `PyPI` 에 배포하는 방법을 다룹니다. 따라서 `PyPI` 에 회원가입이 되어있어야 합니다.

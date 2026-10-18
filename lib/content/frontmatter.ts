@@ -16,6 +16,7 @@ export interface ArticleFrontmatter {
   reading_time_minutes?: number
   /** 없으면 true — 홈 카드 그리드/캐러셀 노출 여부 */
   show_on_homepage?: boolean
+  show_on_page?: boolean
 }
 
 const REQUIRED_FIELDS = ["title", "date", "tags"] as const
@@ -46,6 +47,9 @@ function normalizeFrontmatterKeys(data: Record<string, unknown>): Record<string,
     if (value instanceof Date) {
       normalized[field] = toIsoString(value)
     }
+  }
+  if (normalized.show_on_page !== undefined && normalized.show_on_homepage === undefined) {
+    normalized.show_on_homepage = normalized.show_on_page
   }
   return normalized
 }

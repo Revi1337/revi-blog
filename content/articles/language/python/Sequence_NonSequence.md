@@ -7,6 +7,8 @@ tags:
   - concept
 description: "파이썬의 시퀀스 및 논시퀀스 자료형의 개념과 분류 기준 정리"
 thumbnail: https://pub-8c61ed96347b483a91c17765cea907da.r2.dev/images/2026-08-02/Python-Sequence-NonSequence-Thumbnail.png
+show_on_page: false
+show_on_homepage: false
 ---
 
 Python 에서 사용되는 자료형은 크게 `Sequence 자료형` 과 `Non Sequence 자료형` 으로 구분할 수 있습니다.

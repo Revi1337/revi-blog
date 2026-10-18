@@ -7,6 +7,8 @@ tags:
   - concept
 description: "파이썬의 네임스페이스, LEGB 규칙, Scope 관련 키워드 및 동작 방식 정리"
 thumbnail: https://pub-8c61ed96347b483a91c17765cea907da.r2.dev/images/2026-08-02/Python-Scope-Thumbnail.png
+show_on_page: false
+show_on_homepage: false
 ---
 
 ## 들어가며

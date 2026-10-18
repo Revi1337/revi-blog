@@ -7,6 +7,8 @@ tags:
   - concept
 description: "파이썬의 Iterable과 Iterator의 내부 원리, 구현 방법 및 차이점 정리"
 thumbnail: https://pub-8c61ed96347b483a91c17765cea907da.r2.dev/images/2026-08-02/Python-Iterable-Iterator-Thumbnail.png
+show_on_page: false
+show_on_homepage: false
 ---
 
 ## Iterable
