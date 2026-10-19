@@ -9,14 +9,14 @@ export function Footer() {
           © {year} Revi. All rights reserved.
         </div>
         <div className="flex gap-4">
-          <a
+          {/* <a
             className="font-code-sm text-code-sm text-on-surface-variant transition-colors hover:text-primary dark:hover:text-primary-fixed-dim"
             href="https://me.revi1337.com"
             target="_blank"
             rel="noopener noreferrer"
           >
             About
-          </a>
+          </a> */}
           <a
             className="font-code-sm text-code-sm text-on-surface-variant transition-colors hover:text-primary dark:hover:text-primary-fixed-dim"
             href="https://github.com/Revi1337"
